@@ -1,0 +1,38 @@
+/* Estilo general del botón */
+.btn-atras {
+  position: fixed;
+  left: 20px; /* Alineado a la izquierda */
+  top: 20px;  /* Alineado arriba */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 15px 30px;
+  background-color: #222; /* Fondo oscuro */
+  color: #fff;            /* Texto blanco */
+  border: none;
+  border-radius: 20px;    /* Bordes redondeados */
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra suave */
+}
+
+/* Flecha dentro del botón */
+.btn-atras span {
+  margin-right: 10px; /* Espacio entre la flecha y el texto */
+  font-size: 20px;    /* Tamaño de la flecha */
+}
+
+/* Animación al hacer hover */
+.btn-atras:hover {
+  background-color: #333; /* Cambia el fondo al pasar el mouse */
+  transform: scale(1.05); /* Efecto de agrandamiento */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Sombra más intensa */
+}
+
+/* Animación al hacer clic */
+.btn-atras:active {
+  transform: scale(0.98); /* Efecto de presión */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4); /* Sombra más cercana */
+}

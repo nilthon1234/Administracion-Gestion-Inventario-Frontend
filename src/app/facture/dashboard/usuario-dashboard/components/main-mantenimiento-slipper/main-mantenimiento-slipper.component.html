@@ -1,0 +1,104 @@
+<app-nav-bars-mantenimientos></app-nav-bars-mantenimientos>
+<div class="form-container">
+  <h2 style="color: aliceblue;">Generar Codigo</h2>
+
+  <div class="form-row">
+    <select [ngModel]="selecteGenero()" name="genero" (ngModelChange)="selecteGenero.set($event)">
+      <option value="">Genero</option>
+      <option *ngFor="let g of genero()" [value]="g.nombre">{{ g.nombre }}</option>
+    </select>
+
+    <select [ngModel]="selecteMarca()" name="marca" (ngModelChange)="selecteMarca.set($event)">
+      <option value="">Marca</option>
+      <option *ngFor="let m of marca()" [value]="m.nombre">{{ m.nombre }}</option>
+    </select>
+
+    <input type="text" placeholder="Cod_Empresa" [ngModel]="selecteEmpresa()" name="empresa"
+      (ngModelChange)="selecteEmpresa.set($event)" />
+    <h5>S/</h5><input type="text" placeholder="Precio" [ngModel]="selectePrecio()" name="precio"
+      (ngModelChange)="selectePrecio.set($event)" />
+
+    <select [ngModel]="selecteTipo()" name="tipo" (ngModelChange)="selecteTipo.set($event)">
+      <option value="">Tipo</option>
+      <option *ngFor="let t of tipos()" [value]="t">{{ t }}</option>
+    </select>
+
+    <input type="file" (change)="onFileSelected($event)" />
+    <button class="btn-success" (click)="generateCodToday()" [disabled]="isLoading()">Generar Código</button>
+  </div>
+
+  <p class="mensaje">{{ mesnaje() }}</p>
+</div>
+
+<div class="list-container">
+
+  <div style="display: flex; align-items: center; gap: 1rem;">
+    <label for="fecha">Selecciona una fecha:</label>
+    <input type="date" id="fecha" [(ngModel)]="fechaSelecionada" (change)="cargarSlipperPorFecha()" />
+    <p style="margin: 0;">Total de códigos generados: {{ slippers().length }}</p>
+    <button class="btn btn-primary" (click)="generateQR()">Generar QR</button>
+    <button routerLink="/personalizar-qr" class="btn btn-secondary">Personalizar QR</button>
+  </div>
+
+
+  <p *ngIf="nuevosCodigos.length > 0" class="new-codes-message">
+    Nuevos códigos generados: {{ nuevosCodigos().length }}
+  </p>
+
+  <table *ngIf="slippers().length > 0" class="slipper-table">
+    <thead>
+      <tr>
+        <th>Imagen</th>
+        <th>Marca</th>
+        <th>Tipo</th>
+        <th>Código</th>
+        <th>Empresa</th>
+        <th>Cantidad</th>
+        <th>Genero</th>
+        <th>Precio</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let slipper of slippers()" [class.new-code]="nuevosCodigos().includes(slipper.codToday)"
+        id="slipper-{{ slipper.codToday }}">
+        <td>
+          <img [src]="slipper.urlImg" (click)="seleccionarImagenParaActualizar(slipper)"
+            style="width: 100px; cursor: pointer;" [id]="'slipper-' + slipper.codToday" />
+          <input type="file" #fileInput (change)="ActualizarImagen($event)" hidden />
+        </td>
+        <td>{{ slipper.brand }}</td>
+        <td>{{ slipper.type }}</td>
+        <td [appCopiarTexto]="slipper.codToday">{{ slipper.codToday }}</td>
+        <td [appCopiarTexto]="slipper.company">{{ slipper.company }}</td>
+        <td>{{ slipper.amount }}</td>
+        <td>{{ slipper.genero }}</td>
+        <td>
+          <span (click)="abrirModalPrecio(slipper)" style="cursor: pointer; color: blue;">
+            S/ {{ slipper.price }}
+          </span>
+        </td>
+
+        <td><button style="background-color: rgb(252, 36, 36);"
+            (click)="deleteSlipper(slipper.codToday)">Eliminar</button></td>
+      </tr>
+
+    </tbody>
+  </table>
+
+  <p *ngIf="slippers().length === 0" class="empty-message">No hay zapatillas registradas para esta fecha.</p>
+  <!-- Paginación -->
+  <mat-paginator [length]="totalElements" [pageSize]="pageSize" [pageIndex]="currentPage"
+    [pageSizeOptions]="[5, 10, 20, 50, 100]" (page)="onPageChange($event)" aria-label="Seleccionar página">
+  </mat-paginator>
+</div>
+<div *ngIf="modalPrecioVisible()" class="modal-overlay">
+  <div class="modal-content">
+    <h3>Actualizar precio</h3>
+    <p>Código: {{ slipperSeleccionado()?.codToday }}</p>
+    <input type="number" [(ngModel)]="nuevoPrecio" />
+    <br>
+    <button class="btnactus-price" (click)="confirmarActualizarPrecio()">Actualizar</button><br>
+    <button class="btnactus-cancel"(click)="cerrarModalPrecio()">Cancelar</button>
+  </div>
+</div>

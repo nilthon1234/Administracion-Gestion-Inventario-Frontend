@@ -1,0 +1,26 @@
+  <app-nav-bars-mantenimientos></app-nav-bars-mantenimientos>
+
+  <div class="notification-card" *ngIf="showNotification">
+  <div class="notification-content">
+    <p>Por favor, especifica correctamente el nombre de la marca. Si la marca comienza con la misma inicial que otra, coloca una mayúscula en medio del nombre para diferenciarla. Por ejemplo, si tienes las marcas Nike y New Balance, escribe la segunda como <strong>NewBalance</strong> para generar códigos distintos.</p>
+    <p>Además, asegúrate de que los nombres de las marcas que contienen mayúsculas intermedias se escriban sin espacios.</p>
+    <p><strong>Palabras clave:</strong> Marca, Mayúscula, Código, Nombre, Diferenciar.</p>
+  </div>
+  <button class="understood-btn" (click)="closeNotification()">Entendido</button>
+</div>
+
+  <div class="responsive-card">
+    <form class="name-form" (submit)="addName()">
+      <input type="text" placeholder="Nombre" [(ngModel)]="newName" name="nombre"(input)="onNewNameChange()" required />
+      <button type="submit">Agregar</button>
+    </form>
+    <input type="text" placeholder="Buscar marca" [(ngModel)]="searchTerm" name="searchTerm" />
+    <button class="search-btn" (click)="searchName()">Buscar Nombre</button>
+    <ul class="name-list">
+      <li *ngFor="let marca of marcas" class="name-item">
+        <span>{{ marca.nombre }}</span>
+        <button class="update-btn" (click)="updateName(marca)">Actualizar</button>
+        <button class="delete-btn" (click)="deleteName(marca)">Eliminar</button>
+      </li>
+    </ul>
+  </div>

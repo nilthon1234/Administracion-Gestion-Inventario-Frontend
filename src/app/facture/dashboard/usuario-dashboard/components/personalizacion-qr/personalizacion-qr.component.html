@@ -1,0 +1,102 @@
+<!-- ADVERTENCIA DE LÍMITE QR -->
+<div *ngIf="mostrarAdvertencia" class="alerta-limite">
+  <p>
+    ⚠️ <strong>Importante:</strong> La generación de QR tiene un límite máximo de <strong>800 QR</strong>.
+    Cada cantidad especificada en tus productos se multiplica <strong>x2</strong>. Si superas el límite,
+    la aplicación mostrará un error y <strong>no se generará el PDF</strong>.
+    <br><br>
+    Si deseas generar más códigos, elimina los ya generados y vuelve a agregar los productos restantes.
+  </p>
+  <button class="btn btn-warning" (click)="cerrarAdvertencia()">Entendido</button>
+</div>
+
+<div class="productos-container">
+  <div class="acciones">
+    <button type="button" (click)="openSearchModal()" class="btn btn-primary" [disabled]="bloquearAcciones">
+      + Buscar Producto
+    </button>
+
+    <button type="button" (click)="generarQR()" class="btn btn-success" [disabled]="bloquearAcciones">
+      Generar QR
+    </button>
+
+  </div>
+
+  <!-- Modal de Búsqueda -->
+  <div class="modal-backdrop" *ngIf="showSearchModal">
+    <div class="modal-content">
+      <span class="close-btn" (click)="closeSearchModal()">&times;</span>
+      <h4>Buscar Producto</h4>
+
+      <form [formGroup]="searchForm" (ngSubmit)="buscarProducto()">
+        <div class="form-group">
+          <label>Código Tienda:</label>
+          <input formControlName="codToday" placeholder="Ej: A403" />
+          <button type="submit" class="btn btn-primary" [disabled]="isLoading">
+            {{ isLoading ? 'Buscando...' : 'Buscar' }}
+          </button>
+        </div>
+      </form>
+
+      <div *ngIf="searchError" class="alert alert-danger">
+        {{ searchError }}
+      </div>
+
+      <div *ngIf="searchResults" class="search-results">
+        <h5>Resultados:</h5>
+        <div class="result-item">
+          <p><strong>Género:</strong> {{ searchResults.genero }}</p>
+          <p><strong>Marca:</strong> {{ searchResults.brand }}</p>
+          <p><strong>Código:</strong> {{ searchResults.codToday }}</p>
+          <p><strong>Empresa:</strong> {{ searchResults.company }}</p>
+        </div>
+
+        <form [formGroup]="form" (ngSubmit)="agregarALista()">
+          <div class="form-group">
+            <label>Cantidad:</label>
+            <input type="number" formControlName="amount" min="1" />
+          </div>
+          <button type="submit" class="btn btn-success" [disabled]="form.invalid || bloquearAcciones">Añadir a
+            Lista</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="contador-qrs">
+    <strong>Total QR a generar:</strong> {{ totalQrsGenerados }} / {{ LIMITE_QR }}
+  </div>
+
+  <!-- Tabla de productos -->
+  <table class="tabla-productos" *ngIf="productosList.length > 0">
+    <thead>
+      <tr>
+        <th>Género</th>
+        <th>Marca</th>
+        <th>Código</th>
+        <th>Empresa</th>
+        <th>Cantidad</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let producto of productosList; let i = index">
+        <td>{{ producto.genero }}</td>
+        <td>{{ producto.brand }}</td>
+        <td>{{ producto.codToday }}</td>
+        <td>{{ producto.company }}</td>
+        <td>
+          <input type="number" [(ngModel)]="producto.amount" [ngModelOptions]="{standalone: true}"
+            (ngModelChange)="actualizarTotalQrs()" class="small-input" style="width: 100px;" />
+
+        </td>
+
+
+
+        <td>
+
+          <button type="button" (click)="removeProducto(i)" class="btn btn-delete">Eliminar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

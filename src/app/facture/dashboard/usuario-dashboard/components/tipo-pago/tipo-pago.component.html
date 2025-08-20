@@ -1,0 +1,19 @@
+<h3 class="title">Especificar Ticket {{infoPago.nroTicket}}</h3>
+<span>Codigo: {{infoPago.codToday}}</span>
+<span>Id Detalle: {{infoPago.idDetails}}</span>
+
+<div class="pago-item">
+  <div class="input-container">
+    <label for="payType">Tipo de Pago:</label>
+    <select [(ngModel)]="infoPago.payType" id="payType" name="payType" class="input">
+      <option value="">Seleccione</option>
+      <option *ngFor="let tipo of tipoPago" [value]="tipo.value">{{ tipo.label | payTypeTranslate}}</option>
+    </select>
+    <div class="error-message" *ngIf="errores[0]">{{ errores[0] }}</div>
+  </div>
+</div>
+
+<div class="action-buttons">
+  <button type="button" class="register-btn" (click)="registroPago()">Registrar</button>
+  <button type="button" class="cancel-btn" (click)="cancelar()">Cancelar</button>
+</div>

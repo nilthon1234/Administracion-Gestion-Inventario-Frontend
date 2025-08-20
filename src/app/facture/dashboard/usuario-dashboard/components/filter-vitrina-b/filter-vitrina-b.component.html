@@ -1,0 +1,297 @@
+<div class="container">
+  <app-navbars-vitrinas-b></app-navbars-vitrinas-b>
+
+  <form [formGroup]="formFiltro" (ngSubmit)="buscar()" class="form-busqueda">
+    <div class="grupo-busqueda">
+      <select formControlName="brand">
+        <option value="">🏷️ Todas las marcas</option>
+        <option *ngFor="let marca of marcas" [value]="marca.nombre">{{ marca.nombre }}</option>
+      </select>
+      <input type="text" formControlName="codToday" placeholder="🔍 Código Tienda" />
+      <input type="text" formControlName="company" placeholder="🏢 Código Empresa" />
+      <button type="submit" class="btn-buscar">🔍 Buscar</button>
+      <button type="button" (click)="abrirModal2()" class="btn-nuevo">➕ Nuevo Producto</button>
+    </div>
+  </form>
+  <mat-paginator [length]="totalElements" [pageSize]="pageSize" [pageIndex]="currentPage"
+    [pageSizeOptions]="[5, 10, 20, 50, 100]" (page)="onPageChange($event)" aria-label="Seleccionar página">
+  </mat-paginator>
+  <div class="tabla-container">
+    <table class="tabla-resultados" *ngIf="resultados.length > 0">
+      <thead>
+        <tr>
+          <th style="text-align: center;">#</th>
+          <th style="text-align: center;">Marca</th>
+          <th style="text-align: center;">Género</th>
+          <th style="text-align: center;">Código Tienda</th>
+          <th style="text-align: center;">Tipo</th>
+          <th style="text-align: center;">Cantidad</th>
+          <th style="text-align: center;">Imagen</th>
+          <th style="text-align: center;">Empresa</th>
+          <th style="text-align: center;">Talla(s)</th>
+          <th style="text-align: center;">Acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of resultados; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td style="text-align: center;">{{ item.brand }}</td>
+          <td style="text-align: center;">{{ item.genero }}</td>
+          <td style="text-align: center;" [appCopiarTexto]="item.codToday">{{ item.codToday }}</td>
+          <td style="text-align: center;">{{ item.type }}</td>
+          <td style="text-align: center;">
+            <ng-container *ngIf="editarFilaIndex === i && modoEdicion === 'cantidad'; else mostrarCantidad">
+              <input type="number" [(ngModel)]="valorTemporal" min="1" class="form-control" />
+            </ng-container>
+            <ng-template #mostrarCantidad>{{ item.amount }}</ng-template>
+          </td>
+          <td>
+            <img (click)="openImageModal(item.url)" [src]="item.url" width="50" alt="{{ item.codToday }}" height="50"
+              style="border-radius: 8px; object-fit: cover;" />
+          </td>
+          <td style="text-align: center;" [appCopiarTexto]="item.company">{{ item.company }}</td>
+          <td style="text-align: center;">
+            <ng-container *ngIf="editarFilaIndex === i && modoEdicion === 'talla'; else mostrarTallas">
+              <input type="text" [(ngModel)]="valorTemporal" placeholder="Ej: 1,2,3" class="form-control" />
+            </ng-container>
+            <ng-template #mostrarTallas>
+              <span *ngFor="let talla of item.size.split(','); let j = index" class="talla-badge"
+                style="margin-right: 5px;">
+                {{ talla | sizeFormat: item.type }}
+                <!-- Solo muestra el botón "x" si la talla NO es "UNICO" -->
+                <button *ngIf="talla.trim().toUpperCase() !== 'UNICO'" class="eliminar-x" type="button"
+                  (click)="eliminarSize(item.id, talla.trim(), i)">
+                  x
+                </button>
+              </span>
+            </ng-template>
+          </td>
+
+
+
+          <td>
+            <ng-container *ngIf="editarFilaIndex === i">
+              <button class="btn btn-actualizar" (click)="actualizarCampo(item)">✅ Actualizar</button>
+              <button class="btn btn-cancelar" (click)="editarFilaIndex = null; modoEdicion = null;">❌ Cancelar</button>
+            </ng-container>
+            <ng-container *ngIf="editarFilaIndex !== i">
+              <button *ngIf="item.producto === 'CALZADO'" class="btn btn-editar" (click)="editarTalla(item, i)">👟
+                Agregar Talla</button>
+              <button *ngIf="item.producto === 'UNICO'" class="btn btn-editar" (click)="abrirModal3(item.id)">
+                📦 Agregar o descontar
+              </button>
+              <button *ngIf="item.producto === 'ROPA'" class="btn btn-editar" (click)="editarRopa(item)">👕 Agregar
+                Talla Ropa</button>
+            </ng-container>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+
+  <div *ngIf="(resultados && resultados.length === 0) && busquedaRealizada" class="no-results">
+    <h3>🔍 No se encontraron resultados</h3>
+    <p>Intenta con otros criterios de búsqueda</p>
+  </div>
+
+  <!-- Modal para capturar la cantidad -->
+  <div *ngIf="mostrarModal" class="modal3">
+    <div class="modal-content3">
+      <h3>Actualizar Cantidad</h3>
+      <input type="number" [(ngModel)]="cantidad" placeholder="Ingrese cantidad" min="1">
+      <button (click)="aumentarCantidad(idSeleccionado)">Aumentar</button>
+      <button (click)="descontarCantidad(idSeleccionado)">Descontar</button>
+      <button (click)="cerrarModal3()">Cancelar</button>
+    </div>
+  </div>
+
+
+  <!-- Modal Principal Mejorado -->
+  <div *ngIf="showModal" class="modal-backdrop" (click)="cerrarModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>🔍 Buscar y Registrar Producto</h3>
+        <span class="close-btn" (click)="cerrarModal()">&times;</span>
+      </div>
+
+      <!-- Fase 1: Búsqueda -->
+      <div *ngIf="!productoEncontrado" class="search-section">
+        <form (ngSubmit)="buscarProducto()" #searchForm="ngForm" class="search-form">
+          <div class="form-group">
+            <label for="searchType">Buscar por:</label>
+            <select id="searchType" [(ngModel)]="tipoBusqueda" name="searchType" required class="form-control">
+              <option value="">-- Seleccionar tipo de búsqueda --</option>
+              <option value="codToday">Código de Tienda</option>
+              <option value="company">Código de Empresa</option>
+            </select>
+          </div>
+
+          <div class="form-group" *ngIf="tipoBusqueda">
+            <label for="valorBusqueda">
+              {{ tipoBusqueda === 'codToday' ? 'Código de Tienda:' : 'Código de Empresa:' }} *
+            </label>
+            <input id="valorBusqueda" [(ngModel)]="valorBusqueda" name="valorBusqueda" required
+              [placeholder]="tipoBusqueda === 'codToday' ? 'Ej: P402PL' : 'Ej: 8848373-009'" class="form-control"
+              type="text" />
+          </div>
+
+          <div class="form-actions">
+            <button type="button" (click)="cerrarModal()" class="btn-cancel">Cancelar</button>
+            <button type="submit" [disabled]="!puedeRealizarBusqueda()" class="btn-search">
+              🔍 Buscar Producto
+            </button>
+          </div>
+        </form>
+
+        <!-- Loading -->
+        <div *ngIf="buscandoProducto" class="loading-section">
+          <div class="spinner"></div>
+          <p>Buscando producto...</p>
+        </div>
+      </div>
+
+      <!-- Fase 2: Resultado de búsqueda y registro -->
+      <div *ngIf="productoEncontrado && !buscandoProducto" class="result-section">
+        <!-- Información del producto encontrado -->
+        <div class="product-info">
+          <div class="product-header">
+            <h4>📦 Producto Encontrado</h4>
+            <button type="button" (click)="nuevaBusqueda()" class="btn-new-search">Nueva Búsqueda</button>
+          </div>
+
+          <div class="product-details">
+            <div class="product-image" *ngIf="productoEncontrado.urlImg">
+              <img [src]="productoEncontrado.urlImg" [alt]="productoEncontrado.brand" />
+            </div>
+            <div class="product-data">
+              <p><strong>Marca:</strong> {{ productoEncontrado.brand }}</p>
+              <p><strong>Tipo:</strong> {{ productoEncontrado.type }}</p>
+              <p><strong>Código Tienda:</strong> {{ productoEncontrado.codToday }}</p>
+              <p><strong>Código Empresa:</strong> {{ productoEncontrado.company }}</p>
+              <p><strong>Género:</strong> {{ productoEncontrado.genero }}</p>
+              <p><strong>Precio:</strong> S/ {{ productoEncontrado.price }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Formulario de registro -->
+        <form (ngSubmit)="registrarProducto()" #registerForm="ngForm" class="register-form">
+
+
+          <!-- Registro por CANTIDAD (producto UNICO o sin sizes) -->
+          <div *ngIf="esProductoUnico() || !tieneSizesDisponibles()" class="cantidad-section">
+            <div class="form-group">
+              <label for="cantidadUnico">Cantidad a registrar: *</label>
+              <input type="number" id="cantidadUnico" [(ngModel)]="cantidadUnico" name="cantidadUnico" min="1" required
+                placeholder="Ingrese la cantidad" class="form-control" />
+            </div>
+            <p class="info-text">
+              <i>{{ esProductoUnico() ? 'Producto único - se registra por cantidad' : 'Sin tallas disponibles - se
+                registra por cantidad' }}</i>
+            </p>
+          </div>
+
+          <!-- Registro por TALLAS (productos con sizes disponibles) -->
+          <div *ngIf="!esProductoUnico() && tieneSizesDisponibles()" class="tallas-section">
+            <div class="form-group">
+              <label>Tallas Disponibles:</label>
+              <div class="sizes-grid">
+                <div *ngFor="let size of getSizesDisponibles()" class="size-item" [class.disabled]="size.cantidad <= 0"
+                  (click)="seleccionarSize(size)" [title]="'Disponible: ' + size.cantidad">
+                  <span class="size-name">{{ formatSizeName(size.name) }}</span>
+                  <span class="size-stock">{{ size.cantidad }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Historial de tallas seleccionadas -->
+            <div class="selected-sizes" *ngIf="tallasSeleccionadas.length > 0">
+              <label>Tallas Seleccionadas para Registro:</label>
+              <div class="selected-sizes-list">
+                <span *ngFor="let talla of tallasSeleccionadas; let i = index" class="size-tag">
+                  {{ formatSizeName(talla) }}
+                  <button type="button" (click)="eliminarTallaSeleccionada(i)" class="remove-size"
+                    title="Eliminar talla">
+                    ×
+                  </button>
+                </span>
+              </div>
+              <p class="total-selected">Total de productos: {{ tallasSeleccionadas.length }}</p>
+            </div>
+          </div>
+
+          <!-- Botones de acción -->
+          <div class="form-actions">
+            <button type="button" (click)="cerrarModal()" class="btn-cancel">Cancelar</button>
+            <button type="submit" [disabled]="!puedeRegistrar()" class="btn-save">
+              💾 Registrar en Vitrina
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Error de búsqueda -->
+      <div *ngIf="errorBusqueda" class="error-section">
+        <div class="error-message">
+          <p>❌ {{ mensajeError }}</p>
+          <button type="button" (click)="nuevaBusqueda()" class="btn-retry">Intentar de nuevo</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para edición de tallas -->
+  <div class="modal-overlay" *ngIf="showSizeModal">
+    <div class="modal-container">
+      <app-size [currentSizes]="currentItemForSizeUpdate.size" [gender]="currentItemForSizeUpdate.genero"
+        [codToday]="currentItemForSizeUpdate.codToday" [company]="currentItemForSizeUpdate.company"
+        [type]="currentItemForSizeUpdate.type" (updateSizes)="handleSizeUpdate($event)" (cancel)="handleSizeCancel()">
+      </app-size>
+    </div>
+  </div>
+
+  <!-- Modal Mejorado para Tallas de Ropa -->
+  <div class="modal-overlay" *ngIf="showClothingSizeModal">
+    <div class="modal-container">
+      <h3>👕 Gestión de Tallas de Ropa</h3>
+      <p style="text-align: center; color: #64748b; margin-bottom: 25px;">
+        Especifica la cantidad disponible para cada talla
+      </p>
+
+      <div class="tallas-contador">
+        <div *ngFor="let talla of clothingSizes" class="talla-row">
+          <label>{{ talla | uppercase }}</label>
+          <input type="number" min="0" [(ngModel)]="clothingSizeCounts[talla]" placeholder="0" />
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button (click)="showClothingSizeModal = false" style="
+    background-color: #e74c3c; 
+    color: white; 
+    border: none; 
+    padding: 10px 20px; 
+    font-size: 16px; 
+    border-radius: 5px; 
+    cursor: pointer; 
+    transition: background-color 0.3s;
+  " onmouseover="this.style.backgroundColor='#c0392b'" onmouseout="this.style.backgroundColor='#e74c3c'">
+          Cancelar
+        </button>
+        <button class="btn-guardar" (click)="guardarTallasRopa()">💾 Guardar Tallas</button>
+      </div>
+    </div>
+  </div>
+
+  <mat-paginator [length]="totalElements" [pageSize]="pageSize" [pageIndex]="currentPage"
+    [pageSizeOptions]="[5, 10, 20, 50, 100]" (page)="onPageChange($event)" aria-label="Seleccionar página">
+  </mat-paginator>
+</div>
+
+<div *ngIf="selectedImagenUrl" class="image-modal" (click)="closeImageModal()">
+  <div class="image-modal-content" (click)="$event.stopPropagation()">
+    <span class="close-btn" (click)="closeImageModal()">&times;</span>
+    <img [src]="selectedImagenUrl" class="modal-image" (click)="closeImageModal()">
+  </div>
+</div>

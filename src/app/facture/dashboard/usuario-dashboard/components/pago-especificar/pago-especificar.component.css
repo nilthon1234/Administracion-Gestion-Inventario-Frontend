@@ -1,0 +1,118 @@
+::ng-deep .custom-modalbox .mat-dialog-container {
+  border-radius: 15px;
+  padding: 20px;
+  background: #fff;
+  box-shadow: 0 15px 30px rgba(0,0,0,0.7); /* Aumenta los valores y la opacidad para un sombreado más oscuro */
+  width: 500px;
+  max-width: 95%;
+  position: relative;
+}
+
+  .title {
+    text-align: center;
+    font-size: 22px;
+    margin-bottom: 20px;
+    font-weight: bold;
+    color: #333;
+  }
+
+  .pago-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .input-container {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .input-container label {
+    margin-bottom: 5px;
+  }
+
+  .input {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+  }
+
+  .remove-btn {
+    background-color: #ff6b6b;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+  }
+
+  .remove-btn:hover {
+    background-color: #ff4c4c;
+  }
+
+  .add-btn {
+    width: 60%;
+    background-color: #3498db;
+    color: #fff;
+    padding: 15px 0;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-bottom: 20px;
+  }
+  .buttons {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+  .add-btn:hover {
+    background-color: #2980b9;
+  }
+
+  .action-buttons {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .action-buttons button {
+    flex: 1;
+    margin: 0 5px;
+    padding: 15px 0;
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    cursor: pointer;
+    font-size: 16px;
+  }
+
+  .register-btn {
+    background-color: #2ecc71;
+  }
+
+  .register-btn:hover {
+    background-color: #27ae60;
+  }
+
+  .cancel-btn {
+    background-color: #95a5a6;
+  }
+
+  .cancel-btn:hover {
+    background-color: #7f8c8d;
+  }
+
+  .error-message {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+  }

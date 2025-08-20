@@ -1,0 +1,271 @@
+.sidenav {
+  background: #122042;
+  transition: all 0.5s ease;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  width: 16.562rem;
+  height: 150vh;
+  box-shadow: 0.069rem 0 1.25rem 0 #8690a3;
+}
+
+.sidenav-collapsed {
+  width: 7rem;
+}
+
+.sidenav .logo-container {
+  display: flex;
+  align-items: center;
+  padding: 0.938rem 0.938rem 0 0.938rem;
+  width: 100%;
+}
+
+.sidenav .logo-container .logo {
+  background: #fff;
+  text-align: center;
+  width: 3rem;
+  min-width: 3rem;
+  border-radius: 0.313rem;
+  padding: 0.313rem;
+  font-size: 24px;
+  font-weight: 900;
+  cursor: pointer;
+  border: none;
+}
+
+.sidenav .logo-container .logo-text {
+  margin-left: 1.5rem;
+  font-size: 24px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.sidenav .logo-container .btn-close {
+  margin-left: auto;
+  cursor: pointer;
+  width: 3rem;
+  height: 2rem;
+  border-radius: 50%;
+  background-color: transparent;
+  border: none;
+}
+
+.sidenav .logo-container .btn-close .fa-times {
+  color: #fff;
+  font-size: 24px;
+}
+
+.sidenav-nav {
+  list-style: none;
+  padding: 0.938rem;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: calc(100% - 3.65rem);
+  cursor: pointer;
+}
+
+.sidenav-nav .sidenav-nav-item {
+  width: 100%;
+  margin-bottom: 0.625rem;
+}
+
+.sidenav-nav .sidenav-nav-item .sidenav-nav-link {
+  display: flex;
+  align-items: center;
+  height: 3rem;
+  color: #f3f3f3;
+  text-decoration: none;
+  border-radius: 0.425rem;
+  transition: all 0.3s ease;
+}
+
+.sidenav-nav .sidenav-nav-item .sidenav-nav-link .sidenav-link-icon {
+  font-size: 22px;
+  width: 2rem;
+  min-width: 2rem;
+  text-align: center;
+  padding: 12px;
+}
+
+.sidenav-nav .sidenav-nav-item .sidenav-nav-link .sidenav-link-text {
+  margin-left: 1.5rem;
+}
+
+.sidenav-nav .sidenav-nav-item:hover .sidenav-nav-link {
+  background-color: #fff;
+  color: #000;
+}
+
+.active {
+  background-color: #fff;
+}
+
+.active .sidenav-link-icon,
+.active .sidenav-link-text {
+  color: #000;
+}
+
+/* LOGO RESPONSIVE - Se ajusta según el estado del sidebar (VERSIÓN MÁS PEQUEÑA) */
+.logo-image {
+  width: 80px;           /* Reducido de 120px a 80px */
+  height: 80px;
+  position: absolute;
+  bottom: 60px;          /* Ajustado de 80px a 70px */
+  left: 15px;            /* Posición cuando está colapsado */
+  transition: left 0.5s ease; /* Transición suave para el movimiento */
+  z-index: 10;
+}
+
+.logo-text {
+  position: absolute;
+  bottom: 15px;          /* Ajustado de 20px a 15px */
+  left: 5px;             /* Posición cuando está colapsado */
+  width: 80px;           /* Reducido de 120px a 80px */
+  text-align: center;
+  color: white;
+  transition: left 0.5s ease; /* Transición suave para el movimiento */
+  z-index: 10;
+}
+
+/* CUANDO EL SIDEBAR ESTÁ EXPANDIDO */
+.sidenav:not(.sidenav-collapsed) .logo-image {
+  left: 80px; /* Nueva posición cuando está expandido */
+}
+
+.sidenav:not(.sidenav-collapsed) .logo-text {
+  left: 70px; /* Nueva posición cuando está expandido */
+}
+
+.main-title {
+  font-family: 'Arial Black', 'Helvetica Neue', Arial, sans-serif;
+  font-size: 14px;       /* Reducido de 20px a 14px */
+  letter-spacing: 1px;   /* Reducido de 2px a 1px */
+  font-weight: 900;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.sub-title {
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;       /* Reducido de 20px a 14px */
+  font-weight: 100;
+  color: #cccccc;
+  margin: 3px 0 0 0;     /* Reducido de 5px a 3px */
+   margin: 3px 0 0 12px;
+}
+
+.logo-wrapper {
+  position: absolute;
+  bottom: 0;
+  left: 15px;
+  width: 120px;
+  height: 120px;
+  z-index: 9; /* Por detrás del logo y texto */
+}
+
+.logo-image {
+  width: 80px;
+  height: 80px;
+  position: absolute;
+  bottom: 60px;
+  left: 15px;
+  transition: left 0.5s ease;
+  z-index: 10;
+  border-radius: 50%;
+}
+
+.logo-text {
+  position: absolute;
+  bottom: 15px;
+  left: 5px;
+  width: 80px;
+  text-align: center;
+  color: white;
+  transition: left 0.5s ease;
+  z-index: 10;
+}
+
+.sidenav:not(.sidenav-collapsed) .logo-image .ring-path{
+  left: 80px;
+}
+
+.sidenav:not(.sidenav-collapsed) .logo-text .electric-ring {
+  left: 70px;
+}
+
+/* Estilos generales para tablets */
+@media (min-width: 668px) and (max-width: 1324px) {
+  .sidenav {
+    width: 12rem; /* Ajusta el ancho del sidebar */
+  }
+
+  .sidenav-collapsed {
+    width: 9rem; /* Ajusta el ancho cuando está colapsado */
+  }
+
+  .sidenav .logo-container {
+    padding: 0.625rem; /* Reducir el padding */
+  }
+
+  .sidenav .logo-container .logo {
+    width: 2.5rem; /* Reducir el tamaño del botón */
+    font-size: 20px; /* Reducir el tamaño del ícono */
+  }
+
+  .sidenav .logo-container .btn-close {
+    width: 2.5rem; /* Reducir el tamaño del botón */
+    height: 2rem; /* Reducir la altura del botón */
+  }
+
+  .sidenav .logo-container .btn-close .fa-times {
+    font-size: 20px; /* Reducir el tamaño del ícono */
+  }
+
+  .sidenav-nav .sidenav-nav-item {
+    margin-bottom: 0.5rem; /* Reducir el espacio entre elementos */
+  }
+
+  .sidenav-nav .sidenav-nav-item .sidenav-nav-link {
+    height: 2.5rem; /* Reducir la altura del enlace */
+    font-size: 16px; /* Reducir el tamaño del texto */
+  }
+
+  .sidenav-nav .sidenav-nav-item .sidenav-nav-link .sidenav-link-icon {
+    font-size: 18px; /* Reducir el tamaño del ícono */
+  }
+
+  .sidenav-nav .sidenav-nav-item .sidenav-nav-link .sidenav-link-text {
+    margin-left: 1rem; /* Reducir el espacio entre ícono y texto */
+  }
+
+  .logo-image {
+    width: 60px; /* Reducir el tamaño del logo */
+    height: 60px; /* Reducir el tamaño del logo */
+    bottom: 50px; /* Ajustar la posición */
+   
+    
+  }
+
+  .logo-text {
+    bottom: 10px; /* Ajustar la posición */
+    width: 60px; /* Reducir el ancho del texto */
+    font-size: 12px; /* Reducir el tamaño del texto */
+
+  }
+
+  .main-title {
+    font-size: 12px; /* Reducir el tamaño del título */
+    margin-right: 10px;
+  }
+
+  .sub-title {
+    font-size: 10px; /* Reducir el tamaño del subtítulo */
+    
+  }
+
+  
+
+}

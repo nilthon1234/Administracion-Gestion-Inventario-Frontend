@@ -1,0 +1,145 @@
+.categories-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.categories-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 2 columnas por fila */
+  gap: 20px;
+  justify-content: center;
+  padding: 20px;
+}
+
+
+
+
+
+.category-column {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  text-align: center;
+}
+
+.category-title {
+  text-align: center;
+  color: #333;
+  margin-bottom: 10px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.table-container {
+  max-height: 250px;
+  overflow-y: auto;
+  overflow-x: auto;
+}
+
+.product-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.product-table th,
+.product-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.product-table th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+.top-cell {
+  color: red;
+  font-weight: bold;
+}
+
+.product-image {
+  width: 50px;
+  height: auto;
+  cursor: pointer;
+}
+
+.product-image.zoomed {
+  transform: scale(2);
+  transition: transform 0.25s ease;
+}
+
+.limit-selector {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0;
+  gap: 10px;
+  font-size: 16px;
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+  .categories-row {
+    grid-template-columns: 1fr;
+  }
+
+  .category-column:nth-child(n+3) {
+    grid-column: auto;
+    max-width: 100%;
+  }
+
+  .product-image {
+    width: 40px;
+  }
+
+  .product-table th,
+  .product-table td {
+    font-size: 12px;
+    padding: 6px;
+  }
+
+  .category-title {
+    font-size: 16px;
+  }
+}
+
+.limit-selector-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.limit-label {
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  color: #333;
+  font-weight: bold;
+}
+
+.limit-select {
+  padding: 8px 12px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  background-color: #f8f8f8;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  color: #333;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.limit-select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+}
+
+.limit-select:hover {
+  border-color: #007bff;
+}

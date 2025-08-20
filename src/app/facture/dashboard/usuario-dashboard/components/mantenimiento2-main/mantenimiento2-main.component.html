@@ -1,0 +1,229 @@
+<app-nav-bars-mantenimientos></app-nav-bars-mantenimientos>
+<div class="form-container">
+  <h2 style="color: aliceblue;">Generar Código</h2>
+
+  <div class="form-row">
+    <!-- Select de Género -->
+    <select [ngModel]="selecteGenero()" name="genero" (ngModelChange)="selecteGenero.set($event)">
+      <option value="">Género</option>
+      <option *ngFor="let g of generos" [value]="g.nombre">{{ g.nombre }}</option>
+    </select>
+
+    <!-- Select de Marca -->
+    <select [ngModel]="selecteMarca()" name="marca" (ngModelChange)="selecteMarca.set($event)">
+      <option value="">Marca</option>
+      <option *ngFor="let m of marcas()" [value]="m.nombre">{{ m.nombre }}</option>
+    </select>
+
+    <!-- Input de Empresa -->
+    <input type="text" placeholder="Cod_Empresa" [ngModel]="selecteEmpresa()" name="empresa"
+      (ngModelChange)="selecteEmpresa.set($event)" />
+
+    <!-- Input de Precio -->
+    <div style="display: flex; align-items: center;">
+      <h5 style="margin-right: 5px;">S/</h5>
+      <input type="number" placeholder="Precio" [ngModel]="selectePrecio()" name="precio"
+        (ngModelChange)="selectePrecio.set($event)" min="0" step="0.01" />
+    </div>
+
+    <!-- Select de Tipo -->
+    <select [ngModel]="selecteTipo()" name="tipo" (ngModelChange)="selecteTipo.set($event)">
+      <option value="">Tipo</option>
+      <option *ngFor="let t of tiposFiltrados()" [value]="t">{{ t }}</option>
+    </select>
+
+    <!-- Input de Archivo -->
+    <input type="file" (change)="onFileSelected($event)" accept="image/*" />
+
+    <!-- Botón Generar -->
+    <button class="btn-success" (click)="generateCodToday()" [disabled]="!isFormValid() || isLoading()">
+      {{ isLoading() ? 'Generando...' : 'Generar Código' }}
+    </button>
+
+  </div>
+
+  <!-- Mensaje -->
+  <p class="mensaje" [style.color]="mensaje().includes('Error') ? 'red' : 'white'">
+    {{ mensaje() }}
+  </p>
+</div>
+
+<div class="list-container">
+  <!-- Controles de fecha y acciones -->
+  <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 20px;">
+    <label for="fecha">Selecciona una fecha:</label>
+    <input type="date" id="fecha" [(ngModel)]="fechaSeleccionada" (change)="cargarSlipperPorFecha()" />
+    <p style="margin: 0;">Total de códigos generados: {{ slippers().length }}</p>
+    <p style="margin: 0;">Total de QR Generar: {{ sumaTotalCantidad }}</p>
+    <button class="btn btn-primary" (click)="generateQR()" [disabled]="sumaTotalCantidad > 800">Generar QR</button>
+    <button routerLink="/personalizar-qr" class="btn btn-secondary" [class.shake]="sumaTotalCantidad > 800">Personalizar
+      QR</button>
+  </div>
+
+
+  <!-- Tabla de resultados -->
+  <table *ngIf="slippers().length > 0" class="slipper-table">
+    <thead>
+      <tr>
+        <th>Imagen</th>
+        <th>Marca</th>
+        <th>Tipo</th>
+        <th>Código</th>
+        <th>Empresa</th>
+        <th>Cantidad</th>
+        <th>Género</th>
+        <th>Precio</th>
+        <th>Fecha Registro</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let slipper of slippers()">
+        <!-- Imagen -->
+        <td>
+          <img [src]="slipper.urlImg" (click)="seleccionarImagenParaActualizar(slipper)"
+            style="width: 100px; cursor: pointer;" [id]="'slipper-' + slipper.codToday" />
+          <input type="file" #fileInput (change)="ActualizarImagen($event)" hidden />
+        </td>
+
+        <!-- Marca -->
+        <td>{{ slipper.brand }}</td>
+
+        <!-- Tipo -->
+        <td>{{ slipper.type }}</td>
+
+        <!-- Código -->
+        <td [appCopiarTexto]="slipper.codToday" style="cursor: pointer; color: blue;" title="Click para copiar">
+          {{ slipper.codToday }}
+        </td>
+
+        <!-- Empresa -->
+        <td [appCopiarTexto]="slipper.company" style="cursor: pointer; color: blue;" title="Click para copiar">
+          {{ slipper.company }}
+        </td>
+
+        <!-- Cantidad -->
+        <td>{{ slipper.amount }}</td>
+
+        <!-- Género -->
+        <td>{{ slipper.genero }}</td>
+
+        <!-- Precio -->
+        <td>
+          <span (click)="abrirModalPrecio(slipper)" style="cursor: pointer; color: blue;">
+            S/ {{ slipper.price }}
+          </span>
+        </td>
+
+        <!-- Fecha de Registro -->
+        <td>{{ slipper.registrationDate | customDateFormat }}</td>
+
+
+
+
+        <!-- Acciones -->
+        <td>
+          <div class="contenedor-botones">
+            <button class="boton-eliminar" (click)="deleteSlipper(slipper.codToday)">
+              Eliminar
+            </button>
+            <!-- Ver detalles -->
+            <button class="boton-ver-detalles" (click)="abrirModal(slipper)">
+              Ver detalles
+            </button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+
+
+  </table>
+
+  <!-- Mensaje cuando no hay datos -->
+  <p *ngIf="slippers().length === 0" class="empty-message">
+    No hay zapatillas registradas para esta fecha.
+  </p>
+
+  <!-- Paginación -->
+
+  <mat-paginator [length]="totalElements" [pageSize]="pageSize" [pageIndex]="currentPage"
+    [pageSizeOptions]="[5, 25, 50, 100]" (page)="onPageChange($event)" aria-label="Seleccionar página">
+  </mat-paginator>
+
+</div>
+<div *ngIf="modalPrecioVisible()" class="precio-modal-fondo">
+  <div class="precio-modal-caja">
+    <h3>Actualizar precio</h3>
+    <p>Código: {{ slipperSeleccionado()?.codToday }}</p>
+    <input type="number" [(ngModel)]="nuevoPrecio" />
+    <br>
+    <button class="btnactus-price" (click)="confirmarActualizarPrecio()">Actualizar</button><br>
+    <button class="btnactus-cancel" (click)="cerrarModalPrecio()">Cancelar</button>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-backdrop" *ngIf="slipperSeleccionado() && !modalPrecioVisible()">
+  <div class="modal-content">
+    <!-- Datos principales -->
+    <div class="slipper-info">
+      <img [src]="slipperSeleccionado()?.urlImg" alt="Imagen" class="slipper-img" />
+      <div>
+        <h3>{{ slipperSeleccionado()?.producto }}</h3>
+        <p><strong>Código:</strong> {{ slipperSeleccionado()?.codToday }}</p>
+        <p><strong>Historial agregado:</strong> {{ getTotalAgregado() }}</p>
+      </div>
+    </div>
+
+    <!-- Caso CALZADO -->
+    <div *ngIf="slipperSeleccionado()?.producto === 'CALZADO'">
+      <div class="sizes-grid-calzado">
+        <div class="size-card" *ngFor="let key of obtenerKeysCalzado(slipperSeleccionado()?.sizes || {})">
+          <span class="size-label">
+            {{ key | sizeFormat }}
+            <span *ngIf="slipperSeleccionado()!.sizes[key] > 0" class="cantidad-stock">
+              ({{ slipperSeleccionado()!.sizes[key] }})
+            </span>
+          </span>
+          <div class="size-controls">
+            <button class="btn-minus" (click)="decrementSize(key)">-</button>
+            <input type="number" [(ngModel)]="sizeAdjustments[key]" />
+            <button class="btn-plus" (click)="incrementSize(key)">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Caso ROPA -->
+    <div *ngIf="slipperSeleccionado()?.producto === 'ROPA'">
+      <div class="sizes-grid-ropa">
+        <div class="size-card" *ngFor="let key of obtenerKeysRopa(slipperSeleccionado()?.sizes || {})">
+          <span class="size-label">{{ key | sizeFormat }}<span *ngIf="slipperSeleccionado()!.sizes[key] > 0" class="cantidad-stock">
+            ({{ slipperSeleccionado()!.sizes[key] }})
+          </span></span>
+          <div class="size-controls">
+            <button class="btn-minus" (click)="decrementSize(key)">-</button>
+            <input type="number" [(ngModel)]="sizeAdjustments[key]" />
+            <button class="btn-plus" (click)="incrementSize(key)">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="slipperSeleccionado()?.producto === 'UNICO'" class="aumento-unico">
+      <input type="number" [(ngModel)]="cantidadUnico" min="1" placeholder="Cantidad a aumentar" />
+    </div>
+    <div class="botones-container">
+
+      <button *ngIf="slipperSeleccionado()?.producto === 'CALZADO' || slipperSeleccionado()?.producto === 'ROPA'"
+        class="boton aumentar" (click)="guardarAumentos()">
+        Aumentar tallas
+      </button>
+      <button *ngIf="slipperSeleccionado()?.producto === 'UNICO'" class="boton aumentar" (click)="guardarAumentoUnico()">
+        Aumentar cantidad
+      </button>
+
+      <button class="boton cerrar" (click)="cerrarModal()">Cerrar</button>
+    </div>
+  </div>
+</div>

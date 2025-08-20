@@ -1,0 +1,60 @@
+<div class="main-notification-container">
+
+    <div class="notification-container">
+        <header class="dashboard-header">
+
+            <app-boton-sesion-tiempo></app-boton-sesion-tiempo>
+        </header>
+        <h2>Lista de Notificaciones</h2>
+        <div class="filter-container">
+            <input type="text" [(ngModel)]="filterText" placeholder="Filtrar notificaciones..."
+                (input)="onFilterChange()">
+        </div>
+        <ng-container *ngIf="filteredNotifications$ | async as filteredNotifications; else loading">
+            <div *ngIf="filteredNotifications.content.length === 0" class="no-notifications">
+                No hay notificaciones disponibles.
+            </div>
+            <div *ngIf="filteredNotifications.content.length > 0">
+                <table class="notification-table">
+                    <thead>
+                        <tr>
+                            <th>Descripción</th>
+                            <th>Fecha</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let notification of filteredNotifications.content; trackBy: trackById"
+                            class="notification-row" [class.expanded]="notification.expanded"
+                            (click)="toggleDescription(notification)">
+                            <td>
+                                <div class="notification-description">
+                                    <mat-icon>{{ notification.expanded ? 'expand_less' : 'expand_more' }}</mat-icon>
+                                    <span
+                                        [innerHTML]="transformDescription(notification.descripcion | slice:0:50) | highlight:filterText"></span>
+                                    <span *ngIf="notification.descripcion.length > 50">...</span>
+                                </div>
+                                <div *ngIf="notification.expanded" class="notification-full-description">
+                                    <span
+                                        [innerHTML]="transformDescription(notification.descripcion) | highlight:filterText"></span>
+                                </div>
+                            </td>
+
+                            <td class="notification-date">
+                                {{ notification.registrationNotificaciones! | customDateFormat }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <mat-paginator [length]="filteredNotifications.totalElements" [pageSize]="pageSize"
+                    [pageIndex]="currentPage" (page)="onPageChange($event)" class="notification-paginator"
+                    [pageSizeOptions]="[5, 10, 20, 50, 100]">
+                </mat-paginator>
+            </div>
+        </ng-container>
+        <ng-template #loading>
+            <div class="loading-spinner">
+                Cargando...
+            </div>
+        </ng-template>
+    </div>
+</div>

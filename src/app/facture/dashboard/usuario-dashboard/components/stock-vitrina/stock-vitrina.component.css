@@ -1,0 +1,68 @@
+/* Centra horizontal y verticalmente el contenido de todas las celdas */
+.centered-header,
+.centered-cell {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+/* Estilos para la imagen normal */
+.product-image {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+/* Estilos para la imagen agrandada */
+.product-image.enlarged {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 90vw;
+  max-height: 90vh;
+  width: auto;
+  height: auto;
+  z-index: 1000;
+  cursor: default;
+}
+
+/* Overlay para el fondo oscuro */
+.image-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  z-index: 999;
+  display: none;
+}
+
+.image-overlay.active {
+  display: block;
+}
+
+/* Botón de cerrar */
+.close-button {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1001;
+  background: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.close-button:hover {
+  background: #f1f1f1;
+}

@@ -1,0 +1,112 @@
+<app-nav-bars-ventas></app-nav-bars-ventas>
+<div class="ticket-search-container">
+  <h2>Buscar Tickets</h2>
+
+  <!-- Selector de tipo de búsqueda -->
+  <div class="search-type-selector">
+    <label>
+      <input type="radio" [(ngModel)]="searchType" value="dni" (change)="dni='';ticket='';errorMessage=''">
+      Por DNI
+    </label>
+    <label style="margin-left: 20px;">
+      <input type="radio" [(ngModel)]="searchType" value="ticket" (change)="dni='';ticket='';errorMessage=''">
+      Por Ticket
+    </label>
+  </div>
+
+  <form (ngSubmit)="searchTickets()" class="search-form">
+    <!-- Input para DNI -->
+    <input
+      *ngIf="searchType === 'dni'"
+      type="text"
+      [(ngModel)]="dni"
+      name="dni"
+      required
+      maxlength="20"
+      class="search-input"
+      placeholder="Ingrese DNI"
+      (keyup.enter)="searchTickets()"
+      autofocus
+    />
+
+    <!-- Input para Ticket -->
+    <input
+      *ngIf="searchType === 'ticket'"
+      type="text"
+      [(ngModel)]="ticket"
+      name="ticket"
+      required
+      maxlength="20"
+      class="search-input"
+      placeholder="Ingrese número de ticket"
+      (keyup.enter)="searchTickets()"
+      autofocus
+    />
+
+    <button type="submit" class="search-btn">Buscar</button>
+  </form>
+
+  <!-- Mensaje de error -->
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Resultados -->
+  <div *ngIf="showResults && tickets.length > 0" class="floating-box">
+    <button (click)="closeResults()" class="close-button">×</button>
+    <h3>Resultados de la Búsqueda</h3>
+    <p class="total-results">Total de resultados: {{ totalResults }}</p>
+
+    <div *ngFor="let ticket of tickets" class="ticket">
+      <h4 [appCopiarTexto]="ticket.nro_ticket">Ticket #{{ ticket.nro_ticket }}</h4>
+      <p [appCopiarTexto]="ticket.dni"><strong>DNI: </strong>{{ ticket.dni}}</p>
+      <p><strong>Fecha Vendida:</strong> {{ ticket.registrationTicket | date:'medium' }}</p>
+      <p><strong>Total a pagar:</strong> S/ {{ ticket.totalPagar | number:'1.2-2' }}</p>
+      <p><strong>Estado: </strong>
+        <span [ngClass]="{'badge-eliminado': ticket.state === 'ELIMINADO'}">
+          {{ ticket.state }}
+        </span>
+      </p>
+
+      <h5>Detalles:</h5>
+      <div class="details-table-container">
+        <table class="details-table">
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Empresa</th>
+              <th>Cantidad</th>
+              <th>Tipo</th>
+              <th>Talla</th>
+              <th>Género</th>
+              <th>Pago</th>
+              <th>Especificación</th>
+              <th>Precio</th>
+              <th>Subtotal</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let detail of ticket.detail">
+              <td [appCopiarTexto]="detail.codToday">{{ detail.codToday }}</td>
+              <td [appCopiarTexto]="detail.company">{{ detail.company }}</td>
+              <td>{{ detail.amount }}</td>
+              <td>{{ detail.type }}</td>
+              <td>{{ detail.size | sizeFormat}}</td>
+              <td>{{ detail.genero }}</td>
+              <td>{{ detail.payType | payTypeTranslate}}</td>
+              <td>{{ detail.especificacion }}</td>
+              <td>S/ {{ detail.price | number:'1.2-2' }}</td>
+              <td>S/ {{ detail.sub_total | number:'1.2-2' }}</td>
+              <td>
+                <span [ngClass]="{'badge-eliminado': detail.state === 'ELIMINADO'}">
+                  {{ detail.state }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

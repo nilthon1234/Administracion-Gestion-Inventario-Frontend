@@ -1,0 +1,156 @@
+
+<div class="container">
+  <h2 style="text-align: center;">Regla</h2>
+  <div class="input-group">
+    <input type="number" [(ngModel)]="inputValue" class="form-control" />
+    <button (click)="updateRule()" class="btn btn-primary">Actualizar</button>
+  </div>
+
+  <p><strong>Valor actual:</strong> S/{{ gananciaMinimaDescarte }}.00 nuevos soles</p>
+</div>
+
+
+
+<div class="clients-container">
+  <!-- Filtros -->
+  <div class="filters-container">
+    <div class="filter-group">
+      <label for="dniFilter">Filtrar por DNI:</label>
+      <input type="text" id="dniFilter" [(ngModel)]="dniFilter" (input)="applyFilters()" placeholder="Ingrese DNI...">
+    </div>
+
+    <div class="filter-group">
+      <label for="idFilter">Filtrar por Id:</label>
+      <input type="text" id="idFilter" [(ngModel)]="idFilter" (input)="applyFilters()" placeholder="Ingrese ID...">
+    </div>
+
+    <button class="clear-btn" (click)="clearFilters()">Limpiar filtros</button>
+    <button routerLink="/register-separation" class="new-separation-btn">Nueva Separación</button>
+  </div>
+
+  <!-- Lista de clientes filtrados -->
+  <div class="client-card" *ngFor="let client of filteredClients()">
+    <div class="client-header" (click)="toggleDetails(client.id!)">
+      <div class="client-info">
+        <strong>{{ client.name }} {{ client.lastName }}</strong>
+        <p>DNI: {{ client.dni }}</p>
+        <p>ID: {{ client.id }}</p>
+        <p>Total: S/{{ client.total }}.00</p>
+        <p>Faltante: S/{{ client.faltante }}.00</p>
+        <span class="status" [class]="client.separationType.toLowerCase()">
+          {{ client.separationType }}
+        </span>
+      </div>
+      <div class="header-actions">
+        <button class="pdf-btn"
+          (click)="generatePdf(client.id!, client.name, client.lastName); $event.stopPropagation()">
+          PDF
+        </button>
+        <div class="arrow">
+          {{ isExpanded(client.id!) ? '▼' : '▶' }}
+        </div>
+      </div>
+    </div>
+
+    <div class="client-details" *ngIf="isExpanded(client.id!)">
+      <h4>Separaciones</h4>
+      <table class="details-table">
+        <thead>
+          <tr>
+            <th>Id</th>
+            <th>Código Today</th>
+            <th>Repositorio</th>
+            <th>Tipo</th>
+            <th>Genero</th>
+            <th>Talla</th>
+            <th>Cantidad</th>
+            <th>Precio</th>
+            <th>Subtotal</th>
+            <th *ngIf="client.separationType === 'NUEVO' || client.separationType === 'AMORTIZANDOCE'">Accion</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let sep of client.separations">
+            <td>{{sep.id}}</td>
+            <td [appCopiarTexto]="sep.codToday">{{ sep.codToday }}</td>
+            <td>{{sep.repositoryType}}</td>
+            <td>{{sep.type}}</td>
+            <td>{{sep.genero}}</td>
+            <td>{{ sep.size | sizeFormat}}</td>
+            <td>{{ sep.amount }}</td>
+            <td>S/{{ sep.price }}.00</td>
+            <td>S/{{ sep.subTotal }}.00</td>
+            <td *ngIf="client.separationType === 'NUEVO' || client.separationType === 'AMORTIZANDOCE'">
+              <div class="botones-container">
+                <button 
+                class="btn btn-primary boton-igual"
+                  (click)="openUpdateModal(sep)"
+                  *ngIf="client.separationType === 'NUEVO' || client.separationType === 'AMORTIZANDOCE'">Actualizar
+                </button>
+                <button class="btn btn-danger boton-igual" (click)="openDiscardModal(sep)">Descartar</button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h4>Amortizaciones</h4>
+      <table class="details-table">
+        <thead>
+          <tr>
+            <th>Monto</th>
+            <th>Método</th>
+            <th>Fecha</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let amo of client.amortizations">
+            <td>S/{{ amo.account }}.00</td>
+            <td>{{ amo.pay | payTypeTranslate}}</td>
+            <td>{{ amo.registrationAmortization! | customDateFormat }}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="total-amortization">
+        Total Amortizado: <strong>S/{{ client.totalAmortizations }}.00 Nuevos soles</strong>
+        <button class="amortization-btn" (click)="navigateToAmortization(client)">Amortizar</button>
+      </div>
+    </div>
+  </div>
+  <!-- main-client-separation-amortization.component.html -->
+<div *ngIf="showDiscardModal()" class="modal-overlay">
+  <div class="modal-content">
+    <h3>¿Estás seguro de descartar la separación?</h3>
+    <p>
+      <strong>ID:</strong> {{ discardData()?.id }}<br>
+      <strong>Código Tienda:</strong> {{ discardData()?.codToday }}<br>
+      <strong>Precio:</strong> S/ {{ discardData()?.price }}.00
+    </p>
+    <div *ngIf="discardMessage()" [ngClass]="{'success-msg': discardType() === 'success', 'error-msg': discardType() === 'error'}">
+      {{ discardMessage() }}
+    </div>
+    <div class="modal-actions" *ngIf="!discardType()">
+      <button class="btn btn-danger" (click)="confirmDiscard()">Confirmar Descarte</button>
+      <button class="btn btn-secondary" (click)="closeDiscardModal()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+  <app-update-separation-modal
+   *ngIf="modalOpen" 
+   [data]="selectedSeparation" 
+   (cancel)="closeModal()"
+  (accept)="updateSeparation($event)">
+
+</app-update-separation-modal>
+</div>
+
+<!-- Paginación -->
+    <mat-paginator [length]="totalElements"
+                  [pageSize]="pageSize"
+                  [pageIndex]="currentPage"
+                  [pageSizeOptions]="[2, 10, 20, 50, 100]"
+                  (page)="onPageChange($event)"
+                  aria-label="Seleccionar página">
+    </mat-paginator>

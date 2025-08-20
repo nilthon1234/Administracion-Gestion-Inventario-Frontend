@@ -1,0 +1,147 @@
+.vitrina-container {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: #f5f6fa;
+  min-height: 100vh;
+  padding: 2rem;
+}
+
+.filtros {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  background: #fff;
+  padding: 1.5rem 2rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(60,60,60,0.06);
+  margin-bottom: 2rem;
+}
+
+.filtros select,
+.filtros input {
+  padding: 0.5rem 1rem;
+  border: 1px solid #dcdde1;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+.filtros select:focus,
+.filtros input:focus {
+  border-color: #4078c0;
+  outline: none;
+}
+
+.btn-limpiar {
+  background: #4078c0;
+  color: #fff;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+.btn-limpiar:hover {
+  background: #285185;
+}
+
+.productos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.5rem;
+}
+
+.producto-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(60,60,60,0.07);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem 1rem;
+  transition: box-shadow 0.2s;
+}
+.producto-card:hover {
+  box-shadow: 0 4px 16px rgba(60,60,60,0.12);
+}
+
+.producto-img img {
+  width: 90px;
+  height: 90px;
+  object-fit: contain;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  background: #f0f0f0;
+}
+
+.producto-info h4 {
+  margin: 0 0 0.5rem 0;
+  color: #4078c0;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+.producto-info p {
+  margin: 0.2rem 0;
+  color: #444;
+  font-size: 1rem;
+}
+/*Paginasion*/
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.pagination-controls button {
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+
+.pagination-controls button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+/*Imgen Agrandar*/
+
+
+.image-modal {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.image-modal-content {
+  position: relative;
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 90vw;
+  max-height: 90vh;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+}
+
+.modal-image {
+  max-width: 80vw;
+  max-height: 80vh;
+  display: block;
+  margin: 0 auto;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px; right: 15px;
+  font-size: 2rem;
+  font-weight: bold;
+  color: #333;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.close-btn:hover {
+  color: #c00;
+}

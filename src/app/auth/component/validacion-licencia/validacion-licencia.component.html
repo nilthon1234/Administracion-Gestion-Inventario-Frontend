@@ -1,0 +1,7 @@
+<div class="container">
+  <h2>Validación de Licencia</h2>
+  <input [(ngModel)]="licencia" placeholder="Ingresa la licencia" />
+  <button (click)="validar()">Validar</button>
+  <p *ngIf="mensaje">{{ mensaje }}</p>
+</div>
+

@@ -1,0 +1,260 @@
+<app-nav-bars-ventas></app-nav-bars-ventas><br>
+<div style="padding: 0;">
+  <div style="margin-bottom: 10px;">
+    <label for="fecha">Seleccionar fecha:</label>
+    <input id="fecha" type="date" [(ngModel)]="fechaSeleccionada" (change)="cargarResumen()" />
+  </div>
+  <!--
+  <div class="panel-dia-mes-año">
+    <div class="cuadro cuadroDia">
+      <h3 style="margin: 0; text-align: center;">Saldo del día</h3>
+      <p style="margin: 5px 0 0 0; text-align: center; font-size: 20px;">S/. {{ resumen.resumen.dia | number: '1.2-2' }}
+      </p>
+    </div>
+
+    <div class="cuadro cuadroSemana">
+      <h3 style="margin: 0; text-align: center;">Saldo de semana</h3>
+      <p style="margin:  5px 0 0 0; text-align: center; font-size: 20px;">S/. {{ resumen.resumen.semana | number:
+        '1.2-2' }}</p>
+    </div>
+
+    <div class="cuadro cuadroMes">
+      <h3 style="margin: 0; text-align: center;">Saldo del mes</h3>
+      <p style="margin: 5px 0 0 0;text-align: center;font-size: 20px;">S/. {{ resumen.resumen.mes | number: '1.2-2' }}
+      </p>
+    </div>
+  </div>
+  <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; margin-bottom: 15px;">
+    <div *ngIf="metodosPago['Cash']" class="metodo Cash" style="background-color: #4caf50;">
+      <h3 style="margin: 0; text-align: center;">Efectivo</h3>
+      <p style="margin: 5px 0 0 0; text-align: center; font-size: 18px;">s/.{{metodosPago['Cash'] | number: '1.2-2'}}
+      </p>
+    </div>
+    <div *ngIf="metodosPago['Card']" class="metodo Card" style="background-color: #2196f3;">
+      <h3 style="margin: 0; text-align: center;">Tarjeta</h3>
+      <p style="margin: 5px 0 0 0;text-align: center; font-size: 18px;">s/.{{metodosPago['Card'] | number: '1.2-2'}}</p>
+    </div>
+    <div *ngIf="metodosPago['Yape']" class="metodo Yape" style="background-color: #673ab7;">
+      <h3 style="margin: 0; text-align: center; color: #f0f0f0;">Yape</h3>
+      <p style="margin: 5px 0 0 0; text-align: center; font-size: 18px; color: #f0f0f0;">s/.{{metodosPago['Yape']|
+        number: '1.2-2'}}</p>
+    </div>
+    <div *ngIf="metodosPago['PLim']" class="metodo Plim" style="background-color: #8cf54b;">
+      <h3 style="margin: 0; text-align: center;">Plim</h3>
+      <p style="margin: 5px 0 0 0; text-align: center; font-size: 18px;">s/.{{metodosPago['PLim']| number: '1.2-2'}}</p>
+    </div>
+    <div *ngIf="metodosPago['Debito']" class="metodo Debito" style="background-color: #c2f140;">
+      <h3 style="margin: 0; text-align: center;">Debito</h3>
+      <p style="margin: 5px 0 0 0; text-align: center; font-size: 18px;">s/.{{metodosPago['Debito']| number: '1.2-2'}}</p>
+    </div>
+    <div *ngIf="metodosPago['Otros']" class="metodo Card" style="background-color: #21e2f3af;">
+      <h3 style="margin: 0; text-align: center;">Otro</h3>
+      <p style="margin: 5px 0 0 0;text-align: center; font-size: 18px;">s/.{{metodosPago['Otros'] | number:
+        '1.2-2'}}</p>
+    </div>
+  </div> -->
+  <!-- Sección de ventas y tickets -->
+  <div style="margin-top: 20px; display: flex; justify-content: space-between; align-items: center;">
+    <!-- Botón Nueva Venta -->
+    <button style="background-color: #ffeb3b; border: none; color: black; padding: 10px 20px; font-weight: bold;"
+      routerLink="/main-scanner">
+      Nueva Venta
+    </button>
+    <div>
+      <h6>Para Contador:</h6>
+      <button style="background-color: #2196F3; border: none; color: black; padding: 10px 20px; font-weight: bold;"
+        (click)="generarReportePDF()">
+        Generar PDF del Mes
+      </button>
+    </div>
+
+    <div *ngIf="hasUnspecified"
+      style="margin-left: 10px; padding: 8px 12px; background-color: #f70505; border-radius: 4px; border: 1px solid #f70505;"
+      class="alert">
+      ⚠️ ¡Hay detalles pendientes!
+    </div>
+
+    <!--<div *ngIf="hasAnyUnspecifiedTicket()"
+      style="margin-left: 10px; padding: 8px 12px; background-color: #fff3cd; border-radius: 4px; border: 1px solid #ffecb5;">
+      ⚠️ <strong>Atención:</strong> Hay productos pendientes de especificar en algunos tickets.
+    </div>-->
+    <tr *ngFor="let item of selectedTicket?.detail">
+      <span *ngIf="item.discount === 'Si'" style="color: chartreuse;">¡Atención! Se a visualizado deatlles sin
+        descontar</span>
+      <span *ngIf="item.increase === 'Si'" style="color: chartreuse;">¡Atención! Se a visualizado deatlles con
+        Aumento</span>
+    </tr>
+
+  </div>
+  <!-- Campo de búsqueda y botón en una fila -->
+  <div style="margin-top: 20px; display: flex; align-items: center; gap: 10px; width: 100%;">
+    <!-- Campo de búsqueda con icono -->
+    <div style="position: relative; flex-grow: 1;">
+      <div style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%);">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+          <path
+            d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+        </svg>
+      </div>
+      <input placeholder="buscar por Dni cliente"
+        style="width: 100%; padding: 12px 12px 12px 36px; border: 1px solid #ccc; border-radius: 4px;"
+        [(ngModel)]="searchDni" />
+    </div>
+
+    <!-- Botón Buscar -->
+    <button
+      style="background-color: #013370; color: white; border: none; padding: 12px 30px; border-radius: 4px; font-weight: bold;"
+      (click)="buscarPorDni()">
+      Buscar
+    </button>
+  </div>
+
+  <!-- Sección de ventas y tickets -->
+  <div style="margin-top: 30px;">
+
+    <!-- Tabla de tickets -->
+    <div style="margin-top: 20px; overflow-x: auto;">
+      <table style="width: 100%; border-collapse: collapse; background-color: white;">
+        <thead>
+          <tr style="border-bottom: 1px solid #e0e0e0;">
+            <th style="padding: 12px 15px; text-align: center;">✔</th>
+            <th style="padding: 12px 15px; text-align: center;">Ticket #</th>
+            <th style="padding: 12px 15px; text-align: center;">DNI</th>
+            <th style="padding: 12px 15px; text-align: center;">Contador</th>
+            <th style="padding: 12px 15px; text-align: center;">Fecha Vendida</th>
+            <th style="padding: 12px 15px; text-align: center;">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let ticket of tickets" style="border-bottom: 1px solid #f0f0f0;">
+            <td style="text-align: center; padding: 12px 15px;"><input type="checkbox" /></td>
+            <td style="padding: 12px 15px;text-align: center;">{{ ticket.nro_ticket }}</td>
+            <td style="padding: 12px 15px;text-align: center;">{{ ticket.dni }}</td>
+            <td style="text-align: center; padding: 8px;">
+              <span class="status-badge" [ngStyle]="{
+          backgroundColor: getColorByContador(ticket.contador!),
+          color: 'white'
+        }" (click)="toggleContador(ticket)" style="cursor: pointer; user-select: none;"
+                title="Click para cambiar estado">
+                {{ ticket.contador }}
+              </span>
+            </td>
+            <td style="padding: 12px 15px;text-align: center;">{{ ticket.registrationTicket! | customDateFormat }}</td>
+
+            <td style="padding: 12px 15px; text-align: center;">
+              <button class="pdf-btn"
+                (click)="generatePdf(ticket.nro_ticket, ticket.dni)">pdf</button>
+              <button
+                style="background-color: #2196f3; color: white; border: none; padding: 6px 12px; cursor: pointer; border-radius: 4px;"
+                (click)="mostrarDetalles(ticket)">
+                Detalles
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="tickets.length === 0">
+            <td colspan="6" style="text-align: center; padding: 20px;">No hay tickets disponibles para esta fecha</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para mostrar detalles del ticket -->
+<div *ngIf="showModel" class="mostarCuadro">
+  <div class="mostrarDetails">
+    <div class="subTitle-nro_Ticket-X">
+      <h2 style="margin: 0;">Detalles del Ticket #{{ selectedTicket?.nro_ticket }}</h2>
+      <button style="background: none; border: none; font-size: 20px; cursor: pointer;"
+        (click)="cerrarModal()">✖</button>
+    </div>
+
+    <div style="margin-bottom: 15px;">
+      <p><strong>DNI Cliente:</strong> {{ selectedTicket?.dni }}</p>
+    </div>
+
+    <h3>Producto</h3>
+    <table style="width: 100%; border-collapse: collapse;">
+      <thead style="background-color: #f1efef;">
+        <tr>
+          <th style="padding: 8px; text-align: center; border-bottom: 1px solid #ddd;">Id</th>
+          <th style="padding: 8px; text-align: center; border-bottom: 1px solid #ddd;">Código</th>
+          <th style="padding: 8px; text-align: center; border-bottom: 1px solid #ddd;">Empresa</th>
+          <th style="padding: 8px; text-align: center; border-bottom: 1px solid #ddd;">Tipo</th>
+          <th style="padding: 8px; text-align: center; border-bottom: 1px solid #ddd;">Talla</th>
+          <th style="padding: 8px; text-align: center; border-bottom: 1px solid #ddd;">Genero</th>
+          <th style="padding: 8px; text-align: centert; border-bottom: 1px solid #ddd;">Cantidad</th>
+          <th style="padding: 20px; text-align: centert; border-bottom: 1px solid #ddd;">Precio</th>
+          <th style="padding: 22px; text-align: centert; border-bottom: 1px solid #ddd;">Subtotal</th>
+          <th style="padding: 8px; text-align: center; border-bottom: 1px solid #ddd;">Tipo Pago</th>
+          <th style="padding: 8px; text-align: center; border-bottom: 1px solid #ddd;">Accion</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of selectedTicket?.detail">
+          <td style="padding: 8px; text-align: center; border-bottom: 1px solid #ddd;">{{ item.id }}</td>
+          <td [appCopiarTexto]="item.codToday" style="padding: 8px; text-align: center; border-bottom: 1px solid #ddd;">
+            {{ item.codToday }}</td>
+          <td [appCopiarTexto]="item.company" style="padding: 8px; text-align: center; border-bottom: 1px solid #ddd;">
+            {{ item.company }}</td>
+          <td style="padding: 8px; text-align: center; border-bottom: 1px solid #ddd;">{{ item.type}}</td>
+          <td style="padding: 8px; text-align: center; border-bottom: 1px solid #ddd;">{{ item.size | sizeFormat}}</td>
+          <td style="padding: 8px; text-align: center; border-bottom: 1px solid #ddd;">{{item.genero}}</td>
+          <td style="padding: 8px; text-align: center; border-bottom: 1px solid #ddd;">{{ item.amount }}</td> 
+          <td style="padding: 4px; text-align: center; border-bottom: 1px solid #ddd;">S/. {{ item.price | number:
+            '1.2-2' }}</td>
+          <td style="padding: 8px; text-align: center; border-bottom: 1px solid #ddd;">S/. {{ item.sub_total | number:
+            '1.2-2' }}</td>
+          <td style="padding: 8px; text-align: center; border-bottom: 1px solid #ddd;">{{ item.payType |
+            payTypeTranslate}}</td>
+          <td>
+            <div class="botones-container">
+              <button class="btn btn-primary boton-igual" *ngIf="debeMostrarActualizar(item)" (click)="irActualizar(
+        selectedTicket!.nro_ticket,
+        item.codToday, item.company,
+        item.type, item.genero!,
+        item.size, item.price, 
+        item.payType, item.amount,
+        item.producto)">
+                Actualizar
+              </button>
+              <button (click)="abrirDialogoDevolucion(item)" *ngIf="debeMostrarActualizar(item)"
+                class="btn btn-danger boton-igual">
+                Devolución
+              </button>
+            </div>
+          </td>
+
+          <button *ngIf="item.discount === 'Si'" class="btn btn-success btn-animado btn-pequeno"
+            (click)="abrirModelTipoPago(selectedTicket?.nro_ticket,item.codToday,item.id)">
+            Especificar Descuento
+          </button>
+
+          <button *ngIf="item.increase === 'Si'" class="btn btn-success btn-animado btn-pequeno"
+            (click)="abrirModelTipoPago(selectedTicket?.nro_ticket,item.codToday,item.id)">
+            Especificar Aumento
+          </button>
+
+
+        </tr>
+
+        <app-devolucion-dialog *ngIf="showDialog" [idProducto]="idProducSel" [monto]="montosel"
+          (onClose)="cerrarDialogoDevolucio($event)"></app-devolucion-dialog>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="4" style="text-align: right; padding: 8px; font-weight: bold;">Total:</td>
+          <td style="text-align: right; padding: 8px; font-weight: bold;">
+            S/. {{ getTotalTicket() | number: '1.2-2' }}
+          </td>
+          <td *ngIf="hasUnspecifiedDetailsInList()">
+            <button class="btn btn-success btn-animado" (click)="abrirEspecificarModal(selectedTicket?.nro_ticket)">
+              Especificar
+            </button>
+          </td>
+
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+</div>

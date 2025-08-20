@@ -1,0 +1,19 @@
+{
+  "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
+  "build": {
+    "distDir": "../dist/administracion-gestion-zapatillas-angular/browser"
+  },
+  "bundle": {
+    "active": true,
+    "resources": [
+      "binaries/**"  
+    ],
+    "targets": "msi",
+    "windows": {
+      "wix": {
+        "language": "es-ES",
+        "template": "wix.xml"  
+      }
+    }
+  }
+}

@@ -1,0 +1,53 @@
+<div class="vitrina-container">
+  <app-navbars-sidebar-vitrina></app-navbars-sidebar-vitrina>
+
+  <section class="filtros">
+    <select [(ngModel)]="filtros.brand" (change)="filtrarProductos()">
+      <option value="null">-- Todas las marcas --</option>
+      <option *ngFor="let marca of marcas" [value]="marca.nombre">{{ marca.nombre }}</option>
+    </select>
+
+    <input type="text" placeholder="Código (Tienda)" [(ngModel)]="filtros.codToday" (input)="filtrarProductos()">
+
+    <input type="text" placeholder="Empresa" [(ngModel)]="filtros.company" (input)="filtrarProductos()">
+
+    <button class="btn-limpiar" (click)="limpiarFiltros()">Limpiar</button>
+  </section>
+  <!-- Paginación -->
+  <mat-paginator [length]="totalElements" [pageSize]="pageSize" [pageIndex]="currentPage"
+    [pageSizeOptions]="[8, 16, 24, 50, 100]" (page)="onPageChange($event)" aria-label="Seleccionar página">
+  </mat-paginator>
+
+  <section class="productos">
+    <div *ngFor="let p of productosFiltrados" class="producto-card" [attr.data-codigo]="p.codToday">
+      <div class="producto-img">
+        <img (click)="openImageModal(p.urlImg)" [src]="p.urlImg" alt="Imagen {{p.brand}}" />
+      </div>
+      <div class="producto-info">
+        <h4>{{ p.brand }}</h4>
+        <p [appCopiarTexto]="p.codToday"><strong>Código:</strong> {{ p.codToday }}</p>
+        <p [appCopiarTexto]="p.company"><strong>Empresa:</strong> {{ p.company }}</p>
+        <p><strong>Tipo:</strong> {{ p.type }}</p>
+        <p><strong>Genero:</strong> {{ p.genero }}</p>
+        <p>Cantidad: {{ p.amount }}</p>
+
+        <button (click)="abrirModelCantidad(p)">
+          Aumentar O descontar
+        </button>
+
+
+      </div>
+    </div>
+  </section>
+</div>
+<!-- Paginación -->
+<mat-paginator [length]="totalElements" [pageSize]="pageSize" [pageIndex]="currentPage"
+  [pageSizeOptions]="[8, 16, 24, 50, 100]" (page)="onPageChange($event)" aria-label="Seleccionar página">
+</mat-paginator>
+
+<div *ngIf="selectedImagenUrl" class="image-modal">
+  <div class="image-modal-content">
+    <span class="close-btn" (click)="closeImageModal()">&times;</span>
+    <img [src]="selectedImagenUrl" class="modal-image">
+  </div>
+</div>

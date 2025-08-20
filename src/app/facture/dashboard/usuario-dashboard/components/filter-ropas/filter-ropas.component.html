@@ -1,0 +1,131 @@
+<app-navbars-sidebar-vitrina></app-navbars-sidebar-vitrina>
+<div class="container mt-5">
+    <h2 class="mb-4">Seccion de Ropas</h2>
+
+    <div class="filter-container">
+  <div class="filter-box codtoday-box">
+      <label for="codTodayFilter">Buscar Por Codigo De Tienda:</label>
+      <input type="text" id="codTodayFilter" [(ngModel)]="codTodayFilter" class="form-control"
+          (input)="onCodTodayInput()">
+  </div>
+
+  <div class="filter-box company-box">
+      <label for="companyFilter">Buscar Por Codigo De Empresa:</label>
+      <input type="text" id="companyFilter" [(ngModel)]="companyFilter" class="form-control"
+          (input)="onCompanyInput()">
+  </div>
+
+  <div class="filter-box size-box">
+      <label for="sizeFilter">Filtrar por Talla:</label>
+      <select id="sizeFilter" [(ngModel)]="sizeFilter" class="form-control" (change)="onSizeFilterChange()">
+          <option value="">Todas las tallas</option>
+          <option *ngFor="let size of sizeOptions" [value]="size">{{ size }}</option>
+      </select>
+  </div>
+   <button class="btn btn-secondary" (click)="clearFilters()">Limpiar Busqueda</button>
+</div>
+
+   
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Marca</th>
+                <th>Codigo</th>
+                <th>Cantidad</th>
+                <th>Image</th>
+                <th>Empresa</th>
+                <th>Precio</th>
+                <th>Tipo</th>
+                <th>Gender</th>
+                <th>Tallas</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let slipper of slippers">
+                <td>{{ slipper.id }}</td>
+                <td>{{ slipper.brand }}</td>
+                <td [appCopiarTexto]="slipper.codToday"  >{{ slipper.codToday }}</td>
+                <td >{{ slipper.amount }}</td>
+                <td>
+                    <img [src]="'http://localhost:80/image/'+slipper.image" alt="Slipper Image"
+                        style="width: 50px; height: 50px;"
+                        (click)="openImageModal('http://localhost:80/image/'+slipper.image)" class="thumbnail-image">
+                </td>
+                <td [appCopiarTexto]="slipper.company" >{{ slipper.company }}</td>
+                <td>{{ slipper.price }}</td>
+                <td>{{ slipper.type }}</td>
+                <td>{{ slipper.genero }}</td>
+                <td>
+                    <button class="btn btn-sm btn-info" (click)="openSizeModal(slipper)">Ver tallas</button>
+                </td>
+
+            </tr>
+        </tbody>
+    </table>
+
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            <li class="page-item" [class.disabled]="currentPage === 0">
+                <a class="page-link" href="#" aria-label="Previous" (click)="onPageChange(currentPage - 1, $event)">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <li class="page-item" *ngFor="let page of generatePageArray(paginatedResponse?.totalPages ?? 0)"
+                [class.active]="currentPage === page">
+                <a class="page-link" href="#" (click)="onPageChange(page, $event)">{{ page + 1 }}</a>
+            </li>
+            <li class="page-item" [class.disabled]="currentPage === (paginatedResponse?.totalPages ?? 1) - 1">
+                <a class="page-link" href="#" aria-label="Next" (click)="onPageChange(currentPage + 1, $event)">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    
+</div>
+
+
+<!-- Modal flotante -->
+<div class="modal-backdrop" *ngIf="selectedSlipper"></div>
+<div class="size-modal" *ngIf="selectedSlipper">
+    <h5>Modificar tallas de {{ selectedSlipper.brand }} ({{ selectedSlipper.codToday }})</h5>
+
+    <div class="mb-3">
+        <button class="btn btn-outline-success me-2" [disabled]="selectedAction === 'descontar'"
+            (click)="selectAction('aumentar')">Aumentar</button>
+        <button class="btn btn-outline-danger" [disabled]="selectedAction === 'aumentar'"
+            (click)="selectAction('descontar')">Descontar</button>
+    </div>
+
+    <div *ngFor="let size of sizeKeys" class="size-row">
+        <span style="color: chocolate;">(actual: {{ selectedSlipper.sizes[size]}}) {{ size | uppercase}}: </span>
+
+
+
+        <button class="btn btn-sm btn-secondary me-1" (click)="adjustSize(size, -1)"
+            [disabled]="updatePayload[size] === 0">-</button>
+
+        <span class="me-1">{{ updatePayload[size] }}</span>
+
+        <button class="btn btn-sm btn-primary" (click)="adjustSize(size, 1)">+</button>
+    </div>
+
+
+    <hr />
+    <p><strong>Total:</strong> {{ totalToUpdate }}</p>
+
+    <div class="d-flex justify-content-between mt-3">
+        <button class="btn btn-success" (click)="confirmUpdate()"
+            [disabled]="totalToUpdate === 0 || !selectedAction">Confirmar</button>
+        <button class="btn btn-secondary" (click)="closeSizeModal()">Cancelar</button>
+    </div>
+</div>
+<!-- Reemplaza los elementos del modal con esto -->
+<div class="image-modal-backdrop" *ngIf="selectedImage" (click)="closeImageModal()">
+  <div class="image-modal" (click)="$event.stopPropagation()">
+    <span class="close-btn" (click)="closeImageModal()">&times;</span>
+    <img [src]="selectedImage" alt="Imagen ampliada" class="zoomed-image">
+  </div>
+</div>

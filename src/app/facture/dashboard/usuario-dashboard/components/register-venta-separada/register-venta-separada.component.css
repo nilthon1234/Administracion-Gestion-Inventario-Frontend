@@ -1,0 +1,292 @@
+/* Estilos CSS para el componente de registro de ventas */
+.sale-registration-container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+}
+
+.sale-registration-card {
+  background: white;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.sale-registration-title {
+  color: #3498db;
+  margin-bottom: 2rem;
+  font-weight: 600;
+  font-size: 1.8rem;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 1rem;
+}
+
+.section-subtitle {
+  font-size: 1.2rem;
+  color: #3498db;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+.client-info-section {
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: #f5f5f5;
+  border-radius: 6px;
+}
+
+.client-details {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.detail-item {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.detail-label {
+  font-weight: 600;
+}
+
+.detail-value {
+  color: #4d4d4d;
+}
+
+.sale-form {
+  margin-bottom: 3rem;
+  padding: 1.5rem;
+  background: #f5f5f5;
+  border-radius: 6px;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #4d4d4d;
+}
+
+.form-control {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.form-control:focus {
+  border-color: #3498db;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+.form-control:disabled {
+  background-color: #e8e8e8;
+  cursor: not-allowed;
+}
+
+.form-hint {
+  font-size: 0.8rem;
+  color: #666;
+  display: block;
+  margin-top: 0.25rem;
+}
+
+.submit-button {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.submit-button:hover {
+  background-color: #2980b9;
+}
+
+.submit-button:disabled {
+  background-color: #8fc5e9;
+  cursor: not-allowed;
+}
+
+.products-section {
+  margin-bottom: 3rem;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.items-count {
+  font-size: 0.9rem;
+  color: #666;
+  background: #f5f5f5;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+.products-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+}
+
+.products-table thead {
+  background-color: #f5f5f5;
+}
+
+.products-table th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #4d4d4d;
+}
+
+.products-table tbody tr {
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.products-table tbody tr:nth-child(even) {
+  background-color: #f7f7f7;
+}
+
+.products-table tbody tr:hover {
+  background-color: rgba(52, 152, 219, 0.05);
+}
+
+.products-table td {
+  padding: 1rem;
+  vertical-align: middle;
+}
+
+.table-input {
+  padding: 0.5rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  width: 100%;
+  transition: all 0.3s ease;
+}
+
+.table-input:focus {
+  border-color: #3498db;
+  outline: none;
+}
+
+.price-input {
+  text-align: right;
+  max-width: 100px;
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+  .sale-registration-container {
+    padding: 1rem;
+  }
+  
+  .sale-registration-card {
+    padding: 1rem;
+  }
+  
+  .client-details {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .products-table thead {
+    display: none;
+  }
+  
+  .products-table tbody tr {
+    display: block;
+    margin-bottom: 1rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+  }
+  
+  .products-table tbody td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .products-table tbody td:last-child {
+    border-bottom: none;
+  }
+  
+  .products-table tbody td:before {
+    content: attr(data-label);
+    font-weight: 600;
+    margin-right: 1rem;
+    color: #4d4d4d;
+  }
+}
+
+/* Para la vista móvil */
+.products-table td[data-label]::before {
+  content: attr(data-label);
+}
+
+/*Mensajes de errorres */
+
+.error-message {
+  color: #d32f2f;
+  background-color: #fde0e0;
+  padding: 12px 16px;
+  border-radius: 4px;
+  margin: 16px 0;
+  border-left: 4px solid #d32f2f;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.error-message mat-icon {
+  flex-shrink: 0;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.error-content {
+  flex-grow: 1;
+}
+
+.error-content strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.error-content p {
+  margin: 0;
+  font-size: 14px;
+  word-break: break-word;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

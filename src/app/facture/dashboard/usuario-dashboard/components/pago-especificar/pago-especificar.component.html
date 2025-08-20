@@ -1,0 +1,28 @@
+<h2 class="title">Especificar Pago para Ticket {{data.nroTicket}}</h2>
+<div *ngFor="let pago of pagos; let i = index" class="pago-item">
+  <div class="input-container">
+    <label for="payType{{i}}">Tipo de Pago:</label>
+    <select [(ngModel)]="pago.payType" id="payType{{i}}" name="payType{{i}}" class="input">
+      <option value="">Seleccione</option>
+      <option *ngFor="let tipo of tiposPago" [value]="tipo.value">{{ tipo.label }}</option>
+
+    </select>
+    <div class="error-message" *ngIf="errores[i] && errores[i].includes('pago')">{{ errores[i] }}</div>
+  </div>
+
+  <div class="input-container">
+    <label for="monto{{i}}">Monto:</label>
+    <input type="number" [(ngModel)]="pago.monto" id="monto{{i}}" name="monto{{i}}" class="input">
+  </div>
+
+  <button type="button" class="remove-btn" (click)="eliminarPago(i)" *ngIf="pagos.length > 2">X</button>
+</div>
+
+<div class="buttons">
+  <button type="button" class="add-btn" (click)="agregarPago()">Agregar otro método</button>
+</div>
+
+<div class="action-buttons">
+  <button type="button" class="register-btn" (click)="registrarPago()">Registrar</button>
+  <button type="button" class="cancel-btn" (click)="cancelar()">Cancelar</button>
+</div>

@@ -1,0 +1,468 @@
+/* Estilos generales */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f9f9f9;
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+/* Título principal */
+.titulo {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+/* Formulario DNI */
+.formulario-dni {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.input-dni {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  width: 200px;
+  font-size: 14px;
+}
+
+.boton-limpiar {
+  background-color: #333;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.boton-limpiar:hover {
+  background-color: #555;
+}
+
+.contador-seccion {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.label-contador {
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.boton-contador {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+/* =================== TABLA CORREGIDA =================== */
+.tabla-contenedor {
+  overflow-x: auto;
+  width: 100%;
+  margin: 20px 0;
+  /* Asegurar que el contenedor sea visible */
+  min-height: 200px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.tabla-registros {
+  width: 100%;
+  border-collapse: collapse;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  /* Fijar el layout de la tabla */
+  table-layout: fixed;
+}
+
+/* CORRECCIÓN PRINCIPAL - thead debe tener display explícito */
+.tabla-registros thead {
+  /* PROBLEMA ENCONTRADO: gradient mal formado */
+  background: linear-gradient(90deg, #012a5b, #1e3a8a); /* Corregido el gradient */
+  color: #ffffff;
+  /* Asegurar que thead sea visible */
+  display: table-header-group;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+/* Estilos específicos para th */
+.tabla-registros thead th {
+  background: linear-gradient(90deg, #012a5b, #1e3a8a);
+  color: #ffffff !important;
+  text-align: center;
+  padding: 15px 8px;
+  border-bottom: 2px solid #ffffff;
+  font-weight: 600;
+  font-size: 14px;
+  /* Asegurar visibilidad */
+  display: table-cell;
+  vertical-align: middle;
+  white-space: nowrap;
+  /* Ancho mínimo para cada columna */
+  min-width: 80px;
+}
+
+/* Estilos para tbody */
+.tabla-registros tbody {
+  display: table-row-group;
+}
+
+.tabla-registros tbody tr {
+  display: table-row;
+}
+
+.tabla-registros tbody tr:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+.tabla-registros tbody tr:hover {
+  background-color: #e3f2fd;
+}
+
+/* Estilos para todas las celdas */
+.tabla-registros th,
+.tabla-registros td {
+  text-align: center;
+  padding: 12px 8px;
+  border-bottom: 1px solid #ddd;
+  vertical-align: middle;
+  /* Asegurar que las celdas sean visibles */
+  display: table-cell;
+}
+
+/* Anchos específicos para cada columna */
+.tabla-registros th:nth-child(1),
+.tabla-registros td:nth-child(1) { width: 8%; }   /* Código */
+
+.tabla-registros th:nth-child(2),
+.tabla-registros td:nth-child(2) { width: 8%; }   /* Imagen */
+
+.tabla-registros th:nth-child(3),
+.tabla-registros td:nth-child(3) { width: 10%; }  /* Tipo */
+
+.tabla-registros th:nth-child(4),
+.tabla-registros td:nth-child(4) { width: 8%; }   /* Cantidad */
+
+.tabla-registros th:nth-child(5),
+.tabla-registros td:nth-child(5) { width: 12%; }  /* Tallas */
+
+.tabla-registros th:nth-child(6),
+.tabla-registros td:nth-child(6) { width: 8%; }   /* Género */
+
+.tabla-registros th:nth-child(7),
+.tabla-registros td:nth-child(7) { width: 12%; }  /* Repositorio */
+
+.tabla-registros th:nth-child(8),
+.tabla-registros td:nth-child(8) { width: 10%; }  /* Tipo Pago */
+
+.tabla-registros th:nth-child(9),
+.tabla-registros td:nth-child(9) { width: 10%; }  /* Precio */
+
+.tabla-registros th:nth-child(10),
+.tabla-registros td:nth-child(10) { width: 10%; } /* Subtotal */
+
+.tabla-registros th:nth-child(11),
+.tabla-registros td:nth-child(11) { width: 8%; }  /* Acciones */
+
+/* =================== FIN CORRECCIONES TABLA =================== */
+
+.imagen-producto {
+  border-radius: 6px;
+  max-width: 50px;
+  height: auto;
+}
+
+.input-cantidad,
+.input-precio {
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  width: 70px;
+}
+
+.select-pago {
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  width: 120px;
+  height: 35px;
+}
+
+.talla-boton {
+  display: inline-block;
+  padding: 4px 5px;
+  margin: 1px;
+  border-radius: 4px;
+  font-weight: 600;
+  user-select: none;
+  margin-right: 4px;
+}
+
+.btn-talla-eliminar {
+  background: none;
+  border: none;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  margin-left: 2px;
+}
+
+.boton-eliminar {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.boton-eliminar:hover {
+  background-color: #c0392b;
+}
+
+/* Resumen de pago */
+.resumen-pago {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 25px;
+  flex-wrap: wrap;
+}
+
+.campo-pago {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.input-cash {
+  padding: 6px 10px;
+  border: 1px solid #0f0101;
+  border-radius: 6px;
+  width: 135px;
+}
+
+.totales {
+  background-color: #f1f1f1;
+  padding: 10px 15px;
+  border-radius: 8px;
+  font-size: 14px;
+  text-align: right;
+}
+
+/* Botón Registrar */
+.boton-registrar {
+  margin-top: 20px;
+  text-align: right;
+}
+
+.boton-guardar {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.boton-guardar:disabled {
+  background-color: #aaa;
+  cursor: not-allowed;
+}
+
+/* Mensaje de respuesta */
+.mensaje {
+  margin-top: 20px;
+  padding: 12px;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+.mensaje.success {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.mensaje.error {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+/* =================== MEDIA QUERIES CORREGIDAS =================== */
+@media screen and (max-width: 1024px) {
+  body {
+    font-size: 14px;
+  }
+  
+  .formulario-dni {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  
+  .input-dni {
+    width: auto;
+  }
+  
+  /* Mantener thead visible en tablets */
+  .tabla-registros thead th {
+    padding: 10px 6px;
+    font-size: 12px;
+  }
+  
+  .tabla-registros th, 
+  .tabla-registros td {
+    padding: 12px 8px;
+    font-size: 13px;
+  }
+  
+  .imagen-producto {
+    width: 40px;
+  }
+  
+  .input-cantidad,
+  .input-precio {
+    width: 60px;
+    padding: 4px 6px;
+  }
+  
+  .select-pago {
+    width: 100px;
+  }
+  
+  .resumen-pago {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+  }
+  
+  .campo-pago {
+    align-items: flex-end;
+  }
+  
+  .boton-limpiar,
+  .boton-contador,
+  .boton-eliminar {
+    padding: 6px 10px;
+  }
+  
+  .boton-guardar {
+    padding: 8px 16px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .tabla-contenedor {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* MANTENER thead visible en móviles */
+  .tabla-registros thead th {
+    padding: 8px 4px;
+    font-size: 11px;
+    min-width: 60px;
+  }
+  
+  .tabla-registros th, 
+  .tabla-registros td {
+    padding: 8px 6px;
+    font-size: 12px;
+  }
+  
+  /* Ocultar columnas menos importantes pero mantener thead */
+  .tabla-registros th:nth-child(7), 
+  .tabla-registros td:nth-child(7) {
+    display: none;
+  }
+  
+  .input-cantidad,
+  .input-precio {
+    width: 50px;
+  }
+  
+  .select-pago {
+    width: 80px;
+  }
+  
+  .boton-eliminar {
+    padding: 4px 6px;
+    font-size: 11px;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .titulo {
+    font-size: 1.5rem;
+  }
+  
+  /* MANTENER thead visible incluso en móviles pequeños */
+  .tabla-registros thead th {
+    padding: 6px 3px;
+    font-size: 10px;
+    min-width: 50px;
+  }
+  
+  .tabla-registros th:nth-child(6),
+  .tabla-registros td:nth-child(6),
+  .tabla-registros th:nth-child(9),
+  .tabla-registros td:nth-child(9) {
+    display: none;
+  }
+  
+  .totales p {
+    font-size: 16px;
+  }
+  
+  .totales span {
+    font-size: 18px;
+  }
+}
+
+/* Estilos para las opciones del select */
+.select-pago option {
+  background-color: #f0f8ff;
+  color: #003366;
+  font-size: 14px;
+  padding: 5px;
+}
+
+.select-pago option[value="efectivo"] {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.select-pago option[value="tarjeta"] {
+  background-color: #d1ecf1;
+  color: #0c5460;
+}
+
+.select-pago option[value="transferencia"] {
+  background-color: #fff3cd;
+  color: #856404;
+}

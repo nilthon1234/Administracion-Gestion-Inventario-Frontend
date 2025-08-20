@@ -1,0 +1,190 @@
+<!-- register-slipper-mantenimiento.component.html -->
+
+<app-navbar-ventas></app-navbar-ventas>
+<div class="container">
+  <h2 class="title">Registro de Venta</h2>
+
+  <!-- Mensaje de éxito o error -->
+  <div *ngIf="message" class="alert" [ngClass]="registrationSuccess ? 'alert-success' : 'alert-danger'">
+    {{ message }}
+  </div>
+
+  <div *ngIf="registrationSuccess" class="success-message">
+    <div class="success-content">
+      <h3>¡Registro Exitoso!</h3>
+      <p>La venta ha sido registrada correctamente.</p>
+      <div class="button-group">
+        <button class="btn btn-primary" (click)="backToMainVenta()">Volver a Main Venta</button>
+        <button class="btn btn-secondary" (click)="continueRegistering()">Seguir Registrando Ventas</button>
+      </div>
+    </div>
+  </div>
+
+  <form [formGroup]="saleForm" (ngSubmit)="onSubmit()" *ngIf="!registrationSuccess">
+    <!-- Ticket Information Section -->
+    <div class="card mb-4" formGroupName="ticket">
+      <div class="card-header">
+        <h3>Información del Vendedor y Cliente</h3>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="sellerName">Vendedor:</label>
+            <input type="text" id="sellerName" class="form-control" formControlName="sellerName"
+              placeholder="Nombre del vendedor">
+            <div class="invalid-feedback"
+              *ngIf="saleForm.get('ticket.sellerName')?.invalid && saleForm.get('ticket.sellerName')?.touched">
+              El nombre del vendedor es requerido.
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="clientName">Nom Cliente:</label>
+            <input type="text" id="clientName" class="form-control" formControlName="clientName"
+              placeholder="Nombre del cliente">
+            <div class="invalid-feedback"
+              *ngIf="saleForm.get('ticket.clientName')?.invalid && saleForm.get('ticket.clientName')?.touched">
+              El nombre del cliente es requerido.
+            </div>
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label for="clientLastName">Apell Cliente:</label>
+            <input type="text" id="clientLastName" class="form-control" formControlName="clientLastName"
+              placeholder="Apellido del cliente">
+            <div class="invalid-feedback"
+              *ngIf="saleForm.get('ticket.clientLastName')?.invalid && saleForm.get('ticket.clientLastName')?.touched">
+              El apellido del cliente es requerido.
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="dni">DNI:</label>
+            <input type="text" id="dni" class="form-control" formControlName="dni" placeholder="DNI del cliente">
+            <div class="invalid-feedback"
+              *ngIf="saleForm.get('ticket.dni')?.invalid && saleForm.get('ticket.dni')?.touched">
+              El DNI es requerido.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product Details Section -->
+    <div formArrayName="details">
+      <div *ngFor="let detail of details.controls; let i = index" class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h3>Detalle de Producto #{{i + 1}}</h3>
+          <button type="button" class="btn btn-sm btn-danger" *ngIf="details.length > 1"
+            (click)="removeProductDetail(i)">Eliminar</button>
+        </div>
+
+        <div class="card-body" [formGroupName]="i">
+          <div class="row">
+            <div class="col-md-4 mb-3">
+              <label for="repositoryType{{i}}">Tipo de Repositorio:</label>
+              <select id="repositoryType{{i}}" class="form-control" formControlName="repositoryType">
+                <option *ngFor="let repo of repositoryTypes" [value]="repo">{{repo}}</option>
+              </select>
+            </div>
+
+            <div class="col-md-4 mb-3">
+              <label for="type{{i}}">Tipo de Producto:</label>
+              <select id="type{{i}}" class="form-control" formControlName="type" (change)="onProductTypeChange(i)">
+                <option value="" disabled selected>Seleccionar Tipo Producto</option>
+                <option *ngFor="let type of productTypes" [value]="type">{{type}}</option>
+              </select>
+            </div>
+
+            <div class="col-md-4 mb-3">
+              <label for="ticketType{{i}}">Tipo de Ticket:</label>
+              <input type="text" id="ticketType{{i}}" class="form-control" formControlName="ticketType" readonly>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-4 mb-3">
+              <label for="payType{{i}}">Método de Pago:</label>
+              <select id="payType{{i}}" class="form-control" [formControlName]="'payType'">
+                <option *ngFor="let pay of getAvailablePayTypes(i)" [value]="pay.value">{{pay.label}}</option>
+              </select>
+            </div>
+
+            <div class="col-md-4 mb-3">
+              <label for="codToday{{i}}">Código Hoy:</label>
+              <input type="text" id="codToday{{i}}" class="form-control" formControlName="codToday"
+                placeholder="Código">
+              <div class="invalid-feedback"
+                *ngIf="details.at(i).get('codToday')?.invalid && details.at(i).get('codToday')?.touched">
+                El código es requerido.
+              </div>
+            </div>
+
+            <div class="col-md-4 mb-3">
+              <label for="price{{i}}">Precio:</label>
+              <input type="number" id="price{{i}}" class="form-control" formControlName="price" placeholder="0.00">
+              <div class="invalid-feedback"
+                *ngIf="details.at(i).get('price')?.invalid && details.at(i).get('price')?.touched">
+                El precio es requerido y debe ser mayor a 0.
+              </div>
+            </div>
+          </div>
+
+          <!-- Conditional fields based on product type -->
+          <div class="row">
+            <!-- For ZAPATILLA or SANDALIA -->
+            <div class="col-md-4 mb-3">
+              <label for="gender{{i}}">Género:</label>
+              <select id="gender{{i}}" class="form-control" formControlName="genero" (change)="onGenderChange(i)"
+                [disabled]="shouldDisableGender(i)">
+                <option value="">Seleccione Género</option>
+                <option *ngFor="let gender of getFilteredGenders(i)" [value]="gender.nombre">
+                  {{gender.nombre}}
+                </option>
+              </select>
+            </div>
+
+            <div class="col-md-4 mb-3"
+              *ngIf="details.at(i).get('type')?.value === 'BOTINES' || details.at(i).get('type')?.value === 'ZAPATILLA' || details.at(i).get('type')?.value === 'SANDALIA'">
+              <label for="sizes{{i}}">Talla:</label>
+              <select id="sizes{{i}}" class="form-control" formControlName="sizes" multiple>
+                <option *ngFor="let size of availableSizes[i]" [value]="size.talla">{{size.talla}}</option>
+              </select>
+            </div>
+
+            <!-- For POLO, POLERA, PANTALON -->
+            <div class="col-md-4 mb-3"
+              *ngIf="details.at(i).get('type')?.value === 'POLO' || details.at(i).get('type')?.value === 'POLERA' || details.at(i).get('type')?.value === 'PANTALON'">
+              <label for="sizes{{i}}">Talla:</label>
+              <select id="sizes{{i}}" class="form-control" formControlName="sizes" multiple>
+                <option *ngFor="let size of clothingSizes" [value]="size.value">{{ size.label }}</option>
+              </select>
+            </div>
+
+
+            <!-- For CANGURO, GORRA, MEDIAS -->
+            <div class="col-md-4 mb-3"
+              *ngIf="details.at(i).get('type')?.value !== 'BOTINES' && details.at(i).get('type')?.value !== 'ZAPATILLA' && details.at(i).get('type')?.value !== 'SANDALIA' && details.at(i).get('type')?.value !== 'POLO' && details.at(i).get('type')?.value !== 'POLERA' && details.at(i).get('type')?.value !== 'PANTALON'">
+              <label for="amount{{i}}">Cantidad:</label>
+              <input type="number" id="amount{{i}}" class="form-control" formControlName="amount" placeholder="1">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn btn-info mb-4" (click)="addProductDetail()">Más Productos</button>
+
+      <!-- Mensaje de éxito o error -->
+      <div *ngIf="message" class="alert" [ngClass]="registrationSuccess ? 'alert-success' : 'alert-danger'">
+        {{ message }}
+      </div>
+      <button type="submit" class="btn btn-success mb-4" [disabled]="saleForm.invalid">Registrar Venta</button>
+    </div>
+  </form>
+</div>

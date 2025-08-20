@@ -1,0 +1,55 @@
+<app-nav-bars-mantenimientos></app-nav-bars-mantenimientos>
+
+<div class="container">
+    <!-- Tabs -->
+    <nav class="tabs">
+      <button *ngFor="let t of tabs"
+              [class.active]="activeTab === t"
+              (click)="switchTab(t)">
+        {{ t | titlecase }}
+      </button>
+    </nav>
+  
+    <!-- Formulario -->
+    <form [formGroup]="form" (ngSubmit)="submit()" class="form">
+      <input formControlName="type" placeholder="Nombre del Producto" />
+      <input formControlName="symbol"
+             placeholder="Símbolo"
+             [attr.required]="symbolRequired() ? '' : null" />
+      <button type="submit" [disabled]="form.invalid">Crear</button>
+    </form>
+  
+    <!-- Lista -->
+    <div class="grid">
+      <div class="card" *ngFor="let i of items">
+        <button class="delete-btn" (click)="eliminar(i)" title="Eliminar">✖</button>
+        <span class="badge">{{ i.symbol || '–' }}</span>
+        <span class="name">{{ i.type }} - {{ i.symbol || '–' }}</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Sección Género -->
+<div class="genero-section">
+  <h3>Géneros Disponibles</h3>
+
+  <div class="genero-list">
+    <div
+      class="genero-card"
+      *ngFor="let g of generosEstaticos"
+      [class.existe]="generosExistentes.has(g)"
+      [class.disponible]="!generosExistentes.has(g)"
+    >
+      <span>{{ g }}</span>
+      <button
+        *ngIf="!generosExistentes.has(g)"
+        class="btn-crear"
+        (click)="crearGenero(g)"
+      >
+        Crear
+      </button>
+      <span *ngIf="generosExistentes.has(g)" class="badge-existe">✔ Existe</span>
+    </div>
+  </div>
+</div>

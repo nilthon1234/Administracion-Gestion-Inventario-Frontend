@@ -1,0 +1,55 @@
+.dialog-container {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.info-producto p {
+  margin: 5px 0;
+}
+
+.radio-group {
+  margin: 15px 0;
+}
+
+.form-group {
+  margin: 15px 0;
+}
+
+.form-group small {
+  color: #666;
+  font-size: 0.8em;
+}
+
+.form-control {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.dialog-actions {
+  text-align: right;
+  margin-top: 20px;
+}
+
+.btn {
+  padding: 8px 16px;
+  margin-left: 8px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-cancel {
+  background-color: #f0f0f0;
+}
+
+.btn-save {
+  background-color: #2196F3;
+  color: white;
+}
+
+.btn-save:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}

@@ -1,0 +1,45 @@
+<app-boton-atras></app-boton-atras>
+<div class="login-container">
+      <div class="login-form">
+        <h2>Iniciar Sesión</h2>
+        <form (ngSubmit)="onLogin()" #loginForm="ngForm">
+          <div class="form-group">
+            <label for="username">Usuario:</label>
+            <input 
+              type="text" 
+              id="username" 
+              name="username"
+              [(ngModel)]="username" 
+              required 
+              autocomplete="off"
+              #usernameInput="ngModel">
+            <div *ngIf="usernameInput.invalid && usernameInput.touched" class="error">
+              Usuario es requerido
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="password">Contraseña:</label>
+            <input 
+              type="password" 
+              id="password" 
+              name="password"
+              [(ngModel)]="password" 
+              required 
+              autocomplete="current-password"
+              #passwordInput="ngModel">
+            <div *ngIf="passwordInput.invalid && passwordInput.touched" class="error">
+              Contraseña es requerida
+            </div>
+          </div>
+          
+          <button type="submit" [disabled]="!loginForm.valid || isLoading">
+            {{ isLoading ? 'Iniciando...' : 'Iniciar Sesión' }}
+          </button>
+          
+          <div *ngIf="errorMessage" class="error">
+            {{ errorMessage }}
+          </div>
+        </form>
+      </div>
+    </div>

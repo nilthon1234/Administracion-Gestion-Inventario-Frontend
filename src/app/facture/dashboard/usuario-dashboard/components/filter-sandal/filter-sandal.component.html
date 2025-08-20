@@ -1,0 +1,142 @@
+<div class="container">
+
+  <app-navbars-sidebar-vitrina></app-navbars-sidebar-vitrina>
+
+
+  <form class="row g-2 mb-4 align-items-end">
+    <!-- Marca -->
+    <div class="col-md-3">
+      <label class="form-label">Marca</label>
+      <select class="form-select" [(ngModel)]="filtros.brand" name="brand">
+        <option [value]="null">-- Todas --</option>
+        @for (marca of marcas; track marca.nombre) {
+        <option [value]="marca.nombre">{{ marca.nombre }}</option>
+        }
+      </select>
+    </div>
+
+    <!-- Cod Today -->
+    <div class="col-md-2">
+      <label class="form-label">Código</label>
+      <input [appCopiarTexto]="filtros.codToday" type="text" class="form-control" [(ngModel)]="filtros.codToday" name="codToday">
+    </div>
+
+    <!-- Empresa -->
+    <div class="col-md-2">
+      <label class="form-label">Empresa</label>
+      <input  [appCopiarTexto]="filtros.company" type="text" class="form-control" [(ngModel)]="filtros.company" name="company">
+    </div>
+
+    <!-- Grupo -->
+    <div class="col-md-2">
+      <label class="form-label">Grupo</label>
+      <select class="form-select" [(ngModel)]="grupoSeleccionado" name="grupo" (change)="actualizarTallas()">
+        <option [value]="null">-- Selecciona --</option>
+        <option *ngFor="let grupo of grupos">{{ grupo }}</option>
+      </select>
+    </div>
+
+    <!-- Talla -->
+    <div class="col-md-2">
+      <label class="form-label">Talla</label>
+      <select class="form-select" [(ngModel)]="filtros.size" name="size">
+        <option [value]="null">-- Todas --</option>
+        @for (talla of tallasFiltradas; track talla.id) {
+        <option [value]="talla.talla">{{ talla.talla }}</option>
+        }
+      </select>
+    </div>
+
+    <!-- Buscar -->
+    <div class="col-md-1">
+      <button type="button" class="btn btn-primary w-100" (click)="buscar()">Buscar</button>
+    </div>
+  </form>
+  <!-- Paginación -->
+    <mat-paginator [length]="totalElements"
+                  [pageSize]="pageSize"
+                  [pageIndex]="currentPage"
+                  [pageSizeOptions]="[6, 12, 24, 50, 100]"
+                  (page)="onPageChange($event)"
+                  aria-label="Seleccionar página">
+    </mat-paginator>
+
+  <!-- Contenido normal de tarjetas -->
+  <div class="container mt-4">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
+      @for (item of sandal; track item.codToday) {
+      <div class="col">
+        <div class="card h-100 shadow-sm" (click)="toggleSizes(item.codToday)" style="cursor:pointer;">
+          @if (item.urlImg) {
+          <img [src]="item.urlImg" class="card-img-top" [style.height.px]="200" alt="{{ item.codToday }}"
+            (click)="$event.stopPropagation(); openImageModal(item.urlImg)" style="cursor: zoom-in;" />
+          } @else {
+          <div class="card-img-top bg-light d-flex justify-content-center align-items-center" style="height: 200px;">
+            <span class="text-muted">Sin imagen</span>
+          </div>
+          }
+
+          <div class="card-body">
+            <h5 class="card-title">{{ item.brand }}</h5>
+            <p class="card-text">
+              <strong>Código:</strong> {{ item.codToday }}<br />
+              <strong>Stock:</strong> {{ item.amount }}<br />
+              <strong>Empresa:</strong> {{ item.company }}<br />
+              <strong>Genero:</strong> {{ item.genero }}<br />
+            </p>
+          </div>
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+
+  <!-- Modal flotante centrado para tallas -->
+  <div *ngIf="selectedCod() as selectedCode">
+    <ng-container *ngIf="getSelectedItem() as selectedItem">
+      <div *ngIf="selectedItem.amount > 0" class="modal-overlay" (click)="closeSizes()">
+        <div class="modal-content" (click)="$event.stopPropagation()">
+          <button class="btn-close" (click)="closeSizes()" aria-label="Cerrar"></button>
+          <h5>Tallas disponibles para {{ selectedItem.codToday }}</h5>
+          <ul class="list-group list-group-flush mt-3" *ngIf="getSelectedItem()?.sizes">
+            <li *ngFor="let sizeKey of getAvailableSizes(getSelectedItem()!.sizes)"
+              class="list-group-item d-flex justify-content-between align-items-center" [ngClass]="{ 
+        'text-danger fw-bold': resaltado(getSelectedItem()!.codToday, sizeKey),
+        'highlighted-separation': getSeparationCount(getSelectedItem()!.codToday, sizeKey) > 0
+      }">
+              <div>
+                {{ sizeKey }}
+                <span *ngIf="getSeparationCount(getSelectedItem()!.codToday, sizeKey) > 0" class="badge bg-danger ms-2">
+                  {{ getSeparationCount(getSelectedItem()!.codToday, sizeKey) }} sep
+                </span>
+              </div>
+              <span class="badge bg-primary rounded-pill">{{ getSelectedItem()!.sizes[sizeKey] }}</span>
+            </li>
+          </ul>
+
+        </div>
+      </div>
+    </ng-container>
+  </div>
+
+
+
+
+  <!-- Modal flotante para imagen -->
+  <div class="image-modal" *ngIf="selectedImageUrl">
+    <div class="image-modal-content">
+      <span class="close-button" (click)="closeImageModal()">×</span>
+      <img [src]="selectedImageUrl" alt="Imagen ampliada" />
+    </div>
+  </div>
+
+
+</div>
+<!-- Paginación -->
+    <mat-paginator [length]="totalElements"
+                  [pageSize]="pageSize"
+                  [pageIndex]="currentPage"
+                  [pageSizeOptions]="[6, 12, 24, 50, 100]"
+                  (page)="onPageChange($event)"
+                  aria-label="Seleccionar página">
+    </mat-paginator>

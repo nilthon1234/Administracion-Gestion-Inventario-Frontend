@@ -1,0 +1,283 @@
+<div class="container">
+  <app-navbars-sidebar-vitrina></app-navbars-sidebar-vitrina>
+  <!-- Primera sección: Búsqueda por filtros -->
+  <div class="search-section">
+  <h3>Búsqueda por filtros</h3>
+  <div class="filters-container">
+    <!-- Género -->
+    <div class="filter-item">
+      <select class="filter-select" [(ngModel)]="generoSeleccionado" (change)="onGeneroChange($event)">
+        <option value="" disabled selected>Genero</option>
+        <option *ngFor="let genero of generos" [value]="genero.nombre">{{ genero.nombre }}</option>
+      </select>
+    </div>
+     
+    <!-- Tipo (NUEVO) -->
+    <div class="filter-item">
+      <select class="filter-select" [(ngModel)]="tipoSeleccionado">
+        <option value="">Todos los tipos</option>
+        <option *ngFor="let tipo of tipos" [value]="tipo">{{ tipo }}</option>
+      </select>
+    </div>
+     
+    <!-- Marca -->
+    <div class="filter-item">
+      <select class="filter-select" [(ngModel)]="filtrosGenero.marca">
+        <option value="">Todas las marcas</option>
+        <option *ngFor="let marca of marcas" [value]="marca.nombre">{{ marca.nombre }}</option>
+      </select>
+    </div>
+     
+    <!-- Talla -->
+    <div class="filter-item">
+      <select class="filter-select" [(ngModel)]="tallaSeleccionado" [disabled]="!generoSeleccionado">
+        <option value="">Todas las tallas</option>
+        <option *ngFor="let talla of tallasDisponibles" [value]="talla.talla">{{ talla.talla }}</option>
+      </select>
+    </div>
+     
+    <!-- Botón -->
+    <div class="filter-item">
+      <button class="search-button" (click)="buscar()">Buscar</button>
+    </div>
+  </div>
+</div>
+
+ <!-- Segunda sección: Búsqueda por fecha -->
+<div class="search-section">
+  <h3>Búsqueda por fecha</h3>
+  <div class="filters-container">
+    <!-- Género -->
+    <div class="filter-item">
+      <select class="filter-select" [(ngModel)]="generoFechaSeleccionado" (change)="onGeneroFechaChange($event)">
+        <option value="" disabled selected>Genero</option>
+        <option *ngFor="let genero of generos" [value]="genero.nombre">{{ genero.nombre }}</option>
+      </select>
+    </div>
+     
+    <!-- Fecha -->
+    <div class="filter-item">
+      <input type="date" class="date-input" [(ngModel)]="fechaSelecionada" [max]="fechaMaxima"
+        placeholder="Selecciona una fecha">
+    </div>
+    
+    <!-- Marca -->
+    <div class="filter-item">
+      <select class="filter-select" [(ngModel)]="marcaSeleccionado">
+        <option value="">Todas las marcas</option>
+        <option *ngFor="let marca of marcas" [value]="marca.nombre">{{ marca.nombre }}</option>
+      </select>
+    </div>
+     
+    <!-- Talla -->
+    <div class="filter-item">
+      <select class="filter-select" [(ngModel)]="tallaFechaSeleccionado" [disabled]="!generoFechaSeleccionado">
+        <option value="">Todas las tallas</option>
+        <option *ngFor="let talla of tallasDisponibles" [value]="talla.talla">{{ talla.talla }}</option>
+      </select>
+    </div>
+     
+    <!-- Botón -->
+    <div class="filter-item">
+      <button class="search-button" (click)="buscarPorFecha()">Buscar por fecha</button>
+    </div>
+  </div>
+</div>
+  <!-- Tercera sección: Búsqueda por codToday o company -->
+  <!-- <div class="search-section">
+    <h3>Búsqueda por CodToday o Company</h3>
+    <div class="filters-container">
+      <!-- Género 
+      <div class="filter-item">
+        <select class="filter-select" (change)="onGeneroChange($event)">
+          <option value="" disabled selected>Genero</option>
+          <option *ngFor="let genero of generos" [value]="genero.nombre">{{ genero.nombre }}</option>
+        </select>
+      </div>
+
+      <!-- Marca 
+      <div class="filter-item">
+        <select class="filter-select" [(ngModel)]="marcaSeleccionado">
+          <option value="">Todas las marcas</option>
+          <option *ngFor="let marca of marcas" [value]="marca.nombre">{{ marca.nombre }}</option>
+        </select>
+      </div>
+
+      <!-- CodToday 
+      <div class="filter-item">
+        <input type="text" class="input-text" [(ngModel)]="codTodaySeleccionado" placeholder="CodToday">
+      </div>
+
+      <!-- Company 
+      <div class="filter-item">
+        <input type="text" class="input-text" [(ngModel)]="companySelecionado" placeholder="Company">
+      </div>
+
+      <!-- Botón 
+      <div class="filter-item">
+        <button class="search-button" (click)="buscarPorCodToday0Company()">Buscar CodToday o Company</button>
+      </div>
+    </div>
+  </div> -->
+  <!-- Tercera sección: Búsqueda por codToday o company -->
+<div class="search-section">
+  <h3>Búsqueda por Codigo o Empresa</h3>
+  <div class="filters-container">
+    <!-- CodToday -->
+    <div class="filter-item">
+      <input type="text" class="input-text" [(ngModel)]="codTodaySeleccionado" placeholder="Codigo">
+    </div>
+    <!-- Company -->
+    <div class="filter-item">
+      <input type="text" class="input-text" [(ngModel)]="companySelecionado" placeholder="Empresa">
+    </div>
+    <!-- Botón -->
+    <div class="filter-item">
+      <button class="search-button" (click)="buscarPorCodToday0Company()">Buscar</button>
+    </div>
+  </div>
+</div>
+
+
+
+  <!-- Contenedor principal para los resultados -->
+  <div class="slipper-results-container">
+    <!-- Tabla de resultados -->
+    <table class="slipper-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Genero</th>
+          <th>Marca</th>
+          <th>Código</th>
+          <th>Cantidad</th>
+          <th>Empresa</th>
+          <th>Tipo</th>
+          <th>Imagen</th>
+          <th>Precio</th>
+          <th>Fecha</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let slipper of slippers">
+          <!--desvanecimiento del color al actualizar -->
+          <tr [ngClass]="{'highlight-row': updatedRows.has(slipper.codToday)}">
+            <td>{{ slipper.id }}</td>
+            <td>{{ slipper.genero }}</td>
+            <td>{{ slipper.brand }}</td>
+            <td [appCopiarTexto]="slipper.codToday">{{ slipper.codToday }}</td>
+            <td>{{ slipper.amount }}</td>
+            <td [appCopiarTexto]="slipper.company">{{ slipper.company }}</td>
+            <td>{{ slipper.type }}</td>
+            <td><img [src]="slipper.urlImg" width="100" style="cursor: pointer;"
+                (click)="openImageModal(slipper.urlImg)"></td>
+                <td><span style="color: blue;">S/{{slipper.price}}</span></td>
+            <td>{{ slipper.registrationDate | customDateFormat }}</td>
+
+            <td>
+              <button *ngIf="slipper.producto === 'CALZADO'" class="detail-btn"
+                (click)="toggleDetails(slipper)">
+                {{ isDetailOpen(slipper) ? 'Ocultar tallas' : 'Ver tallas' }}
+              </button>
+            </td>
+          </tr>
+          <!-- Fila de detalles expandible -->
+          <tr *ngIf="isDetailOpen(slipper)" class="details-row">
+            <td colspan="10">
+              <div class="sizes-container">
+                <h4>Tallas disponibles</h4>
+                <div class="sizes-grid">
+                  <ng-container *ngFor="let size of getSlipperSizes(slipper) | ordenSizes">
+                    <div *ngIf="shouldShowSize(slipper, size.name)" class="size-item"
+                      [ngClass]="{'has-stock': size.amount > 0}" [ngStyle]="{
+         'background-color': shouldHighlight(slipper.codToday, size.name) ? '#f8d7da' : 'transparent'
+       }">
+                      <span class="size-name">{{ formatSizeName(size.name) }}</span>
+                      <button type="button" (click)="adjustSize(slipper, size.name, 1, $event)">+</button>
+                      <span class="size-amount">
+                        {{ size.amount + ((sizeAdjustments[slipper.id] && sizeAdjustments[slipper.id][size.name]) || 0)
+                        }}
+                        <span *ngIf="shouldHighlight(slipper.codToday, size.name)" class="separation-count">
+                          ({{ getSeparationCount(slipper.codToday, size.name) }})
+                        </span>
+                      </span>
+                      <button type="button" (click)="adjustSize(slipper, size.name, -1, $event)" [disabled]="(size.amount + ((sizeAdjustments[slipper.id] &&
+              sizeAdjustments[slipper.id][size.name]) || 0)) <= 0">-</button>
+                    </div>
+                  </ng-container>
+
+                </div>
+
+                <!-- Botones de acción: agregar/descontar -->
+                <div *ngIf="hasPositiveAdjustments(slipper.id) || hasNegativeAdjustments(slipper.id)"
+                  class="size-actions">
+                  <button class="btn-agregar" (click)="prepareAdjustments(slipper, true)"
+                    [disabled]="!hasPositiveAdjustments(slipper.id)">
+                    Agregar Tallas
+                  </button>
+
+                  <button class="btn-descontar" (click)="prepareAdjustments(slipper, false)"
+                    [disabled]="!hasNegativeAdjustments(slipper.id)">
+                    Descontar Tallas
+                  </button>
+                </div>
+              </div>
+            </td>
+          </tr>
+
+        </ng-container>
+      </tbody>
+    </table>
+
+    <!-- Mensaje cuando no hay resultados -->
+    <div *ngIf="slippers.length === 0" class="no-results">
+      No se encontraron zapatillas con los filtros seleccionados.
+    </div>
+  </div>
+  <!-- Modal de imagen ampliada -->
+  <div *ngIf="selectedImagenUrl" class="image-modal">
+    <div class="image-modal-content">
+      <span class="close-btn" (click)="closeImageModal()">&times;</span>
+      <img [src]="selectedImagenUrl" class="modal-image">
+    </div>
+  </div>
+
+
+  <!--Mensaje de historial size actus-->
+
+  <!-- Modal de confirmación -->
+  <div class="modal" *ngIf="showConfirmationModal">
+    <div class="modal-content">
+      <h3>Confirmar actualización</h3>
+
+      <div class="adjustments-summary">
+        <h4>Resumen de cambios:</h4>
+        <ul>
+          <td style="color: brown; text-align: center;">Codigo: {{currentSlipper?.codToday}}</td>
+          <li *ngFor="let item of pendingAdjustmentsSummary">
+
+            Talla {{ item.size | sizeFormat }}: {{ item.action }} {{ getAbsoluteValue(item.amount) }} par(es)
+          </li>
+        </ul>
+      </div>
+
+      <!-- Mostrar el total -->
+      <div class="total-summary">
+        <strong>Total a {{ isAddOperation ? 'agregar' : 'descontar' }}:</strong>
+        {{ totalAdjustment }} par(es)
+      </div>
+      <p>¿Deseas confirmar esta actualización?</p>
+
+      <div class="modal-actions">
+        <button class="btn-confirm" (click)="confirmAdjustments()">Confirmar</button>
+        <button class="btn-cancel" (click)="cancelAdjustments()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Paginación -->
+<mat-paginator [length]="totalElements" [pageSize]="pageSize" [pageIndex]="currentPage"
+  [pageSizeOptions]="[5, 10, 20, 50, 100]" (page)="onPageChange($event)" aria-label="Seleccionar página">
+</mat-paginator>

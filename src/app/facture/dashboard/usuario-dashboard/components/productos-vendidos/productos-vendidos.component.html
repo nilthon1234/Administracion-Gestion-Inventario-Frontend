@@ -1,0 +1,41 @@
+<app-nav-bars-ventas></app-nav-bars-ventas>
+
+<div class="limit-selector-container">
+  <label for="limit" class="limit-label">Mostrar top:</label>
+  <select id="limit" class="limit-select" [(ngModel)]="selectedLimit" (change)="onLimitChange()">
+    <option *ngFor="let n of [5, 10, 15, 20, 50, 100]" [value]="n">{{ n }}</option>
+  </select>
+</div>
+
+
+<div class="categories-container">
+  <div class="categories-row">
+    <div *ngFor="let productType of topSellingProducts | keyvalue" class="category-column">
+      <h3 class="category-title">{{ productType.key }}</h3>
+      <div class="table-container">
+        <table class="product-table">
+          <thead>
+            <tr>
+              <th>Top</th>
+              <th>Género</th>
+              <th>Código</th>
+              <th>Cantidad</th>
+              <th>Imagen</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let product of productType.value; let i = index">
+              <td class="top-cell">Top {{ i + 1 }}</td>
+              <td>{{ product.genero }}</td>
+              <td>{{ product.codToday }}</td>
+              <td>{{ product.totalAmount }}</td>
+              <td>
+                <img [src]="'http://localhost:80/image/' + product.url" alt="Product Image" class="product-image" (click)="toggleZoom(product)" [class.zoomed]="product.zoomed">
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

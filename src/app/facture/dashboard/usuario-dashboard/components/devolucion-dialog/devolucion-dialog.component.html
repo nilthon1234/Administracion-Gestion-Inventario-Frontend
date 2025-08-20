@@ -1,0 +1,20 @@
+<div class="modal-overlay">
+  <div class="modal-content">
+    <h3>Confirmar Devolución</h3>
+    <p>Monto: S/ {{ monto }}.00</p>
+
+    <label>Método de pago:</label>
+    <select [(ngModel)]="selectedPayType">
+      <option *ngFor="let tipo of payTypes" [value]="tipo">{{ tipo | payTypeTranslate}}</option>
+    </select>
+
+    <div class="acciones">
+      <button (click)="enviarDevolucion()" [disabled]="loading">Confirmar</button>
+      <button (click)="cerrar()">Cancelar</button>
+    </div>
+
+    <div *ngIf="mensaje" class="mensaje">
+      {{ mensaje }}
+    </div>
+  </div>
+</div>

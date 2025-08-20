@@ -1,0 +1,58 @@
+<app-navbars-visualizador-vitrina></app-navbars-visualizador-vitrina>
+<div class="vitrina-container">
+  <h2>Productos Por Mostrar En Vitrina B</h2>
+  <button (click)="generatePDF()" class="btn-pdf">📄 Generar PDF</button>
+
+  <div class="pagination-controls">
+    <div class="page-size-selector">
+      <label for="pageSize">Items por página:</label>
+      <select id="pageSize" [(ngModel)]="pageSize" (change)="onPageSizeChange()">
+        <option *ngFor="let size of pageSizeOptions" [value]="size">{{ size }}</option>
+      </select>
+    </div>
+
+    <div class="page-numbers">
+      <button *ngFor="let page of getPages()" (click)="onPageChange(page)" [class.active]="currentPage === page">
+        {{ page + 1 }}
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="vitrinaResponse$ | async as response; else loading" class="product-table">
+    <div class="table-header">
+      <div class="header-cell">Imagen</div>
+      <div class="header-cell">Marca</div>
+      <div class="header-cell">Código</div>
+      <div class="header-cell">Tipo</div>
+      <div class="header-cell">Género</div>
+      <div class="header-cell">Fecha de Registro</div>
+    </div>
+    <div *ngFor="let item of response.content" class="table-row">
+      <div class="table-cell">
+        <img [src]="item.url" [alt]="item.brand + ' ' + item.type" (click)="openImage(item.url)">
+      </div>
+      <div class="table-cell">{{ item.brand }}</div>
+      <div [appCopiarTexto]="item.codToday" class="table-cell">{{ item.codToday }}</div>
+      <div class="table-cell">{{ item.type }}</div>
+      <div class="table-cell">{{ item.genero }}</div>
+      <div class="table-cell">{{ item.registrationDate | date:'medium' }}</div>
+    </div>
+  </div>
+
+  <div class="pagination-info">
+    Mostrando {{ (currentPage * pageSize) + 1 }} -
+    {{ calculateMin((currentPage + 1) * pageSize, totalElements) }} de {{ totalElements }} productos
+  </div>
+
+  <ng-template #loading>
+    <div class="loading-spinner">
+      <p>Cargando productos...</p>
+    </div>
+  </ng-template>
+</div>
+<div class="modal-overlay" *ngIf="imageModalOpen" (click)="closeImageModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <span class="close-btn" (click)="closeImageModal()">×</span>
+    <img [src]="modalImageUrl" class="modal-img" />
+  </div>
+</div>

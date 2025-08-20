@@ -1,0 +1,48 @@
+.navbar {
+  background: linear-gradient(90deg, #0906ca, #012a5b);
+  padding: 0;
+  border-radius: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+}
+
+.nav-list {
+  display: flex;
+  justify-content: space-between; /* Esto hace que los elementos ocupen todo el ancho disponible */
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+.nav-item {
+  flex: 1; /* Hace que cada elemento ocupe el mismo ancho */
+  text-align: center;
+  margin: 0.25rem;
+}
+
+.nav-link {
+  display: block;
+  color: white;
+  text-decoration: none;
+  padding: 1rem;
+  border-radius: 1rem;
+  background-color: rgba(255, 255, 255, 0.2);
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  font-weight: bold;
+}
+
+.nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.nav-link.active {
+  background-color: white;
+  color: #0077b6;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.nav-link:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 180, 216, 0.6);
+}

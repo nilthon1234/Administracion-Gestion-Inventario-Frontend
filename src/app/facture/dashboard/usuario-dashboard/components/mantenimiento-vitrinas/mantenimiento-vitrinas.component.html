@@ -1,0 +1,59 @@
+<app-nav-bars-mantenimientos></app-nav-bars-mantenimientos>
+<div class="search-container">
+    <div class="search-box">
+        <h2>Buscar Vitrina A</h2>
+        <input [(ngModel)]="codToday1" placeholder="Ingrese Codigo Tienda">
+        <button (click)="searchA()">Buscar</button>
+    </div><!--
+        <div class="search-box">
+        <h2>Buscar Vitrina B</h2>
+        <input [(ngModel)]="codToday" placeholder="Ingrese Codigo Tienda">
+        <button (click)="search()">Buscar</button>
+    </div> -->
+</div>
+
+@if (showModal) {
+<div class="modal">
+    <div class="modal-content">
+        <span class="close" (click)="cancel()">&times;</span>
+        <h3>Detalles de la Vitrina</h3>
+        <p><strong>ID:</strong> {{ vitrina.id }}</p>
+        <p><strong>Marca:</strong> {{ vitrina.brand }}</p>
+        <p><strong>Código:</strong> {{ vitrina.codToday }}</p>
+        <p><strong>Cantidad:</strong> {{ vitrina.amount }}</p>
+        <p><strong>Imagen:</strong> <img [src]="vitrina.url" alt="Imagen de la vitrina" width="100"></p>
+        <p><strong>Género:</strong> {{ vitrina.genero }}</p>
+        <p><strong>Empresa:</strong> {{ vitrina.company }}</p>
+        <p><strong>Talla:</strong> {{ vitrina.size }}</p>
+        <p><strong>Tipo:</strong> {{ vitrina.type }}</p>
+        <p><strong>Fecha de Registro:</strong> {{ vitrina.registrationDate | customDateFormat }}</p>
+        <button (click)="delete()">Eliminar</button>
+        <button (click)="cancel()">Cancelar</button>
+    </div>
+</div>
+}
+
+@if (showModalA) {
+<div class="modal">
+    <div class="modal-content">
+        <span class="close" (click)="cancelA()">&times;</span>
+        <h3>Detalles de la Vitrina</h3>
+        <p><strong>ID:</strong> {{ vitrina.id }}</p>
+        <p><strong>Marca:</strong> {{ vitrina.brand }}</p>
+        <p><strong>Código:</strong> {{ vitrina.codToday }}</p>
+        <p><strong>Cantidad:</strong> {{ vitrina.amount }}</p>
+        <p><strong>Imagen:</strong> <img [src]="vitrina.url" alt="Imagen de la vitrina" width="100"></p>
+        <p><strong>Género:</strong> {{ vitrina.genero }}</p>
+        <p><strong>Empresa:</strong> {{ vitrina.company }}</p>
+        <p><strong>Talla:</strong> {{ vitrina.size }}</p>
+        <p><strong>Tipo:</strong> {{ vitrina.type }}</p>
+        <p><strong>Fecha de Registro:</strong> {{ vitrina.registrationDate | customDateFormat }}</p>
+        <button (click)="deleteA()">Eliminar</button>
+        <button (click)="cancelA()">Cancelar</button>
+    </div>
+</div>
+}
+@if (showMessageModal) {
+<app-message-modal [message]="message" [isError]="isError" (close)="closeMessage()">
+</app-message-modal>
+}

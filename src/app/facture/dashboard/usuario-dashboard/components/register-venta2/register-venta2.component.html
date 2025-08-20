@@ -1,0 +1,236 @@
+<app-navbar-ventas></app-navbar-ventas>
+<div class="venta-container">
+    <div class="search-section">
+        <!-- Selector de tipo de búsqueda -->
+        <div class="search-type-selector">
+            <label>
+                <input type="radio" [(ngModel)]="searchType" value="codToday" (change)="onSearchTypeChange()">
+                Buscar por Código
+            </label>
+            <label>
+                <input type="radio" [(ngModel)]="searchType" value="company" (change)="onSearchTypeChange()">
+                Buscar por Empresa
+            </label>
+        </div>
+
+        <!-- Campo de búsqueda -->
+        <div class="search-input-container">
+            <div class="search-input-group">
+                <input type="text" [(ngModel)]="searchTerm" (input)="onSearchInput()" (keyup.enter)="searchManually()"
+                    [placeholder]="searchType === 'codToday' ? 'Ingrese código del producto' : 'Ingrese código de empresa'"
+                    class="search-input">
+                <button class="search-btn" (click)="searchManually()">
+                    <span>🔍</span> Buscar
+                </button>
+            </div>
+        </div>
+
+        <!-- Resultados de búsqueda flotante -->
+        <div class="search-results" *ngIf="showResults && searchResults.length > 0">
+            <div class="result-item" *ngFor="let product of searchResults" (click)="selectProduct(product)">
+                <img [src]="product.urlImg" [alt]="product.brand" class="product-image">
+                <div class="product-info">
+                    <p><strong>{{product.brand}}</strong></p>
+                    <p [ngClass]="product.repositoryType | repositoryTypeColor">{{ product.repositoryType }}</p>
+                    <p>Código: {{product.codToday}}</p>
+                    <p>Tipo: {{product.type}}</p>
+                    <p>Género: {{product.genero}}</p>
+                    <p class="price">S/ {{getPrice(product.price) | number:'1.2-2'}}</p>
+                </div>
+                <button class="add-btn">Seleccionar</button>
+            </div>
+        </div>
+
+        <!-- Mensaje cuando se está buscando -->
+        <div class="search-loading" *ngIf="searchTerm && !showResults && searchResults.length === 0">
+            <p>🔍 Buscando productos...</p>
+        </div>
+    </div>
+
+    <!-- Selección de producto -->
+    <div class="product-selection" *ngIf="selectedProduct">
+        <h3>Producto Seleccionado</h3>
+        <div class="selected-product">
+            <img [src]="selectedProduct.urlImg" [alt]="selectedProduct.brand" class="selected-product-image">
+            <div class="product-details">
+                <h4>{{selectedProduct.brand}}</h4>
+                <p [ngClass]="selectedProduct.repositoryType | repositoryTypeColor">{{ selectedProduct.repositoryType }}</p>
+                <p>Código: {{selectedProduct.codToday}}</p>
+                <p>Tipo: {{selectedProduct.type}}</p>
+                <p>Género: {{selectedProduct.genero}}</p>
+                <p>Precio: S/ {{getPrice(selectedProduct.price) | number:'1.2-2'}}</p>
+            </div>
+            <!-- Selección de tallas para productos que requieren talla -->
+            <div class="size-selection" *ngIf="isSizeProduct(selectedProduct.producto)">
+                <h4>Tallas Disponibles</h4>
+                <div class="available-sizes">
+                    <button class="size-btn" *ngFor="let size of getAvailableSizes(selectedProduct)"
+                        (click)="addSizeToSelection(size.key)">
+                        {{size.key.toUpperCase()|sizeFormat}} <span class="size-value">({{size.value}})</span>
+                    </button>
+                </div>
+    
+                <!-- Historial de tallas seleccionadas -->
+                <div class="selected-sizes" *ngIf="selectedSizes.length > 0">
+                    <h5>Tallas Seleccionadas:</h5>
+                    <div class="size-tags">
+                        <span class="size-tag" *ngFor="let size of selectedSizes; let i = index">
+                            {{size.toUpperCase()| sizeFormat}}
+                            <button class="remove-size" (click)="removeSizeFromSelection(i)">×</button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Input de cantidad para productos sin talla -->
+        <div class="quantity-input" *ngIf="isNoSizeProduct(selectedProduct.producto)">
+            <label>Cantidad:</label>
+            <input type="number" [(ngModel)]="productQuantity" min="1" class="quantity-field">
+        </div>
+
+        <button class="add-to-cart-btn" (click)="addToCart()">
+            Agregar al Carrito
+        </button>
+    </div>
+
+    <!-- Carrito de compras en tabla -->
+    <div class="cart-section">
+        <div class="cart-header">
+            <h3>Carrito de Compras</h3>
+            <input type="text" placeholder="Ingrese DNI" class="dni-input">
+            <div class="contador-seccion">
+                <button id="contador-toggle" type="button" (click)="toggleContador()"
+                  [style.background-color]="contadorSeleccionado === 'ACTIVADO' ? '#4CAF50' : '#f44336'" class="boton-contador">
+                  {{ contadorSeleccionado }}
+                </button>
+              </div>
+        </div>
+
+
+        <div class="cart-table-container" *ngIf="cart.length > 0">
+            <table class="cart-table">
+                <thead>
+                    <tr>
+                        <th>Imagen</th>
+                        <th>Producto</th>
+                        <th>Tallas</th>
+                        <th>Cant.</th>
+                        <th>Tipo Pago</th>
+                        <th>Precio Unit.</th>
+                        <th>Subtotal</th>
+                        <th>Eliminar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of cart; let cartIndex = index">
+                        <!-- Imagen del producto -->
+                        <td>
+                            <img [src]="item.product.urlImg" [alt]="item.product.brand" class="cart-item-image">
+                        </td>
+
+                        <!-- Información del producto -->
+                        <td class="product-info-cell">
+                            <p class="product-name">{{item.product.brand}}</p>
+                            <p class="product-code">
+                                {{item.product.codToday}} - {{item.product.type}} - 
+                                <span [class]="item.product.repositoryType | repositoryTypeColor">
+                                  {{item.product.repositoryType}}
+                                </span>
+                              </p>
+                        </td>
+
+
+
+                        <!-- Tallas seleccionadas -->
+                        <td class="sizes-cell">
+                            <div class="cart-size-tags" *ngIf="item.selectedSizes.length > 0">
+                                <span class="cart-size-tag"
+                                    *ngFor="let size of item.selectedSizes; let sizeIndex = index">
+                                    {{size.toUpperCase()| sizeFormat}}
+                                    <button class="remove-cart-size"
+                                        (click)="removeSizeFromCart(cartIndex, sizeIndex)">×</button>
+                                </span>
+                            </div>
+                            <span *ngIf="item.selectedSizes.length === 0" style="color: #999; font-style: italic;">No
+                                Requiere</span>
+                        </td>
+
+                        <!-- Cantidad -->
+                        <td class="quantity-cell">
+                            <span *ngIf="isSizeProduct(item.product.producto)">
+                                {{item.selectedSizes.length}}
+                            </span>
+                            <input type="number" *ngIf="isNoSizeProduct(item.product.producto)" [ngModel]="item.quantity"
+                                (ngModelChange)="updateQuantity(cartIndex, $event)" min="1" class="cart-quantity-input">
+                        </td>
+                        <!-- Tipo de pago -->
+                        <td class="paytype-cell">
+                            <select [ngModel]="item.payType" (ngModelChange)="onPayTypeChange(cartIndex, $event)"
+                                [disabled]="!isPayTypeEditable(cartIndex)">
+                                <option *ngFor="let type of payTypes" [value]="type.value"
+                                    [disabled]="isOptionDisabled(item, type.value)">
+                                    {{ type.label }}
+                                </option>
+                            </select>
+                        </td>
+
+
+                        <td class="unit-price">
+                            <div class="price-input-group">
+                                <span class="currency">S/</span>
+                                <input 
+                                    type="number" 
+                                    class="price-input" 
+                                    [value]="getPrice(item.product.price)" 
+                                    (input)="updatePriceInput(item, $event)"
+                                    (blur)="validatePrice(item, $event)"
+                                    min="0" 
+                                    step="0.01"
+                                    style="width: 80px; text-align: right;">
+                            </div>
+                        </td>
+                        
+                        <!-- Subtotal -->
+                        <td class="subtotal-cell">
+                            S/ {{item.subtotal}}
+                        </td>
+                        <!-- Precio unitario -->
+
+                        <!-- Botón eliminar -->
+                        <td class="remove-cell">
+                            <button  class="remove-item" (click)="removeFromCart(cartIndex)">×</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="cart-empty" *ngIf="cart.length === 0">
+            <p>No hay productos en el carrito</p>
+        </div>
+
+        <!-- Cálculos finales -->
+        <div class="cart-totals" *ngIf="cart.length > 0">
+            <div class="payment-section">
+                <div class="cash-input">
+                    <label>Efectivo recibido:</label>
+                    <input type="number" [(ngModel)]="cashReceived" (ngModelChange)="calculateChange()" min="0"
+                        step="0.01" class="cash-field">
+                </div>
+
+                <div class="change-display" *ngIf="cashReceived > 0">
+                    <p class="change-amount" [ngClass]="{'negative': change < 0, 'positive': change >= 0}">
+                        Vuelto: S/ {{change | number:'1.2-2'}}
+                    </p>
+                </div>
+            </div>
+
+            <div class="total-section">
+                <h3 class="total-amount">TOTAL: S/ {{total | number:'1.2-2'}}</h3>
+            </div>
+        </div>
+        <button class="register-btn" (click)="registrarVenta2()">Registrar Venta</button>
+    </div>
+</div>

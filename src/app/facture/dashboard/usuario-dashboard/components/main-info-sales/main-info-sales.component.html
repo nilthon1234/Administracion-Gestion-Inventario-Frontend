@@ -1,0 +1,104 @@
+<app-pay-type-navbar></app-pay-type-navbar>
+
+<div *ngIf="infoSales.length > 0; else noData" class="table-container">
+  <table class="info-sale-table">
+    <thead>
+      <tr>
+        <th>id Informe</th>
+        <th>Resto</th>
+        <th>Sumo</th>
+        <th>Código Antiguo</th>
+        <th>Código Nuevo</th>
+        <th>Fecha Vendida</th>
+        <th>Ticket</th>
+        <th>ID Detalles</th>
+        <th>Tipo de Pago</th>
+        <th>Tipo Ticket</th>
+        <th>Especificación</th>
+        <th>Precio Antiguo</th>
+        <!-- <th>Estado</th> -->
+        <th>Registrado</th>
+        <th>Acción</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (item of infoSales; track item.id) {
+      <tr>
+        <td>{{ item.id ?? '-' }}</td>
+        <td>{{ item.discount ?? '-' }}</td>
+        <td>{{ item.increase ?? '-' }}</td>
+        <td [appCopiarTexto]="item.antiguoCodToday!">{{ item.antiguoCodToday ?? '-' }}</td>
+        <td [appCopiarTexto]="item.codToday!" style="color: rgba(21, 170, 8, 0.973);">{{ item.codToday }}</td>
+        <td>{{ item.soldDate ?? '-' | customDateFormat}}</td>
+        <td [appCopiarTexto]="item.nroTicket.toString()">{{ item.nroTicket }}</td>
+        <td>{{ item.idDetails ?? '-' }}</td>
+        <td>{{ item.payType | payTypeTranslate }}</td>
+        <td>{{ item.ticketType ?? '-' }}</td>
+        <td>{{ item.especificacion ?? '-' | especificaciones }}</td>
+        <td>{{ item.priceAntiguo ?? '-' }}</td>
+        <!-- <td>
+            <span class="status-badge" [ngClass]="{
+              'active': item.state === 'Activo',
+              'inactive': item.state !== 'Activo'
+            }">{{ item.state ?? '-' }}</span>
+          </td> -->
+        <td style="color: rgba(21, 170, 8, 0.973);">{{ item.dateUpdate ?? '-'| customDateFormat }}</td>
+        <td>
+          <ng-container *ngIf="item.especificacion === 'NOESPECIFICADO'; else checkMark">
+            <button class="action-btn" (click)="openPaymentModal(item)">Especificar Pago</button>
+          </ng-container>
+          <ng-template #checkMark>✅</ng-template>
+        </td>
+      </tr>
+      }
+    </tbody>
+  </table>
+</div>
+
+<!-- Modal para especificar pagos -->
+<div *ngIf="showModal" class="modal-overlay">
+  <div class="modal-content">
+    <h3>Especificar Métodos de Pago</h3>
+    <p>ID de Venta: {{currentSale?.id}} - Ticket: {{currentSale?.nroTicket}}</p>
+    <div *ngFor="let method of paymentMethods; let i = index" class="payment-method">
+      <div class="form-group">
+        <label>Número de Ticket</label>
+        <input type="number" [(ngModel)]="method.ticket" class="form-control" [readOnly]="i === 0">
+      </div>
+      <div class="form-group">
+        <label>Tipo de Pago</label>
+        <select [(ngModel)]="method.payType" class="form-control" (change)="checkPaymentMethods()">
+          <option value="" disabled selected>Seleccione un tipo de pago</option>
+          <option *ngFor="let option of payTypeOptions" [value]="option.value">
+            {{option.display}}
+          </option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Monto</label>
+        <input type="number" step="0.01" [(ngModel)]="method.monto" class="form-control">
+      </div>
+      <button *ngIf="paymentMethods.length > 1" (click)="removePaymentMethod(i)" class="btn btn-danger btn-sm">
+        Eliminar
+      </button>
+    </div>
+    <button (click)="addPaymentMethod()" class="btn btn-secondary">Agregar otro método</button>
+    <div *ngIf="errorMessage" class="alert alert-danger" style="margin-bottom: 20px;">
+      {{ errorMessage }}
+    </div>
+    <div *ngIf="successMessage" class="alert alert-success" style="margin-bottom: 20px;">
+      {{ successMessage }}
+    </div>
+    <div class="modal-actions">
+      <button (click)="closeModal()" class="btn btn-cancel">Cancelar</button>
+      <button (click)="submitPaymentMethods()" class="btn btn-primary" [disabled]="isSaveDisabled">Guardar</button>
+    </div>
+  </div>
+</div>
+
+
+
+
+<ng-template #noData>
+  <p class="no-data-msg">No hay información disponible.</p>
+</ng-template>

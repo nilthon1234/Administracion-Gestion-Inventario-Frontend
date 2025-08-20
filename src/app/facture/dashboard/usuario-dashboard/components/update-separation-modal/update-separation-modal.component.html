@@ -1,0 +1,58 @@
+<div class="overlay" (click)="onCancel()">
+    <div class="form-container" (click)="$event.stopPropagation()">
+        <h2>Actualizar Separación</h2>
+        <form (ngSubmit)="onAccept()" #form="ngForm">
+
+            <label>
+                Tipo:
+                <select [(ngModel)]="data.producto" name="producto" required>
+                    <option *ngFor="let t of filteredTypes" [value]="t">{{ t }}</option>
+                </select>
+            </label>
+
+            <label>
+                Género:
+                <select [(ngModel)]="data.genero" name="genero" required (change)="onGeneroChange(data.genero)">
+                    <option *ngFor="let g of generos" [value]="g.nombre">{{ g.nombre }}</option>
+                </select>
+            </label>
+
+            <label>
+                Repositorio:
+                <select [(ngModel)]="data.repositoryType" name="repositoryType" required>
+                    <option *ngFor="let r of repositoryTypes" [value]="r">{{ r }}</option>
+                </select>
+            </label>
+
+            <label>
+                Código Tienda:
+                <input [(ngModel)]="data.codToday" name="codToday" required />
+            </label>
+
+            <div *ngIf="data.producto === 'CALZADO'" class="tallas-container">
+                <div class="talla-item" *ngFor="let talla of tallas"
+                    [style.background-image]="'url(assets/images/' + talla.talla + '.jpg)'">
+                    <input type="radio" [id]="'talla-' + talla.talla" name="talla" [value]="talla.talla"
+                        [(ngModel)]="sizeString">
+                    <label *ngIf="data.producto === 'CALZADO'" [for]="'talla-' + talla.talla">{{ talla.talla }}</label>
+                </div>
+            </div>
+
+
+            <label *ngIf="showAmountField()">
+                Cantidad:
+                <input type="number" [(ngModel)]="data.amount" name="amount" required />
+            </label>
+
+            <label>
+                Precio:
+                <input type="number" [(ngModel)]="data.price" name="price" required />
+            </label>
+
+            <div class="modal-actions">
+                <button type="button" (click)="onCancel()">Cancelar Actualizacion</button>
+                <button type="submit" [disabled]="form.invalid">Aceptar Actualización</button>
+            </div>
+        </form>
+    </div>
+</div>

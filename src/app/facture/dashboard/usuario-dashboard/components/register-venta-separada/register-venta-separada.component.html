@@ -1,0 +1,144 @@
+<div *ngIf="clientData" class="sale-registration-container">
+  <div class="sale-registration-card">
+    <h2 class="sale-registration-title">Registrar Venta Separada</h2>
+
+    <!-- Client Information -->
+    <div class="client-info-section">
+      <h3 class="section-subtitle">Información del Cliente</h3>
+      <div class="client-details">
+        <div class="detail-item">
+          <span class="detail-label">Cliente:</span>
+          <span class="detail-value">{{ clientData.name }} {{ clientData.lastName }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">DNI:</span>
+          <span class="detail-value">{{ clientData.dni }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sale Form -->
+    <form #saleForm="ngForm" class="sale-form">
+      <h3 class="section-subtitle">Detalles de la Venta</h3>
+
+      <div class="form-group">
+        <label for="sellerName" class="form-label">Nombre del Vendedor</label>
+        <input type="text" id="sellerName" name="sellerName" [(ngModel)]="sellerName" required class="form-control"
+          placeholder="Ingrese nombre del vendedor" />
+        <span class="form-hint">Requerido</span>
+      </div>
+
+      <div class="form-group">
+        <label for="ticketType" class="form-label">Tipo de Ticket</label>
+        <input type="text" id="ticketType" name="ticketType" [value]="ticketType" class="form-control" disabled />
+      </div>
+
+      <div class="form-group">
+        <label for="payType" class="form-label">Método de Pago</label>
+        <select id="payType" name="payType" [(ngModel)]="payType" class="form-control" required>
+          <option *ngFor="let method of payMethods" [value]="method.value">{{ method.label }}</option>
+        </select>
+        <span class="form-hint">Requerido</span>
+      </div>
+
+
+
+      <!-- Mensaje de error -->
+      <div *ngIf="showError" class="error-message">
+        {{ errorMessage }}
+      </div>
+
+      <button type="button" (click)="registerSale()" [disabled]="!saleForm.valid" class="submit-button">
+        Registrar Venta
+      </button>
+    </form>
+
+    <!-- Products with Size -->
+    <div *ngIf="separationsWithSize.length > 0" class="products-section">
+      <div class="section-header">
+        <h3 class="section-subtitle">Productos con Talla</h3>
+        <span class="items-count">{{ separationsWithSize.length }} items</span>
+      </div>
+
+      <div class="table-responsive">
+        <table class="products-table">
+          <thead>
+            <tr>
+              <th>Id Cliente</th>
+              <th>Id Separacion</th>
+              <th>Repositorio</th>
+              <th>Código</th>
+              <th>Tipo</th>
+              <th>Género</th>
+              <th>Talla</th>
+              <th>Precio (S/.)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let separation of separationsWithSize; let i = index">
+              <td>{{separation.idClient}}</td>
+              <td>{{separation.id}}</td>
+              <td>
+                <select [(ngModel)]="separation.repositoryType" class="form-control table-input">
+                  <option *ngFor="let repo of repositoryOptions" [value]="repo">{{ repo }}</option>
+                </select>
+              </td>
+              <td><input [(ngModel)]="separation.codToday" class="form-control table-input" /></td>
+              <td>{{ separation.type }}</td>
+              <td>{{ separation.genero }}</td>
+              <td><input [(ngModel)]="separation.size" class="form-control table-input" /></td>
+              <td>
+                <input type="number" [(ngModel)]="separation.price" class="form-control table-input price-input" min="0"
+                  step="0.01" />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Products with Amount -->
+    <div *ngIf="separationsWithAmount.length > 0" class="products-section">
+      <div class="section-header">
+        <h3 class="section-subtitle">Productos con Cantidad</h3>
+        <span class="items-count">{{ separationsWithAmount.length }} items</span>
+      </div>
+
+      <div class="table-responsive">
+        <table class="products-table">
+          <thead>
+            <tr>
+              <th>Repositorio</th>
+              <th>Código</th>
+              <th>Tipo</th>
+              <th>Género</th>
+              <th>Cantidad</th>
+              <th>Precio (S/.)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let separation of separationsWithAmount; let i = index">
+              <td>{{separation.idClient}}</td>
+              <td>{{separation.id}}</td>
+              <td>
+                <select [(ngModel)]="separation.repositoryType" class="form-control table-input">
+                  <option *ngFor="let repo of repositoryOptions" [value]="repo">{{ repo }}</option>
+                </select>
+              </td>
+              <td><input [(ngModel)]="separation.codToday" class="form-control table-input" /></td>
+              <td>{{ separation.type }}</td>
+              <td>{{ separation.genero }}</td>
+              <td>
+                <input type="number" [(ngModel)]="separation.amount" class="form-control table-input" min="1" />
+              </td>
+              <td>
+                <input type="number" [(ngModel)]="separation.price" class="form-control table-input price-input" min="0"
+                  step="0.01" />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,49 @@
+<app-pay-type-navbar></app-pay-type-navbar>
+
+<div *ngIf="devoluciones.length > 0; else noData" class="table-container">
+  <table class="info-sale-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>ID Cliente</th>
+        <th>Id Separacion</th>
+        <th>Fecha Vendida</th>
+        <th>Id Ticket</th>
+        <th>Id Detalle</th>
+        <th>Codigo</th>
+        <th>Tipo Ticket</th>
+        <th>Tipo Pago</th>
+        <th>Monto</th>
+        <th>Registrado</th>
+        
+      </tr>
+    </thead>
+    <tbody>
+      @for (item of devoluciones; track item.id) {
+        <tr>
+          <td>{{ item.id}}</td>
+          <td>{{ item.idClient ?? 'No Requiere'}}</td>
+          <td>{{ item.idSeparacion ?? 'No Requiere'}}</td>
+          <td>{{ item.soldDate | customDateFormat}}</td>
+          <td [appCopiarTexto]="item.idTicket.toString()">{{ item.idTicket}}</td>
+          <td>{{ item.idProducto}}</td>
+          <td [appCopiarTexto]="item.codToday">{{ item.codToday}}</td>
+          <td>{{ item.ticketType }}</td>
+          <td>{{ item.payType | payTypeTranslate }}</td>
+          <td>{{ item.monto}}</td>
+          <td>{{ item.registrationDevolucio | customDateFormat}}</td>
+          <!-- <td>
+            <span class="status-badge" [ngClass]="{
+              'active': item.state === 'Activo',
+              'inactive': item.state !== 'Activo'
+            }">{{ item.state ?? '-' }}</span>
+          </td> -->
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+
+<ng-template #noData>
+  <p class="no-data-msg">No hay información disponible.</p>
+</ng-template>

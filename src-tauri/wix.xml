@@ -1,0 +1,19 @@
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="APPLICATIONFOLDER">
+      <!-- Crea una carpeta para tu JRE dentro de la instalación -->
+      <Directory Id="JavaRuntime" Name="jre" />
+    </DirectoryRef>
+    
+    <ComponentGroup Id="JreComponents">
+      <Component Id="JreFiles" Directory="JavaRuntime" Guid="*">
+        <!-- Copia todo el contenido del JRE -->
+        <File Source="binaries\jre\**" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  
+  <Feature Id="JreFeature" Title="Java Runtime" Level="1">
+    <ComponentGroupRef Id="JreComponents" />
+  </Feature>
+</Wix>

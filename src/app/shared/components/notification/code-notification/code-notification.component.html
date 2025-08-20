@@ -1,0 +1,6 @@
+<div class="notification-overlay" *ngIf="isVisible()">
+    <div class="notification-box" *ngIf="newCodeInfo()">
+      Informe del Código Generado:
+      <p>Código: {{ newCodeInfo()?.code }}</p>
+    </div>
+  </div>

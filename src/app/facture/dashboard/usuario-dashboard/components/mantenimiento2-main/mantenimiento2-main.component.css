@@ -1,0 +1,546 @@
+/* Contenedor del formulario */
+.form-container {
+  background: linear-gradient(90deg, #012a5b, #cccbf1);
+  padding: 20px;
+  border-radius: 10px;
+  margin: 20px auto;
+  max-width: 1100px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  font-family: 'Arial', sans-serif;
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  align-items: center;
+}
+
+select,
+input[type="text"],
+input[type="file"] {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  min-width: 150px;
+  transition: border-color 0.3s ease;
+}
+
+select:focus,
+input[type="text"]:focus {
+  border-color: #4caf50;
+  outline: none;
+}
+
+.btn-success {
+  background-color: #012a5b;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+  min-width: 140px;
+}
+
+.btn-success:hover:not(:disabled) {
+  background-color: #388e3c;
+}
+
+.btn-success:disabled {
+  background-color: #a5d6a7;
+  cursor: not-allowed;
+}
+
+.mensaje {
+  color: #1976d2;
+  font-weight: 600;
+  margin-top: 15px;
+  text-align: center;
+}
+
+/* Contenedor de la lista */
+.list-container {
+  max-width: 1100px;
+  margin: 30px auto;
+  padding: 0 15px;
+}
+
+.list-container label {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.list-container input[type="date"] {
+  margin-left: 10px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
+
+h3 {
+  margin-top: 20px;
+  font-family: 'Arial', sans-serif;
+  color: #444;
+  text-align: center;
+}
+
+/* Mensaje nuevos códigos */
+.new-codes-message {
+  color: #2e7d32;
+  font-weight: 700;
+  margin: 15px 0;
+  text-align: center;
+}
+
+/* Tabla */
+.slipper-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  font-family: 'Arial', sans-serif;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.slipper-table thead {
+  background: linear-gradient(90deg, #012a5b, #cccbf1);
+  color: white;
+}
+
+.slipper-table th,
+.slipper-table td {
+  padding: 12px 15px;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+}
+
+.slipper-table tbody tr:hover {
+  background-color: #f1f8e9;
+  cursor: pointer;
+}
+
+/* Imagen en tabla */
+.slipper-table img {
+  width: 80px;
+  height: auto;
+  border-radius: 6px;
+  object-fit: contain;
+}
+
+/* Resaltar nuevos códigos */
+.new-code {
+  background-color: #d0f0c0 !important;
+  font-weight: 700;
+  color: #2e7d32;
+  transition: background-color 0.5s ease;
+}
+
+/* Mensaje cuando no hay datos */
+.empty-message {
+  text-align: center;
+  font-style: italic;
+  color: #999;
+  margin-top: 20px;
+}
+
+/*ANIMACIONES*/
+/* Estilos base para los botones */
+.btn {
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  /* Padding reducido */
+  font-size: 14px;
+  /* Tamaño de fuente reducido */
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+/* Efectos de hover y active */
+.btn:hover {
+  transform: scale(1.05);
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+/* Estilo para el botón primario */
+.btn-primary {
+  background-color: #3f51b5;
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #303f9f;
+  /* Color más oscuro para el hover */
+}
+
+/* Estilo para el botón secundario */
+.btn-secondary {
+  background-color: #ff9800;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background-color: #e68a00;
+  /* Color más oscuro para el hover */
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 300px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+.btnactus-price{
+  color: #00060c;
+  background-color: #e68a00;
+}
+.btnactus-cancel{
+  background-color: red;
+}
+/*Alerta de QR*/
+.shake {
+  animation: shake 0.5s infinite;
+}
+
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  20%, 60% {
+    transform: translateX(-5px);
+  }
+  40%, 80% {
+    transform: translateX(5px);
+  }
+}
+
+
+/*SIZES Lista*/
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  min-width: 900px;
+}
+
+
+/*Para el diseño  de los sizes*/
+
+
+/* 🔹 Calzado: 8 columnas */
+.sizes-grid-calzado {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(70px, 1fr));
+  gap: 8px;
+}
+
+/* 🔹 Ropa: 5 columnas más grandes */
+.sizes-grid-ropa {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(80px, 1fr));
+  gap: 12px;
+}
+
+/* Tarjetas generales */
+.size-card {
+  border: 1px solid #ddd;
+  padding: 6px;
+  border-radius: 6px;
+  text-align: center;
+  background: #f8f9fa;
+}
+
+/* Controles */
+.size-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+}
+
+.btn-minus, .btn-plus {
+  border: none;
+  padding: 4px 6px;
+  cursor: pointer;
+  font-size: 14px;
+  border-radius: 4px;
+}
+
+.btn-minus {
+  background-color: #dc3545;
+  color: white;
+}
+
+.btn-plus {
+  background-color: #28a745;
+  color: white;
+}
+
+.size-label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 4px;
+}
+.size-controls input {
+  width: 35px;
+  height: 26px;
+  text-align: center;
+  padding: 0;
+  font-size: 13px;
+}
+
+/*Botones */
+.botones-container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 15px;
+  background-color: #f8f9fa; /* Fondo claro para el contenedor */
+  border-radius: 8px; /* Bordes redondeados */
+}
+
+.boton {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease; /* Efecto suave al pasar el mouse */
+}
+
+.cerrar {
+  background-color: #dc3545; /* Rojo para "Cerrar" */
+  color: white;
+}
+
+.aumentar {
+  background-color: #28a745; /* Verde para "Aumentar tallas" */
+  color: white;
+}
+
+/* Efecto hover para ambos botones */
+.boton:hover {
+  opacity: 0.9;
+  transform: scale(1.02); /* Ligero aumento de tamaño */
+}
+/*detalles */
+.slipper-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.slipper-img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+.size-controls input {
+  width: 40px;
+  text-align: center;
+  padding: 2px;
+  font-size: 14px;
+}
+
+/* Ocultar flechas en inputs tipo number para Chrome, Safari, Edge, Opera */
+.size-controls input::-webkit-outer-spin-button,
+.size-controls input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Ocultar flechas en inputs tipo number para Firefox */
+.size-controls input[type="number"] {
+  appearance: textfield; 
+  -moz-appearance: textfield;
+}
+.cantidad-stock {
+  color: #1f4ee9;
+  font-size: 14px;
+}
+.boton-ver-detalles {
+  background-color: #007bff; /* Azul */
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-top: 8px; /* Espacio superior para separarlo del botón "Eliminar" */
+  width: 100%; /* Opcional: para que ocupe el mismo ancho que "Eliminar" */
+}
+
+.boton-eliminar {
+  background-color: #dc3545; /* Rojo */
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  width: 100%; /* Opcional: para que ambos botones tengan el mismo ancho */
+}
+
+
+/* Fondo oscuro del modal */
+.precio-modal-fondo {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Contenedor del modal (caja principal) */
+.precio-modal-caja {
+  background: white;
+  width: 320px;
+  max-width: 90vw;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+  text-align: center;
+  font-family: 'Segoe UI', sans-serif;
+  border: 1px solid #e0e0e0;
+  animation: scaleIn 0.3s ease-out;
+}
+
+/* Título */
+.precio-modal-caja h3 {
+  margin-top: 0;
+  color: #333;
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+/* Párrafo (código) */
+.precio-modal-caja p {
+  color: #555;
+  margin: 8px 0 20px;
+  font-size: 0.95rem;
+}
+
+/* Input de precio */
+.precio-modal-caja input[type="number"] {
+  width: 85%;
+  max-width: 240px;
+  padding: 12px 16px;
+  font-size: 16px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  outline: none;
+  text-align: center;
+  background-color: #fdfdfd;
+  transition: all 0.3s;
+}
+
+.precio-modal-caja input[type="number"]:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+/* Botones (sin tocar las clases btnactus-*) */
+.btnactus-price,
+.btnactus-cancel {
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin: 6px;
+  transition: transform 0.2s, opacity 0.2s;
+}
+
+.btnactus-price {
+  background-color: #e68a00;
+  color: #00060c;
+}
+
+.btnactus-price:hover {
+  background-color: #d47a00;
+  transform: translateY(-1px);
+}
+
+.btnactus-cancel {
+  background-color: #f44336;
+  color: white;
+}
+
+.btnactus-cancel:hover {
+  background-color: #d32f2f;
+  transform: translateY(-1px);
+}
+
+/* Animaciones sutiles */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.92);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+

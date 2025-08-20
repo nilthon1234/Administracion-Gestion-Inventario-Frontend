@@ -1,0 +1,41 @@
+<app-pay-type-navbar></app-pay-type-navbar>
+
+<div *ngIf="ventasPagos.length > 0; else noData" class="table-container">
+  <table class="info-sale-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Ticket</th>
+        <th>Tipo Pago</th>
+        <th>Monto</th>
+        <th>Monto Fijo</th>
+        <th>Tipo Ticket</th>
+        <th>Registrado</th>
+        
+      </tr>
+    </thead>
+    <tbody>
+      @for (item of ventasPagos; track item.id) {
+        <tr>
+          <td>{{ item.id}}</td>
+          <td [appCopiarTexto]="item.ticket.toString()">{{ item.ticket }}</td>
+          <td>{{ item.payType | payTypeTranslate }}</td>
+          <td>{{ item.monto}}</td>
+          <td>{{ item.total}}</td>
+          <td>{{ item.ticketType}}</td>
+          <td>{{ item.registrationMetodoPago | customDateFormat}}</td>
+          <!-- <td>
+            <span class="status-badge" [ngClass]="{
+              'active': item.state === 'Activo',
+              'inactive': item.state !== 'Activo'
+            }">{{ item.state ?? '-' }}</span>
+          </td> -->
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+
+<ng-template #noData>
+  <p class="no-data-msg">No hay información disponible.</p>
+</ng-template>

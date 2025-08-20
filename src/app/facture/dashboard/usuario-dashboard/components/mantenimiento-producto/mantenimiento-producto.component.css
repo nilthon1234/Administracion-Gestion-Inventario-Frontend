@@ -1,0 +1,80 @@
+.container { padding: 1rem; }
+.tabs { display: flex; gap: .5rem; margin-bottom: 1rem; }
+.tabs button { padding: .5rem 1rem; border: none; background: #e0e0e0; border-radius: 4px; cursor: pointer; }
+.tabs button.active { background: #007bff; color: #fff; }
+.form { display: flex; gap: .5rem; margin-bottom: 1rem; }
+.form input { flex: 1; padding: .5rem; }
+.grid { display: flex; flex-wrap: wrap; gap: 1rem; }
+.card { border: 1px solid #cccccc; border-radius: 6px; padding: .75rem; min-width: 100px; text-align: center; }
+.badge { display: block; font-weight: bold; font-size: 1.2rem; margin-bottom: .25rem; }
+.name { font-size: .9rem; }
+.card {
+    position: relative;
+  }
+  .delete-btn {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background: transparent;
+    color: red;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+  .delete-btn:hover {
+    color: darkred;
+  }
+
+  .genero-section {
+    margin-top: 2rem;
+    padding: 1rem;
+    border-top: 1px solid #ddd;
+  }
+  
+  .genero-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  
+  .genero-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    min-width: 200px;
+    background-color: #fafafa;
+  }
+  
+  .genero-card.existe {
+    background-color: #e0ffe0;
+    border-color: #28a745;
+  }
+  
+  .genero-card.disponible {
+    background-color: #fff3cd;
+    border-color: #ffc107;
+  }
+  
+  .btn-crear {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85rem;
+  }
+  
+  .btn-crear:hover {
+    background-color: #0056b3;
+  }
+  
+  .badge-existe {
+    font-size: 0.85rem;
+    color: #28a745;
+    font-weight: bold;
+  }

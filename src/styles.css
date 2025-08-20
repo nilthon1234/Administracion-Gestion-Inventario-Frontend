@@ -1,0 +1,155 @@
+
+
+
+
+/* You can add global styles to this file, and also import other style files */
+@import 'ngx-toastr/toastr';
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+/* Sombra oscura alrededor del modal */
+.custom-backdrop {
+  background-color: rgba(0, 0, 0, 0.7) !important; /* Color negro con opacidad */
+}
+
+/* Opcional: estilo para el cuadro flotante */
+::ng-deep .custom-modalbox .mat-dialog-container {
+  border-radius: 15px;
+  padding: 20px;
+  background: #fff;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.3); /* Sombra interna del cuadro */
+  width: 500px;
+}
+.stock-container {
+      margin: 20px;
+    }
+    table {
+      margin-bottom: 20px;
+    }
+
+
+/*RepositoryType*/
+/* Estilo base para todos los badges */
+.badge-alacena,
+.badge-vitrina,
+.badge-closet,
+.badge-mesa,
+.badge-default {
+  display: inline-block;
+  padding: 4px 10px;        /* Ajusta el espaciado interno */
+  border-radius: 16px;      /* Bordes completamente redondeados */
+  font-size: 12px;          /* Tamaño de fuente pequeño */
+  font-weight: 600;         /* Texto en negrita */
+  text-align: center;
+  white-space: nowrap;      /* Evita saltos de línea */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+  transition: all 0.3s ease; /* Efecto hover suave */
+}
+
+/* Colores específicos para cada tipo */
+.badge-alacena {
+  background-color: #FF5733;
+  color: white;
+}
+
+.badge-vitrina {
+  background-color: #33FF57;
+  color: #333; /* Cambiamos el texto a oscuro para mejor contraste */
+}
+
+.badge-closet {
+  background-color: #3357FF;
+  color: white;
+}
+
+.badge-mesa {
+  background-color: #F033FF;
+  color: white;
+}
+
+.badge-default {
+  background-color: #cccccc;
+  color: #333333;
+}
+
+/* Efecto hover (opcional) */
+.badge-alacena:hover,
+.badge-vitrina:hover,
+.badge-closet:hover,
+.badge-mesa:hover,
+.badge-default:hover {
+  transform: translateY(-1px);  /* Levanta ligeramente el badge */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/*Para la sobrecarga de la aplicacion*//* Pantalla completa con fondo dividido */
+#splash-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to right, #013370 50%, #013370 50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  transition: opacity 1s ease-out;
+}
+
+/* Cuando se oculta  */
+#splash-screen.hide {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Caja central */
+.splash-box {
+  background: black; /* translúcido */
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 2rem;
+  border-radius: 12px;
+  text-align: center;
+  color: #fff;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
+  animation: fadeIn 1.2s ease;
+}
+
+/* Spinner circular */
+.spinner {
+  width: 60px;
+  height: 60px;
+  border: 6px solid #fff;
+  border-top-color: #013370;
+  border-radius: 50%;
+  margin: 0 auto 1rem auto;
+  animation: spin 1s linear infinite;
+}
+
+/* Texto */
+.splash-box h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.splash-box p {
+  margin-top: 0.5rem;
+  font-size: 1rem;
+  opacity: 0.8;
+}
+
+/* Animaciones */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+
+
+

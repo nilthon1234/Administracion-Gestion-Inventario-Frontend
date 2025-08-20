@@ -1,0 +1,233 @@
+<div class="dashboard">
+  <header class="dashboard-header">
+    <h1>Dashboard Protegido</h1>
+    <button (click)="abrirModal()" class="btn btn-primary">Actualizar Dominio</button>
+    <button (click)="mostrarModal2()" class="btn btn-dark">Actualizar Nro Ticket</button>
+    <app-boton-sesion-tiempo></app-boton-sesion-tiempo>
+  </header>
+
+  <!-- Contenedor de la gráfica -->
+  <div class="chart-container">
+    <div class="chart-header">
+      <h2>Ganancias del Año {{ anio }}</h2>
+      <div class="year-selector">
+        <label for="anio">Año:</label>
+        <select id="anio" [(ngModel)]="anio" (change)="cargarDatos()">
+          <option *ngFor="let year of yearsList" [value]="year">{{ year }}</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Gráfica de barras -->
+    <div class="chart-wrapper">
+      <div class="chart-area">
+        <!-- Escala Y (vertical) -->
+        <div class="y-axis">
+          <div class="y-tick" *ngFor="let tick of yAxisTicks">
+            <span class="y-label">{{ tick | currency:'PEN':'symbol':'1.0-0' }}</span>
+          </div>
+        </div>
+
+        <!-- Área de barras -->
+        <div class="bars-container">
+          <!-- Líneas horizontales de la cuadrícula -->
+          <div *ngFor="let tick of yAxisTicks" class="horizontal-line"
+            [ngStyle]="{'bottom.%': (tick / yAxisTicks[0]) * 100}">
+          </div>
+
+          <!-- Barras -->
+          <div class="bar-wrapper" *ngFor="let mes of gananciaAnual?.meses; let i = index">
+            <div class="bar" [ngStyle]="{ 'height': getBarHeight(mes.totalMes) }" [style.background]="getBarColor(i)">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Eje X con labels de meses - DEBAJO de la línea base -->
+      <div class="x-axis">
+        <div class="month-label" *ngFor="let mes of gananciaAnual?.meses">
+          {{ getMonthAbbr(mes.mes) }}
+        </div>
+      </div>
+
+      <!-- Total anual -->
+      <div class="total-section">
+        <div class="total-label">Total Anual: {{ gananciaAnual.totalAnual | currency:'PEN' }}</div>
+      </div>
+    </div>
+
+  </div>
+  <table class="monthly-results">
+    <thead>
+      <tr>
+        <th style="text-align: center;" *ngFor="let mes of gananciaAnual?.meses; let i = index" [style.background]="getBarColor(i)">
+          {{ getMonthAbbr(mes.mes) }}
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td *ngFor="let mes of gananciaAnual?.meses; let i = index" class="mes-celda"
+          [style.background]="getBarColor(i)">
+          <div class="contenido-mes">
+            <div class="nombre-mes">{{ getMonthAbbr(mes.mes) }}</div>
+            <div class="valor-mes">
+              {{ mes.totalMes | currency:'S/' }}
+            </div>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+
+
+</div>
+
+<!-- Tabla original (opcional, puedes ocultarla) -->
+<div class="table-container" style="display: none;">
+  <table class="monthly-results">
+    <tbody>
+      <tr>
+        <td *ngFor="let mes of gananciaAnual?.meses; let i = index" class="mes-celda"
+          [style.background]="getBarColor(i)">
+          <div class="contenido-mes">
+            <div class="nombre-mes">{{ getMonthAbbr(mes.mes) }}</div>
+            <div class="valor-mes">
+              {{ mes.totalMes | currency:'PEN' }}
+            </div>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+</div>
+
+<div class="side-panel">
+
+
+  <div class="panels-container animate-fade-in">
+    <!-- Primer cuadro: contiene todo -->
+    <div class="side-panel1-content panel-box">
+      <h4 class="section-title">Totales Generales Mes</h4>
+      <input type="date" [value]="fecha" (change)="onDateChange($event)" class="date-picker" />
+      <br><br>
+      <div class="general-totals-cards">
+        <div class="total-card day">
+          <span class="label">Día</span>
+          <span class="amount">S/ {{ data?.totalDia || 0 }}</span>
+        </div>
+        <div class="total-card week">
+          <span class="label">Semana</span>
+          <span class="amount">S/ {{ data?.totalSemana || 0 }}</span>
+        </div>
+        <div class="total-card month">
+          <span class="label">Mes</span>
+          <span class="amount">S/ {{ data?.totalMes || 0 }}</span>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <h4 class="section-title">Totales por Tipo de Pago Del Dia</h4>
+      <div class="pay-types-cards">
+        <div class="pay-type-card" *ngFor="let tipo of tiposDePago(data?.totalesPorPayType); let i = index"
+          [style.backgroundColor]="getColorByIndex(i)">
+          <span class="pay-type">{{ tipo | payTypeTranslate }}</span>
+          <span class="pay-amount">S/ {{ data.totalesPorPayType[tipo] }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Segundo cuadro queda vacío o sin contenido dinámico -->
+    <div class="side-panel2-content panel-box resumen-dashboard">
+      <h4 class="text-center text-lg font-semibold mb-4">📊 Resumen de Productos</h4>
+
+      <div class="resumen-grid">
+
+        <!-- Vitrina -->
+        <div class="resumen-card bg-blue">
+          <span class="resumen-title">Modelo Vitrina</span>
+          <span class="resumen-value">{{ resumen?.modelo_Vitrina }}</span>
+          <hr />
+          <span class="resumen-title">Productos Vitrina</span>
+          <span class="resumen-value-sm">{{ resumen?.vitrina }}</span>
+        </div>
+
+        <!-- VitrinaB 
+        <div class="resumen-card bg-indigo">
+          <span class="resumen-title">Modelo VitrinaB</span>
+          <span class="resumen-value">{{ resumen?.modelo_VitrinaB }}</span>
+          <hr />
+          <span class="resumen-title">Productos VitrinaB</span>
+          <span class="resumen-value-sm">{{ resumen?.vitrinaB }}</span>
+        </div>-->
+
+        <!-- Almacén -->
+        <div class="resumen-card bg-green">
+          <span class="resumen-title">Modelo Almacén</span>
+          <span class="resumen-value">{{ resumen?.modelo_codToday_almacen }}</span>
+          <hr />
+          <span class="resumen-title">Productos Almacén</span>
+          <span class="resumen-value-sm">{{ resumen?.productos_total_almacen }}</span>
+        </div>
+        <div class="total-card day">
+
+          <span class="label">Amortizaciones Del Dia</span>
+          <span class="amount">S/ {{ data?.amortizaciones || 0 }}</span>
+        </div>
+        <div class="total-card day">
+          <span class="label">Precios Aumentados Del Dia</span>
+          <span class="amount">S/ {{ data?.priceAumentados || 0 }}</span>
+        </div>
+        <div class="total-card day">
+          <span class="label">Precios Restados Del Dia</span>
+          <span class="amount">S/ {{ data?.priceDescontados || 0 }}</span>
+        </div>
+        <div class="total-card day">
+          <span class="label">Devoluciones Del Dia</span>
+          <span class="amount">S/ {{ data?.devoluciones || 0 }}</span>
+        </div>
+
+      </div>
+
+      <ng-template #cargando>
+        <p class="text-center mt-4">Cargando resumen...</p>
+      </ng-template>
+    </div>
+
+
+  </div>
+
+  <div class="modal-overlay" *ngIf="mostrarModal">
+    <div class="modal-contenido animate">
+      <div class="url-box" *ngIf="dominioActual">
+        <span class="url-text">{{ dominioActual }}</span>
+        <button class="btn-copy" (click)="copiarDominio()">Copiar</button>
+      </div>
+      <h2>Actualizar Dominio</h2>
+      <input [(ngModel)]="nuevoDominio" class="form-control" placeholder="https://nuevo-dominio.com" />
+      <div class="modal-buttons">
+        <button (click)="actualizar()" class="btn btn-success">Actualizar</button>
+        <button (click)="cerrarModal()" class="btn btn-secondary">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" *ngIf="modalVisible" (click)="ocultarModal()">
+    <div class="modal-box" (click)="$event.stopPropagation()">
+      <button class="cerrar-btn" (click)="ocultarModal()">×</button>
+
+      <h6>Ingrese ultimo Ticket de venta</h6>
+      <input type="number" [(ngModel)]="valorTicket" placeholder="Nuevo número" />
+
+      <div class="acciones">
+        <button (click)="enviarActualizacion()" class="btn btn-success">Actualizar</button>
+        <button (click)="ocultarModal()" class="btn btn-warning">Cancelar</button>
+      </div>
+
+      <p class="respuesta">{{ feedbackMsg }}</p>
+    </div>
+  </div>
+</div>

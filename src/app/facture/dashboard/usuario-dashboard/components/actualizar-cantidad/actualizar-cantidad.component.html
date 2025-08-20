@@ -1,0 +1,34 @@
+<div class="dialog-container">
+  <h2>Actualizar Cantidad</h2>
+  
+  <div class="dialog-content">
+    <div class="info-producto">
+      <p><strong>Marca:</strong> {{data.brand}}</p>
+      <p><strong>Código:</strong> {{data.codToday}}</p>
+      <p><strong>Cantidad actual:</strong> {{data.cantidadActual}}</p>
+    </div>
+
+    <div class="radio-group">
+      <label>
+        <input type="radio" name="operacion" [(ngModel)]="operacion" value="aumentar" checked>
+        Aumentar
+      </label>
+      <br>
+      <label>
+        <input type="radio" name="operacion" [(ngModel)]="operacion" value="disminuir">
+        Disminuir
+      </label>
+    </div>
+
+    <div class="form-group">
+      <label>Cantidad a {{operacion === 'aumentar' ? 'aumentar' : 'disminuir'}}:</label>
+      <input type="number" [(ngModel)]="cantidad" min="0" [max]="operacion === 'disminuir' ? data.cantidadActual : null" class="form-control">
+      <small *ngIf="operacion === 'disminuir'">Máximo: {{data.cantidadActual}}</small>
+    </div>
+  </div>
+
+  <div class="dialog-actions">
+    <button class="btn btn-cancel" (click)="onCancel()">Cancelar</button>
+    <button class="btn btn-save" (click)="onSave()">Guardar</button>
+  </div>
+</div>
