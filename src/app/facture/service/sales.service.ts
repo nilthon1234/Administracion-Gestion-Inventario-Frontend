@@ -9,7 +9,7 @@ import { blob } from 'node:stream/consumers';
 })
 export class SalesService {
 
-  private baseUrl = 'http://localhost:80/sale'
+  private baseUrl = '/sale'
 
   constructor(private http: HttpClient) { }
 

@@ -11,14 +11,14 @@ import { HttpClient } from '@angular/common/http';
 export class RegisterScannerWebsocketService {
 
 
-  private apiUrl = 'http://localhost:80/scanner';
+  private apiUrl = '/scanner';
   private client: Client;
   private listaSubject = new BehaviorSubject<any[]>([]);
   lista$ = this.listaSubject.asObservable();
 
   constructor(private http: HttpClient) {
     this.client = new Client({
-      webSocketFactory: () => new SockJS('http://localhost:80/ws-register'),
+      webSocketFactory: () => new SockJS('/ws-register'),
       reconnectDelay: 1000,
     });
   }
