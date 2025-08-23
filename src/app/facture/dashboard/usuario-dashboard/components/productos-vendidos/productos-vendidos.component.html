@@ -27,10 +27,10 @@
             <tr *ngFor="let product of productType.value; let i = index">
               <td class="top-cell">Top {{ i + 1 }}</td>
               <td>{{ product.genero }}</td>
-              <td>{{ product.codToday }}</td>
+              <td [appCopiarTexto]="product.codToday" >{{ product.codToday }}</td>
               <td>{{ product.totalAmount }}</td>
               <td>
-                <img [src]="'http://localhost:80/image/' + product.url" alt="Product Image" class="product-image" (click)="toggleZoom(product)" [class.zoomed]="product.zoomed">
+                <img [src]="imagenBaseUrl +'/image/' + product.url" alt="Product Image" class="product-image" (click)="toggleZoom(product)" [class.zoomed]="product.zoomed">
               </td>
             </tr>
           </tbody>

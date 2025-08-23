@@ -60,7 +60,8 @@
   <table class="monthly-results">
     <thead>
       <tr>
-        <th style="text-align: center;" *ngFor="let mes of gananciaAnual?.meses; let i = index" [style.background]="getBarColor(i)">
+        <th style="text-align: center;" *ngFor="let mes of gananciaAnual?.meses; let i = index"
+          [style.background]="getBarColor(i)">
           {{ getMonthAbbr(mes.mes) }}
         </th>
       </tr>
@@ -110,6 +111,11 @@
   <div class="panels-container animate-fade-in">
     <!-- Primer cuadro: contiene todo -->
     <div class="side-panel1-content panel-box">
+      <button style="background-color: #2196F3; border: none; color: black; padding: 10px 20px; font-weight: bold; margin-left: 410px;"
+        (click)="generarReportePDF()">
+  Generar PDF del Mes
+</button>
+
       <h4 class="section-title">Totales Generales Mes</h4>
       <input type="date" [value]="fecha" (change)="onDateChange($event)" class="date-picker" />
       <br><br>
@@ -202,18 +208,34 @@
 
   <div class="modal-overlay" *ngIf="mostrarModal">
     <div class="modal-contenido animate">
+      
+
+      <!-- Campo actual para el dominio -->
+       <h6>URL base</h6>
       <div class="url-box" *ngIf="dominioActual">
         <span class="url-text">{{ dominioActual }}</span>
         <button class="btn-copy" (click)="copiarDominio()">Copiar</button>
       </div>
-      <h2>Actualizar Dominio</h2>
-      <input [(ngModel)]="nuevoDominio" class="form-control" placeholder="https://nuevo-dominio.com" />
+      <!-- Campo estático para el puerto 80 -->
+      <h6>Dominio -> para imagen</h6>
+      <div class="url-box">
+        <span class="url-text">http://localhost:80</span>
+        <button class="btn-copy" (click)="copiarPuerto80()">Copiar</button>
+      </div>
+
+      <h2>Actualizar URL base</h2>
+      <input [(ngModel)]="nuevoDominio" class="form-control" placeholder="https://nuevo-url.com" />
+
       <div class="modal-buttons">
         <button (click)="actualizar()" class="btn btn-success">Actualizar</button>
         <button (click)="cerrarModal()" class="btn btn-secondary">Cancelar</button>
       </div>
+
+      
+
     </div>
   </div>
+
 
   <div class="overlay" *ngIf="modalVisible" (click)="ocultarModal()">
     <div class="modal-box" (click)="$event.stopPropagation()">

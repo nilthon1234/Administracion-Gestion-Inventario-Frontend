@@ -4,14 +4,18 @@ import { ProductSalesByType } from '../../../../../shared/models/productosSalesB
 import { SaleDataService } from '../../../../service/sale-data.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { environment } from '../../../../../../environments/environmen';
+import { CopiarTextoDirective } from '../../../../../shared/directives/copiar-texto.directive';
 
 @Component({
   selector: 'app-productos-vendidos',
-  imports: [NavBarsVentasComponent,CommonModule,FormsModule],
+  imports: [NavBarsVentasComponent,CommonModule,FormsModule,CopiarTextoDirective],
   templateUrl: './productos-vendidos.component.html',
   styleUrl: './productos-vendidos.component.css'
 })
 export class ProductosVendidosComponent implements OnInit {
+
+  imagenBaseUrl = environment.apiUrl;
 
   topSellingProducts: { [key: string]: any } = {};
   selectedLimit: number = 10; // valor inicial

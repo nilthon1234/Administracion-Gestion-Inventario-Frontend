@@ -3,6 +3,7 @@ import { Client, IMessage } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import { BehaviorSubject} from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environmen';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,7 @@ export class InitialSocketService {
 
   constructor(private http: HttpClient) {
     this.client = new Client({
-      webSocketFactory: () => new SockJS('http://localhost:80/ws-register'),
+      webSocketFactory: () => new SockJS(`${environment.apiUrl}/ws-register`),
       reconnectDelay: 1000,
     });
   }

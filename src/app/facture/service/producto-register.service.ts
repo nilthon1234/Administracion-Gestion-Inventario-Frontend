@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { PaginatedResponse } from '../../shared/models/PaginatedResponse';
 import { Slipper } from '../../shared/models/slippert';
+import { environment } from '../../../environments/environmen';
 export interface Marcas {
   id: number;
   nombre: string;
@@ -13,7 +14,8 @@ export interface Marcas {
   providedIn: 'root'
 })
 export class ProductoRegisterService {
-  private baseUrl = 'http://localhost:80';
+  
+  private baseUrl = `${environment.apiUrl}`;
 
   constructor(private http: HttpClient) { }
 

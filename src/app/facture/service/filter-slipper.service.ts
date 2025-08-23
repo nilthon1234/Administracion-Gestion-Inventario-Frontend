@@ -139,12 +139,12 @@ buscarPorCodTodayOCompany3(codToday?: string, company?: string): Observable<Prod
     );
   }
   updateSize(genero: string, brand: string, codToday: string, payload: any) {
-    const url = `http://localhost:80/slipper/update-size/${genero}/${brand}/${codToday}`;
+    const url = `${environment.apiUrl}/slipper/update-size/${genero}/${brand}/${codToday}`;
     return this.http.put(url, payload);
   }
 
   discountSize(genero: string, brand: string, codToday: string, payload: any) {
-    const url = `http://localhost:80/slipper/discount/${genero}/${brand}/${codToday}`;
+    const url = `${environment.apiUrl}/slipper/discount/${genero}/${brand}/${codToday}`;
     return this.http.put(url, payload);
   }
 

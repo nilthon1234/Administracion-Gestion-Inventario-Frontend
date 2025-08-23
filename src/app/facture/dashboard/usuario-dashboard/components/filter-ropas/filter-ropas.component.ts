@@ -7,6 +7,7 @@ import { PaginatedResponse } from '../../../../../shared/models/PaginatedRespons
 import { FormsModule } from '@angular/forms';
 import { HighlightPipe } from '../../../../../shared/pipes/highlight.pipe';
 import { CopiarTextoDirective } from '../../../../../shared/directives/copiar-texto.directive';
+import { environment } from '../../../../../../environments/environmen';
 
 @Component({
   selector: 'app-filter-ropas',
@@ -15,6 +16,8 @@ import { CopiarTextoDirective } from '../../../../../shared/directives/copiar-te
   styleUrls: ['./filter-ropas.component.css']
 })
 export class FilterRopasComponent implements OnInit {
+  imagenBaseUrl = environment.apiUrl;
+
   slippers: SlipperDTO[] = [];
   paginatedResponse: PaginatedResponse<SlipperDTO> | null = null;
   currentPage: number = 0;

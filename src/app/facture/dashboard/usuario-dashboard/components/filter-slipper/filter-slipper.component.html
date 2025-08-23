@@ -2,87 +2,87 @@
   <app-navbars-sidebar-vitrina></app-navbars-sidebar-vitrina>
   <!-- Primera sección: Búsqueda por filtros -->
   <div class="search-section">
-  <h3>Búsqueda por filtros</h3>
-  <div class="filters-container">
-    <!-- Género -->
-    <div class="filter-item">
-      <select class="filter-select" [(ngModel)]="generoSeleccionado" (change)="onGeneroChange($event)">
-        <option value="" disabled selected>Genero</option>
-        <option *ngFor="let genero of generos" [value]="genero.nombre">{{ genero.nombre }}</option>
-      </select>
-    </div>
-     
-    <!-- Tipo (NUEVO) -->
-    <div class="filter-item">
-      <select class="filter-select" [(ngModel)]="tipoSeleccionado">
-        <option value="">Todos los tipos</option>
-        <option *ngFor="let tipo of tipos" [value]="tipo">{{ tipo }}</option>
-      </select>
-    </div>
-     
-    <!-- Marca -->
-    <div class="filter-item">
-      <select class="filter-select" [(ngModel)]="filtrosGenero.marca">
-        <option value="">Todas las marcas</option>
-        <option *ngFor="let marca of marcas" [value]="marca.nombre">{{ marca.nombre }}</option>
-      </select>
-    </div>
-     
-    <!-- Talla -->
-    <div class="filter-item">
-      <select class="filter-select" [(ngModel)]="tallaSeleccionado" [disabled]="!generoSeleccionado">
-        <option value="">Todas las tallas</option>
-        <option *ngFor="let talla of tallasDisponibles" [value]="talla.talla">{{ talla.talla }}</option>
-      </select>
-    </div>
-     
-    <!-- Botón -->
-    <div class="filter-item">
-      <button class="search-button" (click)="buscar()">Buscar</button>
-    </div>
-  </div>
-</div>
+    <h3>Búsqueda por filtros</h3>
+    <div class="filters-container">
+      <!-- Género -->
+      <div class="filter-item">
+        <select class="filter-select" [(ngModel)]="generoSeleccionado" (change)="onGeneroChange($event)">
+          <option value="" disabled selected>Genero</option>
+          <option *ngFor="let genero of generos" [value]="genero.nombre">{{ genero.nombre }}</option>
+        </select>
+      </div>
 
- <!-- Segunda sección: Búsqueda por fecha -->
-<div class="search-section">
-  <h3>Búsqueda por fecha</h3>
-  <div class="filters-container">
-    <!-- Género -->
-    <div class="filter-item">
-      <select class="filter-select" [(ngModel)]="generoFechaSeleccionado" (change)="onGeneroFechaChange($event)">
-        <option value="" disabled selected>Genero</option>
-        <option *ngFor="let genero of generos" [value]="genero.nombre">{{ genero.nombre }}</option>
-      </select>
-    </div>
-     
-    <!-- Fecha -->
-    <div class="filter-item">
-      <input type="date" class="date-input" [(ngModel)]="fechaSelecionada" [max]="fechaMaxima"
-        placeholder="Selecciona una fecha">
-    </div>
-    
-    <!-- Marca -->
-    <div class="filter-item">
-      <select class="filter-select" [(ngModel)]="marcaSeleccionado">
-        <option value="">Todas las marcas</option>
-        <option *ngFor="let marca of marcas" [value]="marca.nombre">{{ marca.nombre }}</option>
-      </select>
-    </div>
-     
-    <!-- Talla -->
-    <div class="filter-item">
-      <select class="filter-select" [(ngModel)]="tallaFechaSeleccionado" [disabled]="!generoFechaSeleccionado">
-        <option value="">Todas las tallas</option>
-        <option *ngFor="let talla of tallasDisponibles" [value]="talla.talla">{{ talla.talla }}</option>
-      </select>
-    </div>
-     
-    <!-- Botón -->
-    <div class="filter-item">
-      <button class="search-button" (click)="buscarPorFecha()">Buscar por fecha</button>
+      <!-- Tipo (NUEVO) -->
+      <div class="filter-item">
+        <select class="filter-select" [(ngModel)]="tipoSeleccionado">
+          <option value="">Todos los tipos</option>
+          <option *ngFor="let tipo of tipos" [value]="tipo">{{ tipo }}</option>
+        </select>
+      </div>
+
+      <!-- Marca -->
+      <div class="filter-item">
+        <select class="filter-select" [(ngModel)]="filtrosGenero.marca">
+          <option value="">Todas las marcas</option>
+          <option *ngFor="let marca of marcas" [value]="marca.nombre">{{ marca.nombre }}</option>
+        </select>
+      </div>
+
+      <!-- Talla -->
+      <div class="filter-item">
+        <select class="filter-select" [(ngModel)]="tallaSeleccionado" [disabled]="!generoSeleccionado">
+          <option value="">Todas las tallas</option>
+          <option *ngFor="let talla of tallasDisponibles" [value]="talla.talla">{{ talla.talla }}</option>
+        </select>
+      </div>
+
+      <!-- Botón -->
+      <div class="filter-item">
+        <button class="search-button" (click)="buscar()">Buscar</button>
+      </div>
     </div>
   </div>
-</div>
+
+  <!-- Segunda sección: Búsqueda por fecha -->
+  <div class="search-section">
+    <h3>Búsqueda por fecha</h3>
+    <div class="filters-container">
+      <!-- Género -->
+      <div class="filter-item">
+        <select class="filter-select" [(ngModel)]="generoFechaSeleccionado" (change)="onGeneroFechaChange($event)">
+          <option value="" disabled selected>Genero</option>
+          <option *ngFor="let genero of generos" [value]="genero.nombre">{{ genero.nombre }}</option>
+        </select>
+      </div>
+
+      <!-- Fecha -->
+      <div class="filter-item">
+        <input type="date" class="date-input" [(ngModel)]="fechaSelecionada" [max]="fechaMaxima"
+          placeholder="Selecciona una fecha">
+      </div>
+
+      <!-- Marca -->
+      <div class="filter-item">
+        <select class="filter-select" [(ngModel)]="marcaSeleccionado">
+          <option value="">Todas las marcas</option>
+          <option *ngFor="let marca of marcas" [value]="marca.nombre">{{ marca.nombre }}</option>
+        </select>
+      </div>
+
+      <!-- Talla -->
+      <div class="filter-item">
+        <select class="filter-select" [(ngModel)]="tallaFechaSeleccionado" [disabled]="!generoFechaSeleccionado">
+          <option value="">Todas las tallas</option>
+          <option *ngFor="let talla of tallasDisponibles" [value]="talla.talla">{{ talla.talla }}</option>
+        </select>
+      </div>
+
+      <!-- Botón -->
+      <div class="filter-item">
+        <button class="search-button" (click)="buscarPorFecha()">Buscar por fecha</button>
+      </div>
+    </div>
+  </div>
   <!-- Tercera sección: Búsqueda por codToday o company -->
   <!-- <div class="search-section">
     <h3>Búsqueda por CodToday o Company</h3>
@@ -120,23 +120,23 @@
     </div>
   </div> -->
   <!-- Tercera sección: Búsqueda por codToday o company -->
-<div class="search-section">
-  <h3>Búsqueda por Codigo o Empresa</h3>
-  <div class="filters-container">
-    <!-- CodToday -->
-    <div class="filter-item">
-      <input type="text" class="input-text" [(ngModel)]="codTodaySeleccionado" placeholder="Codigo">
-    </div>
-    <!-- Company -->
-    <div class="filter-item">
-      <input type="text" class="input-text" [(ngModel)]="companySelecionado" placeholder="Empresa">
-    </div>
-    <!-- Botón -->
-    <div class="filter-item">
-      <button class="search-button" (click)="buscarPorCodToday0Company()">Buscar</button>
+  <div class="search-section">
+    <h3>Búsqueda por Codigo o Empresa</h3>
+    <div class="filters-container">
+      <!-- CodToday -->
+      <div class="filter-item">
+        <input type="text" class="input-text" [(ngModel)]="codTodaySeleccionado" placeholder="Codigo">
+      </div>
+      <!-- Company -->
+      <div class="filter-item">
+        <input type="text" class="input-text" [(ngModel)]="companySelecionado" placeholder="Empresa">
+      </div>
+      <!-- Botón -->
+      <div class="filter-item">
+        <button class="search-button" (click)="buscarPorCodToday0Company()">Buscar</button>
+      </div>
     </div>
   </div>
-</div>
 
 
 
@@ -172,12 +172,15 @@
             <td>{{ slipper.type }}</td>
             <td><img [src]="slipper.urlImg" width="100" style="cursor: pointer;"
                 (click)="openImageModal(slipper.urlImg)"></td>
-                <td><span style="color: blue;">S/{{slipper.price}}</span></td>
+
+            <td>
+              <span (click)="abrirModalPrecio(slipper)" style="color: blue;">S/{{slipper.price}}
+              </span>
+            </td>
             <td>{{ slipper.registrationDate | customDateFormat }}</td>
 
             <td>
-              <button *ngIf="slipper.producto === 'CALZADO'" class="detail-btn"
-                (click)="toggleDetails(slipper)">
+              <button *ngIf="slipper.producto === 'CALZADO'" class="detail-btn" (click)="toggleDetails(slipper)">
                 {{ isDetailOpen(slipper) ? 'Ocultar tallas' : 'Ver tallas' }}
               </button>
             </td>
@@ -274,6 +277,16 @@
         <button class="btn-cancel" (click)="cancelAdjustments()">Cancelar</button>
       </div>
     </div>
+  </div>
+</div>
+<div *ngIf="modalPrecioVisible()" class="precio-modal-fondo">
+  <div class="precio-modal-caja">
+    <h3>Actualizar precio</h3>
+    <p>Código: {{ slipperSelecionado()?.codToday }}</p>
+    <input type="number" [(ngModel)]="nuevoPrecio" />
+    <br>
+    <button class="btnactus-price" (click)="confirmarActualizarPrecio()">Actualizar</button><br>
+    <button class="btnactus-cancel" (click)="cerrarModalPrecio()">Cancelar</button>
   </div>
 </div>
 

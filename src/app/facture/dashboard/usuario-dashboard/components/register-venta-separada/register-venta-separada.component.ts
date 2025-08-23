@@ -4,6 +4,7 @@ import { SaleDataService } from '../../../../service/sale-data.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { environment } from '../../../../../../environments/environmen';
 
 interface Separation {
   repositoryType: string;
@@ -117,7 +118,7 @@ export class RegisterVentaSeparadaComponent {
     this.errorMessage = '';
 
     // Enviar POST al backend
-    this.http.post('http://localhost:80/sale/registerSale', payload).subscribe({
+    this.http.post(`${environment.apiUrl}/sale/registerSale`, payload).subscribe({
       next: (res) => {
         alert('Venta registrada correctamente');
         this.router.navigate(['/main-venta']);

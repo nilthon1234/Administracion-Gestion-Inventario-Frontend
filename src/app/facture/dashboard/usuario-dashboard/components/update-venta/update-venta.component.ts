@@ -5,6 +5,8 @@ import { Gender, SizesByGender } from '../../../../../shared/models/sale';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PayTypeTranslatePipe } from '../../../../../shared/pipes/pay-type-translate.pipe';
+import { SizeComponent } from '../size/size.component';
+import { SizeFormatPipe } from '../../../../../shared/pipes/size-format.pipe';
 
 @Component({
   selector: 'app-update-venta',

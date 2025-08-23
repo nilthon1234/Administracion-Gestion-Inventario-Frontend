@@ -4,12 +4,13 @@ import { Observable } from 'rxjs';
 import { Vitrina, VitrinaRequest, VitrinaResponse } from '../../shared/models/vitrina';
 import { ToastrService } from 'ngx-toastr';
 import { PaginatedResponse } from '../../shared/models/PaginatedResponse';
+import { environment } from '../../../environments/environmen';
 
 @Injectable({
   providedIn: 'root'
 })
 export class VitrinaBService {
-  private urlVitrinaB = 'http://localhost:80/vitrina-b'
+  private urlVitrinaB = `${environment.apiUrl}/vitrina-b`
 
   constructor(private http: HttpClient,
     private toastr: ToastrService,

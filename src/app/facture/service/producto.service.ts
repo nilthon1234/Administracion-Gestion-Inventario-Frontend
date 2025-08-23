@@ -3,13 +3,14 @@ import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { TipoItem } from '../../shared/models/TipoItem';
 import { EntityGenero } from '../../shared/models/entityGenero';
+import { environment } from '../../../environments/environmen';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductoService {
-  private base = 'http://localhost:80/producto';
-  private baseGenero = 'http://localhost:80/genero';
+  private base = `${environment.apiUrl}/producto`;
+  private baseGenero = `${environment.apiUrl}/genero`;
 
   constructor(private http: HttpClient) {}
 

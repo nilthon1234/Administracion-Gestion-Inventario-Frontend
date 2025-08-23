@@ -3,12 +3,14 @@ import { Injectable } from '@angular/core';
 import { catchError, Observable, of } from 'rxjs';
 import { Separation } from '../../shared/models/separation';
 import { Client, Separations } from '../../shared/models/client';
+import { environment } from '../../../environments/environmen';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SeparationService {
-  private apiUrl = 'http://localhost:80/separation';
+  
+  private apiUrl = `${environment.apiUrl}/separation`;
 
   constructor(private http: HttpClient) { }
 

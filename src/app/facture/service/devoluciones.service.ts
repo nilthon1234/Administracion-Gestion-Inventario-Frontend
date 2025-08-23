@@ -3,13 +3,14 @@ import { Injectable, OnInit } from '@angular/core';
 import { Devoluciones } from '../../shared/models/devoluciones';
 import { Observable } from 'rxjs';
 import { SuccessResponse } from '../../shared/models/DescarteResponse';
+import { environment } from '../../../environments/environmen';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DevolucionesService {
 
-  private urlDev = 'http://localhost:80/devoluciones'
+  private urlDev = `${environment.apiUrl}/devoluciones`
 
   constructor(private http: HttpClient) { }
   

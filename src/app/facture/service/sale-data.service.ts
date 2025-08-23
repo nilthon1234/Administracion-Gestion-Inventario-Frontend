@@ -4,12 +4,13 @@ import { catchError, Observable, of } from 'rxjs';
 import { ApiResponse, Gender, Sale, SizesByGender } from '../../shared/models/sale';
 import { GananciaAnual } from '../../shared/models/gananciasAnuales';
 import { ProductSalesByType } from '../../shared/models/productosSalesByType';
+import { environment } from '../../../environments/environmen';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SaleDataService {
-  private apiUrl = 'http://localhost:80';
+  private apiUrl = `${environment.apiUrl}`;
 
   constructor(private http: HttpClient) { }
 

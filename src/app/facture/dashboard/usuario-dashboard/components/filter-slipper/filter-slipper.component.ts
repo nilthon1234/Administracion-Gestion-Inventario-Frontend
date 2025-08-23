@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { DataService } from '../../../../service/data.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -19,7 +19,7 @@ import { SizeFormatPipe } from '../../../../../shared/pipes/size-format.pipe';
   selector: 'app-filter-slipper',
   standalone: true,
   imports: [CommonModule, FormsModule, NavbarsSidebarVitrinaComponent,
-    OrdenSizesPipe, MatPaginatorModule,SizeFormatPipe, CopiarTextoDirective, CustomDateFormatPipe],
+    OrdenSizesPipe, MatPaginatorModule, SizeFormatPipe, CopiarTextoDirective, CustomDateFormatPipe],
   templateUrl: './filter-slipper.component.html',
   styleUrl: './filter-slipper.component.css'
 })
@@ -138,21 +138,21 @@ export class FilterSlipperComponent implements OnInit {
     }
   }
   onGeneroFechaChange(event: any) {
-  const genero = event.target.value; // NO hacer toLowerCase() aquí
-  this.generoFechaSeleccionado = genero; // Mantener el valor original
+    const genero = event.target.value; // NO hacer toLowerCase() aquí
+    this.generoFechaSeleccionado = genero; // Mantener el valor original
 
-  // Reiniciar talla seleccionada cuando cambia el género
-  this.tallaFechaSeleccionado = '';
+    // Reiniciar talla seleccionada cuando cambia el género
+    this.tallaFechaSeleccionado = '';
 
-  // Cargar las tallas correspondientes al género seleccionado
-  // Usar toLowerCase() solo para la búsqueda en el array
-  const generoLower = genero.toLowerCase();
-  if (generoLower && this.tallas[generoLower]) {
-    this.tallasDisponibles = this.tallas[generoLower];
-  } else {
-    this.tallasDisponibles = [];
+    // Cargar las tallas correspondientes al género seleccionado
+    // Usar toLowerCase() solo para la búsqueda en el array
+    const generoLower = genero.toLowerCase();
+    if (generoLower && this.tallas[generoLower]) {
+      this.tallasDisponibles = this.tallas[generoLower];
+    } else {
+      this.tallasDisponibles = [];
+    }
   }
-}
 
   buscar() {
     this.ultimaBusqueda = 'genero';
@@ -539,6 +539,35 @@ export class FilterSlipperComponent implements OnInit {
     return true;
   }
 
+  //actualizar precio
+  modalPrecioVisible = signal(false);
+  slipperSelecionado = signal<Slipper | null>(null);
+  nuevoPrecio: string = '0'
 
+  abrirModalPrecio(slippert: Slipper) {
+    this.slipperSelecionado.set(slippert);
+    this.nuevoPrecio = slippert.price;
+    this.modalPrecioVisible.set(true);
+  }
+
+  cerrarModalPrecio() {
+    this.modalPrecioVisible.set(false);
+    this.slipperSelecionado.set(null);
+  }
+
+  confirmarActualizarPrecio() {
+    const slipper = this.slipperSelecionado();
+    if (!slipper) return;
+    this.slipperService.updatePrice(slipper.codToday, this.nuevoPrecio).subscribe({
+      next: (res) => {
+        this.toastrService.success(`precio actualizado a S/${this.nuevoPrecio} soles`);
+        slipper.price = this.nuevoPrecio;
+        this.cerrarModalPrecio();
+      },
+      error: () => {
+        this.toastrService.error('Error al actualizar el precio')
+      }
+    });
+  }
 
 }

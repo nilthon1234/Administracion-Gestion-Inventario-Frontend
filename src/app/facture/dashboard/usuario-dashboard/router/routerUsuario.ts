@@ -31,6 +31,7 @@ import { Mantenimiento2MainComponent } from "../components/mantenimiento2-main/m
 import { FilterRopasComponent } from "../components/filter-ropas/filter-ropas.component";
 import { RegisterVenta2Component } from "../components/register-venta2/register-venta2.component";
 import { MantenimientoProductoComponent } from "../components/mantenimiento-producto/mantenimiento-producto.component";
+import { MainGastosComponent } from "../components/main-gastos/main-gastos.component";
 
 export const routerUsuario : Routes = [
     {
@@ -81,8 +82,9 @@ export const routerUsuario : Routes = [
             {path: 'main-mantenimiento',title:'Generador Codigos', component: Mantenimiento2MainComponent },
             {path: 'main-vitrinas',title:'Productos a Eliminar Vitrinas',component:MantenimientoVitrinasComponent},
             {path: 'main-marcas',title:'Marcas',component:MantenimientoMarcasComponent},
-            {path: 'main-pro-gen',title:'Productos-genero',component:MantenimientoProductoComponent}
+            {path: 'main-pro-gen',title:'Productos-genero',component:MantenimientoProductoComponent},
             
+            {path: 'main-gastos', title:'Gastos', component:MainGastosComponent}
 
         ]
     }

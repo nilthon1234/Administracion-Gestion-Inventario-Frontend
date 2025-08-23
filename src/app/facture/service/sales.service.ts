@@ -3,13 +3,14 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Sale } from '../../shared/models/sale';
 import { blob } from 'node:stream/consumers';
+import { environment } from '../../../environments/environmen';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SalesService {
 
-  private baseUrl = 'http://localhost:80/sale'
+  private baseUrl = `${environment.apiUrl}/sale`
 
   constructor(private http: HttpClient) { }
 

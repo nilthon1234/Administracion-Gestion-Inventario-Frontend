@@ -16,6 +16,7 @@ import { VitrinaAService } from '../../../../service/vitrina-a.service';
 import { SlipperService } from '../../../../service/slipper.service';
 import { FilterSlipperService } from '../../../../service/filter-slipper.service';
 import { SizeFormatPipe } from '../../../../../shared/pipes/size-format.pipe';
+import { environment } from '../../../../../../environments/environmen';
 export interface TiposResponse {
   conTalla: string[];
   sinTalla: string[];
@@ -419,12 +420,12 @@ export class FilterVitrinaBComponent implements OnInit {
     });
 
     // Prueba primero con PUT
-    this.http.put('http://localhost/vitrina-b/updateVitrina', payload, { headers })
+    this.http.put(`${environment.apiUrl}/vitrina-b/updateVitrina`, payload, { headers })
       .pipe(
         // Si falla con PUT, intenta con POST
         catchError(error => {
           if (error.status === 405) {
-            return this.http.post('http://localhost/vitrina-b/updateVitrina', payload, { headers });
+            return this.http.post(`${environment.apiUrl}/vitrina-b/updateVitrina`, payload, { headers });
           }
           throw error;
         })
@@ -470,7 +471,7 @@ export class FilterVitrinaBComponent implements OnInit {
         amount: this.valorTemporal
       };
 
-      this.http.post('http://localhost:80/vitrina-b/updateVitrina', payload).subscribe({
+      this.http.post(`${environment.apiUrl}/vitrina-b/updateVitrina`, payload).subscribe({
         next: (response) => {
           item.amount = this.valorTemporal;
           this.editarFilaIndex = null;

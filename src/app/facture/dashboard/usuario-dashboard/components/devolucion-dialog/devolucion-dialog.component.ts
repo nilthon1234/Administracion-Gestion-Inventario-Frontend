@@ -31,7 +31,7 @@ export class DevolucionDialogComponent {
       monto: this.monto,
       payType: this.selectedPayType
     };
-    this.http.post(`http://localhost:80/devoluciones/eliminarDetail`,body,{responseType: 'text'})
+    this.http.post(`${this.enviarDevolucion.apply}/devoluciones/eliminarDetail`,body,{responseType: 'text'})
     .subscribe({
       next: (resp: string) => {
         this.mensaje = resp;

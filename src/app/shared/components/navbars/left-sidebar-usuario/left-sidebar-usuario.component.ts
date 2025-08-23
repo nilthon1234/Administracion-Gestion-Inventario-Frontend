@@ -46,6 +46,12 @@ export class LeftSidebarUsuarioComponent {
       children: ['/main-pagos', '/informe-pagos-actualizados', '/main-informe-ventas-pagos', '/devoluciones']
     },
     {
+      routeLink: 'main-gastos',
+      icon: 'fas fa-chart-line',
+      label: 'Gastos de Tienda',
+      children: ['/main-gastos']
+    },
+    {
       routeLink: 'main-stock',
       icon: 'fas fa-minus-circle',
       label: 'Stock',

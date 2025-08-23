@@ -4,6 +4,7 @@ import SockJS from 'sockjs-client';
 import { BehaviorSubject, catchError, Observable, of, throwError } from 'rxjs';
 import { ApiResponse, Sale } from '../../shared/models/sale';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environmen';
 
 @Injectable({
   providedIn: 'root'
@@ -11,14 +12,14 @@ import { HttpClient } from '@angular/common/http';
 export class RegisterScannerWebsocketService {
 
 
-  private apiUrl = 'http://localhost:80/scanner';
+  private apiUrl = `${environment.apiUrl}/scanner`;
   private client: Client;
   private listaSubject = new BehaviorSubject<any[]>([]);
   lista$ = this.listaSubject.asObservable();
 
   constructor(private http: HttpClient) {
     this.client = new Client({
-      webSocketFactory: () => new SockJS('http://localhost:80/ws-register'),
+      webSocketFactory: () => new SockJS(`${environment.apiUrl}/ws-register`),
       reconnectDelay: 1000,
     });
   }

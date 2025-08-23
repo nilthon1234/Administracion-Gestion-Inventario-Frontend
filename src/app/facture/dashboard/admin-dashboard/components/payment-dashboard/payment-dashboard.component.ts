@@ -10,6 +10,9 @@ import { SlipperService } from '../../../../service/slipper.service';
 import { ToastrService } from 'ngx-toastr';
 import { DominioService } from '../../../../service/dominio.service';
 import { TicketConfigService } from '../../../../service/ticket-config.service';
+import { SalesService } from '../../../../service/sales.service';
+import { blob } from 'stream/consumers';
+import { error } from 'console';
 
 @Component({
   selector: 'app-payment-dashboard',
@@ -36,6 +39,7 @@ export class PaymentDashboardComponent implements OnInit {
 
   constructor(private gananciasService: SaleDataService,
     private dominioService: DominioService,
+    private saleService: SalesService,
     private configService: TicketConfigService,
     private toastr: ToastrService,
     private resumenService: SlipperService) {
@@ -215,14 +219,14 @@ export class PaymentDashboardComponent implements OnInit {
       error: () => this.toastr.error('No se pudo cargar el dominio')
     });
   }
-  
+
   copiarDominio(): void {
     navigator.clipboard.writeText(this.dominioActual)
       .then(() => this.toastr.success('URL copiada al portapapeles'))
       .catch(() => this.toastr.error('Error al copiar'));
   }
   //para actualizar ticketConfig
-   modalVisible = false;
+  modalVisible = false;
   valorTicket: number | null = null;
   feedbackMsg = '';
 
@@ -252,6 +256,35 @@ export class PaymentDashboardComponent implements OnInit {
         this.feedbackMsg = 'Error actualizando la configuración.';
         console.error(err);
       }
+    });
+  }
+
+  // copy puerto
+  copiarPuerto80() {
+    const urlPuerto80 = 'http://localhost:80';
+    navigator.clipboard.writeText(urlPuerto80)
+      .then(() => this.toastr.success('Dominio → Puerto 80 copiado', '¡Listo!'))
+      .catch(err => {
+        this.toastr.error('No se pudo copiar la URL', 'Error');
+      });
+  }
+
+
+  // pdf reporte al contador
+
+  generarReportePDF(): void {
+    const [year, month] = this.fecha.split('-').map(Number);
+
+    this.saleService.downloadSalesReport(month, year).subscribe(blob => {
+      const fileName = `venta_${month}_${year}.pdf`;
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      link.download = fileName;
+      link.click();
+      window.URL.revokeObjectURL(downloadUrl);
+    }, error => {
+      alert('Error al generar el reporte PDF.');
     });
   }
 }

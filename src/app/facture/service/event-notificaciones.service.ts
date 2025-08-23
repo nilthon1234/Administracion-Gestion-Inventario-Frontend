@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { PaginatedResponse } from '../../shared/models/PaginatedResponse';
 import { HttpClient, HttpParams } from '@angular/common/http';
+import { environment } from '../../../environments/environmen';
 
 @Injectable({
   providedIn: 'root'
 })
 export class EventNotificacionesService {
 
-   private apiUrl = 'http://localhost:80/notificaciones';
+  private apiUrl = `${environment.apiUrl}/notificaciones`;
 
   constructor(private http: HttpClient) { }
 
