@@ -1,0 +1,113 @@
+<div class="gastos-container">
+    <!-- Header -->
+    <header class="header">
+      <h1>💰 Control de Gastos</h1>
+      <div class="header-controls">
+        <input 
+          type="date" 
+          [(ngModel)]="fechaSeleccionada" 
+          (change)="cargarGastos()"
+          class="date-input"
+        >
+        <button class="btn btn-primary" (click)="mostrarFormulario = !mostrarFormulario">
+          {{ mostrarFormulario ? 'Cancelar' : '+ Nuevo Gasto' }}
+        </button>
+      </div>
+    </header>
+  
+    <!-- Formulario -->
+    <div class="form-container" *ngIf="mostrarFormulario">
+      <h2>{{ gastoEditando ? 'Editar Gasto' : 'Nuevo Gasto' }}</h2>
+      <form (ngSubmit)="guardarGasto()">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Descripción</label>
+            <input 
+              type="text" 
+              [(ngModel)]="nuevoGasto.descripcion" 
+              name="descripcion"
+              required
+              maxlength="100"
+              placeholder="Ej: Supermercado mensual"
+            >
+          </div>
+  
+          <div class="form-group">
+            <label>Monto</label>
+            <input 
+              type="number" 
+              [(ngModel)]="nuevoGasto.salida" 
+              name="salida"
+              required
+              min="0"
+              step="0.01"
+              placeholder="0.00"
+            >
+          </div>
+  
+          <div class="form-group">
+            <label>Categoría</label>
+            <select [(ngModel)]="nuevoGasto.contador" name="contador">
+              <option *ngFor="let option of contadorOptions" [value]="option">
+                {{ option | titlecase }}
+              </option>
+            </select>
+          </div>
+        </div>
+  
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" (click)="limpiarFormulario()">
+            Cancelar
+          </button>
+          <button type="submit" class="btn btn-primary">
+            {{ gastoEditando ? 'Actualizar' : 'Guardar' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  
+    <!-- Resumen -->
+    <div class="summary-card">
+      <div class="summary-item">
+        <span class="summary-label">Total de gastos</span>
+        <span class="summary-value">${{ getTotalGastos() | number:'1.2-2' }}</span>
+      </div>
+      <div class="summary-item">
+        <span class="summary-label">Registros</span>
+        <span class="summary-value">{{ gastos.length }}</span>
+      </div>
+    </div>
+  
+    <!-- Lista de Gastos -->
+    <div class="gastos-grid">
+      <div 
+        class="gasto-card" 
+        *ngFor="let gasto of gastos"
+        [style.border-left-color]="getContadorColor(gasto.contador)"
+      >
+        <div class="gasto-header">
+          <span class="gasto-categoria">{{ gasto.contador | titlecase }}</span>
+          <span class="gasto-fecha">{{ gasto.registrationSalida | date:'dd/MM/yyyy' }}</span>
+        </div>
+        
+        <h3 class="gasto-descripcion">{{ gasto.descripcion }}</h3>
+        <p class="gasto-monto">${{ gasto.salida | number:'1.2-2' }}</p>
+        
+        <div class="gasto-actions">
+          <button class="btn-icon" (click)="editarGasto(gasto)" title="Editar">
+            ✏️
+          </button>
+          <button class="btn-icon" (click)="eliminarGasto(gasto.id!)" title="Eliminar">
+            🗑️
+          </button>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Mensaje cuando no hay gastos -->
+    <div class="empty-state" *ngIf="gastos.length === 0">
+      <div class="empty-icon">💸</div>
+      <h3>No hay gastos registrados</h3>
+      <p>Comienza agregando tu primer gasto del mes</p>
+    </div>
+  </div>

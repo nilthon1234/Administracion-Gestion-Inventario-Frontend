@@ -1,0 +1,282 @@
+/* Variables mejoradas para el efecto flotante */
+:root {
+  --primary-color: #3B82F6;
+  --secondary-color: #6B7280;
+  --success-color: #10B981;
+  --danger-color: #EF4444;
+  
+  /* Fondo degradado sutil */
+  --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --bg-light: #f8fafc;
+  
+  /* Sombras flotantes */
+  --shadow-float: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 
+                  0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-float-hover: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  
+  /* Glassmorphism */
+  --glass-bg: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(255, 255, 255, 0.2);
+  --backdrop-blur: blur(20px);
+}
+
+/* Fondo de la página */
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg-gradient);
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Contenedor principal - EFECTO FLOTANTE */
+.gastos-container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 2.5rem;
+  
+  /* Efecto glassmorphism */
+  background: var(--glass-bg);
+  backdrop-filter: var(--backdrop-blur);
+  -webkit-backdrop-filter: var(--backdrop-blur);
+  
+  /* Bordes redondeados y sombra flotante */
+  border-radius: 24px;
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-float);
+  
+  /* Animación de elevación */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Margen para efecto flotante */
+  transform: translateY(0);
+}
+
+.gastos-container:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-float-hover);
+}
+
+/* Header mejorado con efecto glass */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2.5rem;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.header h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0;
+}
+
+/* Controles del header con efecto glass */
+.header-controls {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.date-input {
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(10px);
+  transition: all 0.2s;
+}
+
+.date-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+/* Botones con efecto glass */
+.btn {
+  padding: 0.875rem 1.75rem;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.btn-primary {
+  background: rgba(59, 130, 246, 0.9);
+  color: white;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+}
+
+.btn-primary:hover {
+  background: rgba(59, 130, 246, 1);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+}
+
+.btn-secondary {
+  background: rgba(107, 114, 128, 0.9);
+  color: white;
+}
+
+/* Formulario con efecto glass elevado */
+.form-container {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 20px;
+  padding: 2.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  animation: floatIn 0.4s ease-out;
+}
+
+@keyframes floatIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 0.875rem;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 12px;
+  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  transition: all 0.2s;
+}
+
+/* Tarjetas de resumen con efecto glass */
+.summary-card {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.summary-item {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 16px;
+  padding: 2rem;
+  text-align: center;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.summary-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* Grid de gastos con tarjetas flotantes */
+.gastos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+}
+
+.gasto-card {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 16px;
+  padding: 1.75rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-left: 4px solid;
+}
+
+.gasto-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* Empty state con efecto glass */
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 20px;
+  margin: 2rem 0;
+}
+
+.empty-icon {
+  font-size: 4rem;
+  opacity: 0.7;
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+}
+
+/* Responsive mejorado */
+@media (max-width: 768px) {
+  .gastos-container {
+    margin: 1rem;
+    padding: 1.5rem;
+    border-radius: 20px;
+  }
+  
+  .header {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .summary-card {
+    flex-direction: column;
+  }
+}
+
+/* Efecto de carga */
+.loading {
+  background: linear-gradient(90deg, 
+    rgba(255,255,255,0) 0%, 
+    rgba(255,255,255,0.2) 50%, 
+    rgba(255,255,255,0) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
