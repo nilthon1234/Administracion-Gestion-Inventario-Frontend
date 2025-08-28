@@ -4,6 +4,7 @@ import { Devoluciones } from '../../shared/models/devoluciones';
 import { Observable } from 'rxjs';
 import { SuccessResponse } from '../../shared/models/DescarteResponse';
 import { environment } from '../../../environments/environmen';
+import { PaginatedResponse } from '../../shared/models/PaginatedResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -15,8 +16,10 @@ export class DevolucionesService {
   constructor(private http: HttpClient) { }
   
 
-  allListaDevoluciones():Observable <Devoluciones[]>{
-    return this.http.get<Devoluciones[]>(`${this.urlDev}/all-devoluciones`)
+  getAllDevoluciones(page: number = 0, size: number = 10): Observable<PaginatedResponse<Devoluciones>> {
+    return this.http.get<PaginatedResponse<Devoluciones>>(`${this.urlDev}/all-devoluciones`, {
+      params: { page, size }
+    });
   }
 
   devolucionVenta(){}

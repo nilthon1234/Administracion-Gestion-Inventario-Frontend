@@ -1,0 +1,5 @@
+<div *ngIf="showAlert" class="alert-box">
+  ⚠️ Tienes <span [@numberChange]="animationState">{{ lowStockCount }}</span> productos con stock bajo.
+  <button (click)="goToLowStockList()">Ver lista</button>
+  <button (click)="dismiss()">Entendido</button>
+</div>

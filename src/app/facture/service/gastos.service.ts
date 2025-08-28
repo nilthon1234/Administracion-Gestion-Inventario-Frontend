@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environmen';
 import { Contador, Gastos } from '../../shared/models/gastos';
@@ -29,7 +29,8 @@ export class GastosService {
     return this.http.get<Gastos[]>(`${this.apiUrl}/mes`, { params });
   }
 
-  actualizarContador(id: number, contador: Contador): Observable<void> {
-    return this.http.patch<void>(`${this.apiUrl}/${id}/contador`, contador);
+  actualizarContador(id: number, contador: string): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/${id}/contador`, { contador });
   }
+  
 }

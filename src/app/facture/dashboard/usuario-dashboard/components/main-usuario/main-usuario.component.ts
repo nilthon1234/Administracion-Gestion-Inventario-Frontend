@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, input } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { BotonAlertaComponent } from "../../../../../shared/components/button/boton-alerta/boton-alerta.component";
 
 @Component({
   selector: 'app-main-usuario',

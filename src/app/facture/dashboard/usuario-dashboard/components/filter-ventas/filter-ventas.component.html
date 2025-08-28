@@ -16,32 +16,12 @@
 
   <form (ngSubmit)="searchTickets()" class="search-form">
     <!-- Input para DNI -->
-    <input
-      *ngIf="searchType === 'dni'"
-      type="text"
-      [(ngModel)]="dni"
-      name="dni"
-      required
-      maxlength="20"
-      class="search-input"
-      placeholder="Ingrese DNI"
-      (keyup.enter)="searchTickets()"
-      autofocus
-    />
+    <input *ngIf="searchType === 'dni'" type="text" [(ngModel)]="dni" name="dni" required maxlength="20"
+      class="search-input" placeholder="Ingrese DNI" (keyup.enter)="searchTickets()" autofocus />
 
     <!-- Input para Ticket -->
-    <input
-      *ngIf="searchType === 'ticket'"
-      type="text"
-      [(ngModel)]="ticket"
-      name="ticket"
-      required
-      maxlength="20"
-      class="search-input"
-      placeholder="Ingrese número de ticket"
-      (keyup.enter)="searchTickets()"
-      autofocus
-    />
+    <input *ngIf="searchType === 'ticket'" type="text" [(ngModel)]="ticket" name="ticket" required maxlength="20"
+      class="search-input" placeholder="Ingrese número de ticket" (keyup.enter)="searchTickets()" autofocus />
 
     <button type="submit" class="search-btn">Buscar</button>
   </form>
@@ -60,7 +40,7 @@
     <div *ngFor="let ticket of tickets" class="ticket">
       <h4 [appCopiarTexto]="ticket.nro_ticket">Ticket #{{ ticket.nro_ticket }}</h4>
       <p [appCopiarTexto]="ticket.dni"><strong>DNI: </strong>{{ ticket.dni}}</p>
-      <p><strong>Fecha Vendida:</strong> {{ ticket.registrationTicket | date:'medium' }}</p>
+      <p><strong>Fecha Vendida:</strong> {{ ticket.registrationTicket | customDateFormat }}</p>
       <p><strong>Total a pagar:</strong> S/ {{ ticket.totalPagar | number:'1.2-2' }}</p>
       <p><strong>Estado: </strong>
         <span [ngClass]="{'badge-eliminado': ticket.state === 'ELIMINADO'}">
@@ -84,6 +64,7 @@
               <th>Precio</th>
               <th>Subtotal</th>
               <th>Estado</th>
+              <th>Accion</th>
             </tr>
           </thead>
           <tbody>
@@ -102,6 +83,22 @@
                 <span [ngClass]="{'badge-eliminado': detail.state === 'ELIMINADO'}">
                   {{ detail.state }}
                 </span>
+              </td>
+              <td>
+                <button *ngIf="debeMostrarActualizar(detail)" class="btn btn-primary" (click)="irActualizar(
+                    ticket.nro_ticket,
+                    detail.codToday,
+                    detail.company,
+                    detail.type,
+                    detail.genero,
+                    detail.size,
+                    detail.price,
+                    detail.payType,
+                    detail.amount,
+                    detail.producto
+                  )">
+                  Actualizar
+                </button>
               </td>
             </tr>
           </tbody>

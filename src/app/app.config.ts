@@ -1,7 +1,7 @@
 import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter, RouterModule } from '@angular/router';
 import { provideToastr } from 'ngx-toastr';
-import  {  provideAnimations  }  from  '@angular/platform-browser/animations' ;
+import  {  BrowserAnimationsModule, provideAnimations  }  from  '@angular/platform-browser/animations' ;
 import { routes } from './app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { provideHttpClient, withFetch} from '@angular/common/http';
@@ -10,6 +10,7 @@ import { RouterAdmin } from './facture/dashboard/admin-dashboard/router/routerAd
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    BrowserAnimationsModule,
     provideZoneChangeDetection({ eventCoalescing: true }), 
     provideRouter(routes), 
     

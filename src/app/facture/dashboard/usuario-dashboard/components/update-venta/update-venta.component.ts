@@ -7,10 +7,11 @@ import { FormsModule } from '@angular/forms';
 import { PayTypeTranslatePipe } from '../../../../../shared/pipes/pay-type-translate.pipe';
 import { SizeComponent } from '../size/size.component';
 import { SizeFormatPipe } from '../../../../../shared/pipes/size-format.pipe';
+import { TallaDisplayPipe } from '../../../../../shared/pipes/tallasDisplay.pipe';
 
 @Component({
   selector: 'app-update-venta',
-  imports: [CommonModule, FormsModule, PayTypeTranslatePipe],
+  imports: [CommonModule, FormsModule, PayTypeTranslatePipe,TallaDisplayPipe],
   templateUrl: './update-venta.component.html',
   styleUrl: './update-venta.component.css'
 })
@@ -240,7 +241,12 @@ tiposProducto: string[] = ['CALZADO', 'ROPA', 'UNICO'];
       size: this.size,
       detail: {
         ...this.detail,
-        sizes: this.detail.sizes.map((s: any) => parseFloat(s))
+        sizes: this.detail.sizes.map((s: any) => {
+          if (typeof s === 'string') {
+            return s.toLowerCase(); // "XL" → "xl"
+          }
+          return s; // 31.0 → 31.0
+        })
       }
     };
 

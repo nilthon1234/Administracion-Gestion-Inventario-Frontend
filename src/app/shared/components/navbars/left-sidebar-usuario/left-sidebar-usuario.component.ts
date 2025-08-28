@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, input, output } from '@angular/core';
 import { Router, RouterLinkActive, RouterModule } from '@angular/router';
+import { BotonAlertaComponent } from "../../button/boton-alerta/boton-alerta.component";
 
 @Component({
   selector: 'app-left-sidebar-usuario',
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, BotonAlertaComponent],
   templateUrl: './left-sidebar-usuario.component.html',
   styleUrl: './left-sidebar-usuario.component.css'
 })

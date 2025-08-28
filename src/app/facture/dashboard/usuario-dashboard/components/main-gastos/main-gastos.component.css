@@ -139,12 +139,12 @@ body {
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: 20px;
-  padding: 2.5rem;
-  margin-bottom: 2rem;
+  padding: 2rem; /* reducido de 2.5rem */
+  margin: 0 auto 2rem auto;
+  max-width: 500px; /* <= ajusta este valor a tu gusto */
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   animation: floatIn 0.4s ease-out;
 }
-
 @keyframes floatIn {
   from {
     opacity: 0;
@@ -155,6 +155,18 @@ body {
     transform: translateY(0) scale(1);
   }
 }
+
+.gasto-header {
+  display: flex;
+  justify-content: space-between; /* Empuja los elementos a los extremos */
+  align-items: center; /* Opcional: centra verticalmente */
+}
+/*boton de formulario invalido*/
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 
 .form-group input,
 .form-group select {
@@ -279,4 +291,14 @@ body {
   100% {
     background-position: 200% 0;
   }
+}
+
+.contador-btn {
+  border: none;
+  border-radius: 4px;
+  color: white;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-weight: bold;
+  min-width: 100px;
 }

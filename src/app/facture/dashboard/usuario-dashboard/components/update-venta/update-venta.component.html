@@ -77,7 +77,7 @@
                 <select multiple id="tallas" [(ngModel)]="detail.sizes" class="form-control tallas-select"
                     style="height: 140px;">
                     <option *ngFor="let talla of tallasDisponibles" [ngValue]="talla">
-                        {{ talla }}
+                        {{ talla | tallaDisplay }}
                     </option>
                 </select>
             </div>

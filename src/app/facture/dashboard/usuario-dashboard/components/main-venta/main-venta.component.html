@@ -1,9 +1,29 @@
 <app-nav-bars-ventas></app-nav-bars-ventas><br>
 <div style="padding: 0;">
-  <div style="margin-bottom: 10px;">
+  <div style="margin-bottom: 10px; display: flex; align-items: center; gap: 15px;">
     <label for="fecha">Seleccionar fecha:</label>
     <input id="fecha" type="date" [(ngModel)]="fechaSeleccionada" (change)="cargarResumen()" />
+  
+    <!-- Cuadro de No especificado -->
+    <div *ngIf="conteos.noEspecificado > 0" 
+         style="background: #f44336; color: white; padding: 6px 12px; border-radius: 6px; font-weight: bold;">
+      No especificado: {{ conteos.noEspecificado }}
+    </div>
+  
+    <!-- Cuadro de Aumento -->
+    <div *ngIf="conteos.aumento > 0" 
+         style="background: #ff9800; color: white; padding: 6px 12px; border-radius: 6px; font-weight: bold;">
+      Aumento: {{ conteos.aumento }}
+    </div>
+  
+    <!-- Cuadro de Descuento -->
+    <div *ngIf="conteos.descuento > 0" 
+         style="background: #4caf50; color: white; padding: 6px 12px; border-radius: 6px; font-weight: bold;">
+      Descuento: {{ conteos.descuento }}
+    </div>
   </div>
+  
+
   <!--
   <div class="panel-dia-mes-año">
     <div class="cuadro cuadroDia">
@@ -53,6 +73,48 @@
         '1.2-2'}}</p>
     </div>
   </div> -->
+  <!-- Resumen de productos vendidos -->
+  <div style="margin-top: 30px; padding: 15px; background-color: #f9f9f9; border-radius: 8px; border: 1px solid #eee;">
+    <h3 style="margin-top: 0; text-align: center; color: #333;">Resumen de Productos Vendidos del Mes</h3>
+
+    <div
+      style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; text-align: center;">
+
+      <!-- ROPA -->
+      <div *ngIf="resumenProductos.ropa > 0" style="padding: 10px; background-color: #bbdefb; border-radius: 6px;">
+        <h4 style="margin: 0; color: #1565c0;">ROPA 👕</h4>
+        <p style="margin: 5px 0 0 0; font-size: 24px; font-weight: bold;">{{ resumenProductos.ropa }}</p>
+      </div>
+
+      <!-- CALZADO -->
+      <div *ngIf="resumenProductos.calzado > 0" style="padding: 10px; background-color: #c8e6c9; border-radius: 6px;">
+        <h4 style="margin: 0; color: #2e7d32;">CALZADO 👟</h4>
+        <p style="margin: 5px 0 0 0; font-size: 24px; font-weight: bold;">{{ resumenProductos.calzado }}</p>
+      </div>
+
+      <!-- UNICO -->
+      <div *ngIf="resumenProductos.unico > 0" style="padding: 10px; background-color: #ffcc80; border-radius: 6px;">
+        <h4 style="margin: 0; color: #ef6c00;">UNICO 🧢</h4>
+        <p style="margin: 5px 0 0 0; font-size: 24px; font-weight: bold;">{{ resumenProductos.unico }}</p>
+      </div>
+
+      <!-- Total General -->
+      <div *ngIf="resumenProductos.total > 0"
+        style="padding: 10px; background-color: black; color: white; border-radius: 10px;">
+        <h4 style="margin: 0;">TOTAL PRODUCTOS</h4>
+        <p style="margin: 5px 0 0 0; font-size: 24px; font-weight: bold;">
+          {{ resumenProductos.total }}
+        </p>
+      </div>
+
+    </div>
+
+    <!-- Mensaje si no hay productos -->
+    <div *ngIf="resumenProductos.total === 0"
+      style="text-align: center; color: #999; font-style: italic; padding: 20px;">
+      No se han vendido productos este mes.
+    </div>
+  </div>
   <!-- Sección de ventas y tickets -->
   <div style="margin-top: 20px; display: flex; justify-content: space-between; align-items: center;">
     <!-- Botón Nueva Venta -->
@@ -88,6 +150,14 @@
   </div>
   <!-- Campo de búsqueda y botón en una fila -->
   <div style="margin-top: 20px; display: flex; align-items: center; gap: 10px; width: 100%;">
+    <!-- Selector de tipo de búsqueda -->
+    <select [(ngModel)]="searchType" 
+            (change)="cambiarTipoBusqueda(searchType)"
+            style="padding: 12px; border: 1px solid #ccc; border-radius: 4px;">
+      <option value="dni">DNI</option>
+      <option value="ticket">Ticket</option>
+    </select>
+  
     <!-- Campo de búsqueda con icono -->
     <div style="position: relative; flex-grow: 1;">
       <div style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%);">
@@ -96,15 +166,16 @@
             d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
         </svg>
       </div>
-      <input placeholder="buscar por Dni cliente"
-        style="width: 100%; padding: 12px 12px 12px 36px; border: 1px solid #ccc; border-radius: 4px;"
-        [(ngModel)]="searchDni" />
+      <input [placeholder]="searchType === 'dni' ? 'Buscar por DNI' : 'Buscar por N° Ticket'"
+             style="width: 100%; padding: 12px 12px 12px 36px; border: 1px solid #ccc; border-radius: 4px;"
+             [(ngModel)]="searchValue" 
+             (keyup.enter)="buscar()" />
     </div>
-
+  
     <!-- Botón Buscar -->
     <button
       style="background-color: #013370; color: white; border: none; padding: 12px 30px; border-radius: 4px; font-weight: bold;"
-      (click)="buscarPorDni()">
+      (click)="buscar()">
       Buscar
     </button>
   </div>
@@ -114,6 +185,7 @@
 
     <!-- Tabla de tickets -->
     <div style="margin-top: 20px; overflow-x: auto;">
+
       <table style="width: 100%; border-collapse: collapse; background-color: white;">
         <thead>
           <tr style="border-bottom: 1px solid #e0e0e0;">
@@ -126,33 +198,48 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let ticket of tickets" style="border-bottom: 1px solid #f0f0f0;">
-            <td style="text-align: center; padding: 12px 15px;"><input type="checkbox" /></td>
-            <td style="padding: 12px 15px;text-align: center;">{{ ticket.nro_ticket }}</td>
-            <td style="padding: 12px 15px;text-align: center;">{{ ticket.dni }}</td>
-            <td style="text-align: center; padding: 8px;">
-              <span class="status-badge" [ngStyle]="{
-          backgroundColor: getColorByContador(ticket.contador!),
-          color: 'white'
-        }" (click)="toggleContador(ticket)" style="cursor: pointer; user-select: none;"
-                title="Click para cambiar estado">
-                {{ ticket.contador }}
-              </span>
-            </td>
-            <td style="padding: 12px 15px;text-align: center;">{{ ticket.registrationTicket! | customDateFormat }}</td>
+          <!-- Iterar por cada día -->
+          <ng-container *ngFor="let grupo of ticketsAgrupados">
+            <!-- Subtítulo del día -->
+            <tr style="background-color: #f8f9fa; border-top: 2px solid #ddd;">
+              <td colspan="6" style="padding: 12px 15px;">
+                <strong style="text-align: center;">{{ grupo.fecha | fechaLarga }}</strong>
+              </td>
+            </tr>
 
-            <td style="padding: 12px 15px; text-align: center;">
-              <button class="pdf-btn"
-                (click)="generatePdf(ticket.nro_ticket, ticket.dni)">pdf</button>
-              <button
-                style="background-color: #2196f3; color: white; border: none; padding: 6px 12px; cursor: pointer; border-radius: 4px;"
-                (click)="mostrarDetalles(ticket)">
-                Detalles
-              </button>
-            </td>
-          </tr>
-          <tr *ngIf="tickets.length === 0">
-            <td colspan="6" style="text-align: center; padding: 20px;">No hay tickets disponibles para esta fecha</td>
+            <!-- Tickets de ese día -->
+            <tr *ngFor="let ticket of grupo.tickets" [ngClass]="{
+      'parpadeo-rojo': hasUnspecifiedDetails(ticket),
+      'parpadeo-naranja': tieneAumentoODescuento(ticket)
+    }" style="border-bottom: 1px solid #f0f0f0;">
+              <td style="text-align: center; padding: 12px 15px;"><input type="checkbox" /></td>
+              <td style="padding: 12px 15px; text-align: center;">{{ ticket.nro_ticket }}</td>
+              <td style="padding: 12px 15px; text-align: center;">{{ ticket.dni }}</td>
+              <td style="text-align: center; padding: 8px;">
+                <span class="status-badge"
+                  [ngStyle]="{ backgroundColor: getColorByContador(ticket.contador!), color: 'white' }"
+                  (click)="toggleContador(ticket)" style="cursor: pointer; user-select: none;"
+                  title="Click para cambiar estado">
+                  {{ ticket.contador }}
+                </span>
+              </td>
+              <td style="padding: 12px 15px; text-align: center;">
+                {{ ticket.registrationTicket! | customDateFormat }}
+              </td>
+              <td style="padding: 12px 15px; text-align: center;">
+                <button class="pdf-btn" (click)="generatePdf(ticket.nro_ticket, ticket.dni)">pdf</button>
+                <button
+                  style="background-color: #2196f3; color: white; border: none; padding: 6px 12px; cursor: pointer; border-radius: 4px;"
+                  (click)="mostrarDetalles(ticket)">
+                  Detalles
+                </button>
+              </td>
+            </tr>
+          </ng-container>
+
+          <!-- Mensaje si no hay tickets en el mes -->
+          <tr *ngIf="ticketsAgrupados.length === 0">
+            <td colspan="6" style="text-align: center; padding: 20px;">No hay tickets disponibles este mes</td>
           </tr>
         </tbody>
       </table>
@@ -200,7 +287,7 @@
           <td style="padding: 8px; text-align: center; border-bottom: 1px solid #ddd;">{{ item.type}}</td>
           <td style="padding: 8px; text-align: center; border-bottom: 1px solid #ddd;">{{ item.size | sizeFormat}}</td>
           <td style="padding: 8px; text-align: center; border-bottom: 1px solid #ddd;">{{item.genero}}</td>
-          <td style="padding: 8px; text-align: center; border-bottom: 1px solid #ddd;">{{ item.amount }}</td> 
+          <td style="padding: 8px; text-align: center; border-bottom: 1px solid #ddd;">{{ item.amount }}</td>
           <td style="padding: 4px; text-align: center; border-bottom: 1px solid #ddd;">S/. {{ item.price | number:
             '1.2-2' }}</td>
           <td style="padding: 8px; text-align: center; border-bottom: 1px solid #ddd;">S/. {{ item.sub_total | number:

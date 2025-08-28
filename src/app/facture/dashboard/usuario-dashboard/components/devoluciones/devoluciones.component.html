@@ -1,5 +1,6 @@
 <app-pay-type-navbar></app-pay-type-navbar>
 
+<!-- Tabla de devoluciones -->
 <div *ngIf="devoluciones.length > 0; else noData" class="table-container">
   <table class="info-sale-table">
     <thead>
@@ -15,35 +16,66 @@
         <th>Tipo Pago</th>
         <th>Monto</th>
         <th>Registrado</th>
-        
       </tr>
     </thead>
     <tbody>
       @for (item of devoluciones; track item.id) {
         <tr>
-          <td>{{ item.id}}</td>
-          <td>{{ item.idClient ?? 'No Requiere'}}</td>
-          <td>{{ item.idSeparacion ?? 'No Requiere'}}</td>
-          <td>{{ item.soldDate | customDateFormat}}</td>
-          <td [appCopiarTexto]="item.idTicket.toString()">{{ item.idTicket}}</td>
-          <td>{{ item.idProducto}}</td>
-          <td [appCopiarTexto]="item.codToday">{{ item.codToday}}</td>
+          <td>{{ item.id }}</td>
+          <td>{{ item.idClient ?? 'No Requiere' }}</td>
+          <td>{{ item.idSeparacion ?? 'No Requiere' }}</td>
+          <td>{{ item.soldDate | customDateFormat }}</td>
+          <td [appCopiarTexto]="item.idTicket.toString()">{{ item.idTicket }}</td>
+          <td>{{ item.idProducto }}</td>
+          <td [appCopiarTexto]="item.codToday">{{ item.codToday }}</td>
           <td>{{ item.ticketType }}</td>
           <td>{{ item.payType | payTypeTranslate }}</td>
-          <td>{{ item.monto}}</td>
-          <td>{{ item.registrationDevolucio | customDateFormat}}</td>
-          <!-- <td>
-            <span class="status-badge" [ngClass]="{
-              'active': item.state === 'Activo',
-              'inactive': item.state !== 'Activo'
-            }">{{ item.state ?? '-' }}</span>
-          </td> -->
+          <td>{{ item.monto }}</td>
+          <td>{{ item.registrationDevolucio | customDateFormat }}</td>
         </tr>
       }
     </tbody>
   </table>
+
+  <!-- Paginación -->
+  <div class="pagination-footer">
+    <div class="pagination-info">
+      Mostrando {{ devoluciones.length }} de {{ totalElements }} registros
+    </div>
+
+    <div class="pagination-controls">
+      <button 
+        class="btn btn-sm" 
+        [disabled]="currentPage === 0"
+        (click)="onPageChange(currentPage - 1)">
+        Anterior
+      </button>
+
+      <span class="page-info">
+        Página {{ currentPage + 1 }} de {{ totalPages }}
+      </span>
+
+      <button 
+        class="btn btn-sm" 
+        [disabled]="currentPage === totalPages - 1"
+        (click)="onPageChange(currentPage + 1)">
+        Siguiente
+      </button>
+
+      <div class="page-size-selector">
+        Mostrar
+        <select (change)="onPageSizeChange($event)" [value]="pageSize">
+          <option value="5">5</option>
+          <option value="10">10</option>
+          <option value="20">20</option>
+          <option value="50">50</option>
+        </select>
+      </div>
+    </div>
+  </div>
 </div>
 
+<!-- Mensaje cuando no hay datos -->
 <ng-template #noData>
-  <p class="no-data-msg">No hay información disponible.</p>
+  <p class="no-data-msg">No hay devoluciones disponibles.</p>
 </ng-template>

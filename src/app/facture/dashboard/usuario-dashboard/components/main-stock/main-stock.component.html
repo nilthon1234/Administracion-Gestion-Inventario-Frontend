@@ -1,51 +1,77 @@
 <app-navbars-stock></app-navbars-stock>
 
 <div class="stock-container" *ngIf="!loading(); else spinner">
-  <h1 style="text-align: center;">Productos De Almacen En 0 Stock</h1>
+  <h1 style="text-align: center;">
+    {{ viewMode() === 0 ? 'Productos De Almacen En 0 Stock' : 'Productos De Almacen Por Agotar' }}
+  </h1>
+
   <div class="header-actions">
-    
     <button mat-raised-button color="primary" (click)="generatePdf()">
       <mat-icon>picture_as_pdf</mat-icon>
       Descargar PDF
     </button>
+
+    <button mat-raised-button [color]="selectedView === 0 ? 'primary' : ''"
+      [ngClass]="{ 'active-btn': selectedView === 0 }" (click)="switchView(0)">
+      Productos Sin Stock
+    </button>
+
+    <button mat-raised-button [color]="selectedView === 1 ? 'primary' : ''"
+      [ngClass]="{ 'active-btn': selectedView === 1 }" (click)="switchView(1)">
+      Productos Por Agotar
+    </button>
+
+
+    
   </div>
+  <!-- Nuevo: selector de threshold -->
+  <ng-container *ngIf="viewMode() === 1">
+    <mat-form-field appearance="outline" style="margin-left: 15px; width: 200px;">
+      <mat-label>Stock límite</mat-label>
+      <mat-select [value]="threshold()" (selectionChange)="changeThreshold($event.value)">
+        <mat-option [value]="3">menor que 3</mat-option>
+        <mat-option [value]="5">menor que 5</mat-option>
+        <mat-option [value]="10">menor que 10</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </ng-container>
+
 
   <div class="table-wrapper mat-elevation-z8">
     <table mat-table [dataSource]="slipper()" class="stock-table">
-      <!-- Imagen -->
+      <!-- columnas como ya tienes -->
       <ng-container matColumnDef="image">
         <th mat-header-cell *matHeaderCellDef class="col-image">Imagen</th>
         <td mat-cell *matCellDef="let item" class="col-image">
-          <img [src]="item.urlImg" [class.enlarged]="enlargedItem === item" 
-               (click)="toggleImageSize(item)" class="product-image" />
+          <img [src]="item.urlImg" [class.enlarged]="enlargedItem === item" (click)="toggleImageSize(item)"
+            class="product-image" />
         </td>
       </ng-container>
 
-      <!-- Marca -->
       <ng-container matColumnDef="brand">
         <th mat-header-cell *matHeaderCellDef>Marca</th>
         <td mat-cell *matCellDef="let item">{{ item.brand }}</td>
       </ng-container>
 
-      <!-- Código -->
       <ng-container matColumnDef="codToday">
         <th mat-header-cell *matHeaderCellDef>Código</th>
-        <td mat-cell *matCellDef="let item">{{ item.codToday }}</td>
+        <td [appCopiarTexto]="item.codToday" mat-cell *matCellDef="let item">{{ item.codToday }}</td>
+      </ng-container>
+      <ng-container matColumnDef="amount">
+        <th mat-header-cell *matHeaderCellDef>Cantidad</th>
+        <td mat-cell *matCellDef="let item">{{ item.amount }}</td>
       </ng-container>
 
-      <!-- Tipo -->
       <ng-container matColumnDef="type">
         <th mat-header-cell *matHeaderCellDef>Tipo</th>
         <td mat-cell *matCellDef="let item">{{ item.type }}</td>
       </ng-container>
 
-      <!-- Género -->
       <ng-container matColumnDef="genero">
         <th mat-header-cell *matHeaderCellDef>Género</th>
         <td mat-cell *matCellDef="let item">{{ item.genero }}</td>
       </ng-container>
 
-      <!-- Fecha -->
       <ng-container matColumnDef="registrationDate">
         <th mat-header-cell *matHeaderCellDef>Fecha</th>
         <td mat-cell *matCellDef="let item">{{ item.registrationDate | customDateFormat }}</td>

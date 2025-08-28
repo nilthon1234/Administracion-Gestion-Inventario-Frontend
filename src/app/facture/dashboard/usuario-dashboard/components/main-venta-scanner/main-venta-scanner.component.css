@@ -209,12 +209,12 @@ body {
 
 .talla-boton {
   display: inline-block;
-  padding: 4px 5px;
+  padding: 4px 1px;
   margin: 1px;
   border-radius: 4px;
   font-weight: 600;
   user-select: none;
-  margin-right: 4px;
+  margin-right: 2px;
 }
 
 .btn-talla-eliminar {
@@ -465,4 +465,10 @@ body {
 .select-pago option[value="transferencia"] {
   background-color: #fff3cd;
   color: #856404;
+}
+
+.size-list {
+  width: 50px;
+  height: 30px;
+   font-size: 12px;
 }

@@ -606,10 +606,10 @@ mat-paginator {
   background: rgba(0, 0, 0, 0.6);
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;  /* ← NUEVA LÍNEA */
+  padding-top: 50px;       /* ← AGREGAR ESTA LÍNEA */
   z-index: 1000;
 }
-
 .modal-content {
   background: white;
   border-radius: 12px;
@@ -831,20 +831,20 @@ mat-paginator {
 
 .sizes-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(65px, 1fr));
+  gap: 8px;
   margin-top: 10px;
 }
 
 .size-item {
   background: white;
   border: 2px solid #ddd;
-  border-radius: 8px;
-  padding: 12px 8px;
+  border-radius: 6px; /* Cambiar de 8px a 6px */
+  padding: 8px 6px; /* Cambiar de 12px 8px a 8px 6px */
   text-align: center;
   cursor: pointer;
   transition: all 0.3s;
-  min-height: 70px;
+  min-height: 50px; /* Cambiar de 70px a 50px */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -865,7 +865,7 @@ mat-paginator {
 
 .size-name {
   font-weight: bold;
-  font-size: 14px;
+  font-size: 12px;
 }
 
 .size-stock {

@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
 import { PayTypeTranslatePipe } from '../../../../../shared/pipes/pay-type-translate.pipe';
 import { CustomDateFormatPipe } from '../../../../../shared/pipes/custom-date-format.pipe';
 import { CopiarTextoDirective } from '../../../../../shared/directives/copiar-texto.directive';
+import { PaginatedResponse } from '../../../../../shared/models/PaginatedResponse';
 
 @Component({
   selector: 'app-informe-pagos-actualizados',
@@ -16,23 +17,44 @@ import { CopiarTextoDirective } from '../../../../../shared/directives/copiar-te
 })
 export class InformePagosActualizadosComponent implements OnInit {
   informePagos: InformePagos[] = [];
+  totalElements: number = 0;
+  totalPages: number = 0;
+  currentPage: number = 0;
+  pageSize: number = 20;
 
-
-  constructor(private pagosService: PagoService, ){}
+  constructor(private pagosService: PagoService) { }
 
   ngOnInit(): void {
-    this.listaInfoPagoActus();
+    this.cargarInformePagos();
   }
 
-  listaInfoPagoActus(){
-    this.pagosService.allListInformePagos().subscribe({
-      next: (data: InformePagos[]) => {
-        this.informePagos = data;
-      },
-      error:(err) => {
-        console.error('Error al obtener Datos:', err);
-      } 
-    })
+  cargarInformePagos(): void {
+    this.pagosService.getAllInformePagos(this.currentPage, this.pageSize)
+      .subscribe({
+        next: (response: PaginatedResponse<InformePagos>) => {
+          this.informePagos = response.content;
+          this.totalElements = response.totalElements;
+          this.totalPages = response.totalPages;
+          this.currentPage = response.pageNumber;
+        },
+        error: (err) => {
+          console.error('Error al cargar informe de pagos', err);
+        }
+      });
+  }
+
+  onPageChange(page: number): void {
+    if (page >= 0 && page < this.totalPages) {
+      this.currentPage = page;
+      this.cargarInformePagos();
+    }
+  }
+
+  onPageSizeChange(event: Event): void {
+    const select = event.target as HTMLSelectElement;
+    this.pageSize = Number(select.value);
+    this.currentPage = 0; // Reiniciar a la primera página
+    this.cargarInformePagos();
   }
 
 }

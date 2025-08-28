@@ -9,14 +9,17 @@
           (change)="cargarGastos()"
           class="date-input"
         >
-        <button class="btn btn-primary" (click)="mostrarFormulario = !mostrarFormulario">
+        <button class="btn btn-primary" (click)="toggleFormulario()">
           {{ mostrarFormulario ? 'Cancelar' : '+ Nuevo Gasto' }}
         </button>
       </div>
+      <button class="btn btn-secondary" (click)="generarPDF()">
+        📄 Exportar a PDF
+      </button>
     </header>
   
     <!-- Formulario -->
-    <div class="form-container" *ngIf="mostrarFormulario">
+    <div class="form-container" *ngIf="mostrarFormulario" #formularioGasto>
       <h2>{{ gastoEditando ? 'Editar Gasto' : 'Nuevo Gasto' }}</h2>
       <form (ngSubmit)="guardarGasto()">
         <div class="form-grid">
@@ -45,21 +48,24 @@
             >
           </div>
   
-          <div class="form-group">
+          <!-- <div class="form-group">
             <label>Categoría</label>
             <select [(ngModel)]="nuevoGasto.contador" name="contador">
               <option *ngFor="let option of contadorOptions" [value]="option">
                 {{ option | titlecase }}
               </option>
             </select>
-          </div>
+          </div> -->
         </div>
   
         <div class="form-actions">
           <button type="button" class="btn btn-secondary" (click)="limpiarFormulario()">
             Cancelar
           </button>
-          <button type="submit" class="btn btn-primary">
+          <button
+          [disabled]="!formularioValido"
+           type="submit" 
+           class="btn btn-primary">
             {{ gastoEditando ? 'Actualizar' : 'Guardar' }}
           </button>
         </div>
@@ -85,10 +91,16 @@
         *ngFor="let gasto of gastos"
         [style.border-left-color]="getContadorColor(gasto.contador)"
       >
-        <div class="gasto-header">
-          <span class="gasto-categoria">{{ gasto.contador | titlecase }}</span>
-          <span class="gasto-fecha">{{ gasto.registrationSalida | date:'dd/MM/yyyy' }}</span>
-        </div>
+      <div class="gasto-header">
+        <button
+          class="contador-btn"
+          [style.background-color]="getColorByContador(gasto.contador)"
+          (click)="toggleContador(gasto)">
+          {{ gasto.contador | titlecase }}
+        </button>
+        <span class="gasto-fecha">{{ gasto.registrationSalida | date:'dd/MM/yyyy' }}</span>
+      </div>
+      
         
         <h3 class="gasto-descripcion">{{ gasto.descripcion }}</h3>
         <p class="gasto-monto">${{ gasto.salida | number:'1.2-2' }}</p>

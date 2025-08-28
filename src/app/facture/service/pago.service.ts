@@ -6,6 +6,7 @@ import { InfoSale } from '../../shared/models/Info-sale';
 import { InformePagos } from '../../shared/models/InformePagos';
 import { VentasPagos } from '../../shared/models/VentasPagos';
 import { environment } from '../../../environments/environmen';
+import { PaginatedResponse } from '../../shared/models/PaginatedResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -25,14 +26,20 @@ export class PagoService {
     return this.http.post(`${this.apiPagoUrl}/save`, data, { responseType: 'text' })
 
   }
-  allListOrderFilterPago(): Observable<InfoSale[]> {
-    return this.http.get<InfoSale[]>(`${this.apiPagoUrl}/all-info-sale`)
+  getAllInfoSales(page: number = 0, size: number = 10): Observable<PaginatedResponse<InfoSale>> {
+    return this.http.get<PaginatedResponse<InfoSale>>(`${this.apiPagoUrl}/all-info-sale`, {
+      params: { page, size }
+    });
   }
-  allListInformePagos(): Observable<InformePagos[]> {
-    return this.http.get<InformePagos[]>(`${this.apiPagoUrl}/all-meto-pago-info`)
+  getAllInformePagos(page: number = 0, size: number = 10): Observable<PaginatedResponse<InformePagos>> {
+    return this.http.get<PaginatedResponse<InformePagos>>(`${this.apiPagoUrl}/all-meto-pago-info`, {
+      params: { page, size }
+    });
   }
-  allListVentaPagos(): Observable<VentasPagos[]> {
-    return this.http.get<VentasPagos[]>(`${this.apiUrl}/all-metodo-pago`)
+  getAllVentaPagos(page: number = 0, size: number = 10): Observable<PaginatedResponse<VentasPagos>> {
+    return this.http.get<PaginatedResponse<VentasPagos>>(`${this.apiUrl}/all-metodo-pago`, {
+      params: { page, size }
+    });
   }
 
   specifyPaymentMethods(payload: any): Observable<any> {

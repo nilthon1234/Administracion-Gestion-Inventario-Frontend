@@ -165,12 +165,10 @@
               <img [src]="productoEncontrado.urlImg" [alt]="productoEncontrado.brand" />
             </div>
             <div class="product-data">
-              <p><strong>Marca:</strong> {{ productoEncontrado.brand }}</p>
-              <p><strong>Tipo:</strong> {{ productoEncontrado.type }}</p>
-              <p><strong>Código Tienda:</strong> {{ productoEncontrado.codToday }}</p>
-              <p><strong>Código Empresa:</strong> {{ productoEncontrado.company }}</p>
-              <p><strong>Género:</strong> {{ productoEncontrado.genero }}</p>
-              <p><strong>Precio:</strong> S/ {{ productoEncontrado.price }}</p>
+              <p><strong>Marca:</strong> {{ productoEncontrado.brand }} <strong>Tipo:</strong> {{ productoEncontrado.type }}</p>
+              <p><strong>Código Tienda:</strong> {{ productoEncontrado.codToday }} <strong>Código Empresa:</strong> {{ productoEncontrado.company }}</p>
+              
+              <p><strong>Género:</strong> {{ productoEncontrado.genero }} <strong>Precio:</strong> S/ {{ productoEncontrado.price }}</p>
             </div>
           </div>
         </div>
@@ -199,8 +197,7 @@
               <div class="sizes-grid">
                 <div *ngFor="let size of getSizesDisponibles()" class="size-item" [class.disabled]="size.cantidad <= 0"
                   (click)="seleccionarSize(size)" [title]="'Disponible: ' + size.cantidad">
-                  <span class="size-name">{{ formatSizeName(size.name) }}</span>
-                  <span class="size-stock">{{ size.cantidad }}</span>
+                  <span class="size-name">{{ formatSizeName(size.name) }}({{ size.cantidad }})</span>
                 </div>
               </div>
             </div>

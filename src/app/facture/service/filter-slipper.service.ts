@@ -108,6 +108,23 @@ buscarPorCodTodayOCompany3(codToday?: string, company?: string): Observable<Prod
   getOutOfStock(page: number, size: number) {
     return this.http.get<PaginatedResponse<Slipper>>(`${this.urlCod}/out-of-stock?pageNumber=${page}&pageSize=${size}`);
   }
+
+   // Nuevo: productos por agotar (<= threshold). Si no envías threshold, el backend usa 3.
+   getLowStock(pageNumber: number, pageSize: number, threshold?: number): Observable<PaginatedResponse<Slipper>> {
+    let params = new HttpParams()
+      .set('pageNumber', pageNumber)
+      .set('pageSize', pageSize);
+
+    if (threshold != null) {
+      params = params.set('threshold', threshold.toString());
+    }
+
+    return this.http.get<PaginatedResponse<Slipper>>(
+      `${this.urlCod}/low-stock`,
+      { params }
+    );
+  }
+  
   buscarPorCodToday(codToday: string): Observable<any> {
     return this.http.get(`${this.urlCod}/buscar?codToday=${codToday}`);
   }

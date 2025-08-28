@@ -50,8 +50,8 @@ h2 {
 
 .floating-box {
   position: fixed;
-  top: 56%;
-  left: 50%;
+  top: 63%;
+  left: 55%;
   transform: translate(-50%, -50%);
   background-color: #fafbfc;
   padding: 25px 28px 18px 28px;
@@ -60,7 +60,7 @@ h2 {
   box-shadow: 0 8px 40px 0 rgba(60,60,90,0.18);
   z-index: 1000;
   max-height: 85vh;
-  min-width: 60vw;
+  min-width: 65vw;
   overflow-y: auto;
   overflow-x: auto;
 }

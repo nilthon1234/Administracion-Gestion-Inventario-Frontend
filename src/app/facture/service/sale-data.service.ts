@@ -12,6 +12,8 @@ import { environment } from '../../../environments/environmen';
 export class SaleDataService {
   private apiUrl = `${environment.apiUrl}`;
 
+  private urlGenero = `${environment.apiUrl}/genero`
+
   constructor(private http: HttpClient) { }
 
   registerSale(sale: Sale): Observable<ApiResponse> {
@@ -29,10 +31,7 @@ export class SaleDataService {
   }
 
   getGenero(): Observable<Gender[]> {
-    return this.http.get<Gender[]>('assets/data/genero.json')
-      .pipe(
-        catchError(this.handleError<Gender[]>('getGenero', []))
-      );
+    return this.http.get<any[]>(`${this.urlGenero}`);
   }
 
   getTalla(): Observable<SizesByGender> {
@@ -55,17 +54,17 @@ export class SaleDataService {
     return this.http.get(`${this.apiUrl}/sale/estadisticas-pagos?fecha=${fecha}`);
   }
   searchTicketsByDniOrTicket(dni?: string, ticket?: string): Observable<any[]> {
-  let params = new HttpParams();
+    let params = new HttpParams();
 
-  if (dni) {
-    params = params.set('dni', dni);
-  }
-  if (ticket) {
-    params = params.set('ticket', ticket);
-  }
+    if (dni) {
+      params = params.set('dni', dni);
+    }
+    if (ticket) {
+      params = params.set('ticket', ticket);
+    }
 
-  return this.http.get<any[]>(`${this.apiUrl}/sale/search-ticket-dni`, { params });
-}
+    return this.http.get<any[]>(`${this.apiUrl}/sale/search-ticket-dni`, { params });
+  }
 
   getTopSellingProductsByType(limit: number = 10): Observable<ProductSalesByType[]> {
     return this.http.get<ProductSalesByType[]>(`${this.apiUrl}/sale/top-selling-by-type?limit=${limit}`);

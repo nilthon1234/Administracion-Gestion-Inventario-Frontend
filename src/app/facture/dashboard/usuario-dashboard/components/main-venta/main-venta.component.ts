@@ -13,12 +13,13 @@ import { DevolucionDialogComponent } from "../devolucion-dialog/devolucion-dialo
 import { CustomDateFormatPipe } from '../../../../../shared/pipes/custom-date-format.pipe';
 import { NavBarsVentasComponent } from "../../../../../shared/components/navbars/nav-bars-ventas/nav-bars-ventas.component";
 import { SizeFormatPipe } from '../../../../../shared/pipes/size-format.pipe';
+import { FechaLarga } from '../../../../../shared/pipes/FechaLarga.pipe';
 
 @Component({
   selector: 'app-main-venta',
   standalone: true,
   imports: [CommonModule, FormsModule, RouterLink, PayTypeTranslatePipe, CopiarTextoDirective,
-    DevolucionDialogComponent, CustomDateFormatPipe, NavBarsVentasComponent,SizeFormatPipe],
+    DevolucionDialogComponent, FechaLarga, CustomDateFormatPipe, NavBarsVentasComponent, SizeFormatPipe],
   templateUrl: './main-venta.component.html',
   styleUrl: './main-venta.component.css'
 })
@@ -74,14 +75,20 @@ export class MainVentaComponent implements OnInit {
 
   cargarResumen() {
     this.saleService.getResumen(this.fechaSeleccionada).subscribe(data => {
+      // 1. Cargar el resumen general (montos, métodos de pago)
       this.resumen = {
         resumen: data.resumen,
         metodosPago: data.metodosPago,
         fecha: data.fecha
       };
-      this.metodosPago = data.metodosPago;
+      this.metodosPago = data.metodosPago; // puedes usar this.resumen.metodosPago y eliminar esta línea
+
+      // 2. Cargar los tickets y calcular el resumen de productos al finalizar
+      this.cargarTickets(() => {
+        this.calcularResumenProductos(); // ✅ Ahora SÍ tienes los datos
+        this.calcularConteosPendientes();
+      });
     });
-    this.cargarTickets()//agregamos para que la busqueda tambien busque al ticket por la fecha
   }
 
   //FILTRO DE TICKET -> DETAILS
@@ -91,15 +98,74 @@ export class MainVentaComponent implements OnInit {
   showModel: boolean = false;
   searchDni: string = '';
 
-  cargarTickets() {
+  searchType: 'dni' | 'ticket' = 'dni';
+  searchValue: string = '';
+  allTickets: Ticket[] = [];
+
+  cargarTickets(completed?: () => void) {
     this.saleService.getTickets(this.fechaSeleccionada).subscribe((data: TicketResponse) => {
-      this.tickets = data.ticket || [];
-      this.hasUnspecified = this.hasAnyUnspecifiedTicket();
-      //inicializar la propiedad details en false para todo los tickets
-      this.tickets.forEach(ticket => {
+      const tickets = data.ticket || [];
+      this.allTickets = tickets; // Guardar todos los tickets
+      
+      // Inicializar showDetails
+      tickets.forEach(ticket => {
         ticket.showDetails = false;
       });
+
+      // Aplicar filtro si hay un valor de búsqueda
+      let ticketsFiltrados = tickets;
+      if (this.searchValue.trim() !== '') {
+        ticketsFiltrados = this.filtrarTickets(tickets, this.searchValue, this.searchType);
+      }
+
+      // Agrupar por fecha
+      const grupos: { [key: string]: Ticket[] } = {};
+      ticketsFiltrados.forEach(ticket => {
+        const fechaStr = ticket.registrationTicket!.split('T')[0];
+        if (!grupos[fechaStr]) {
+          grupos[fechaStr] = [];
+        }
+        grupos[fechaStr].push(ticket);
+      });
+
+      // Ordenar de más reciente a más antiguo
+      this.ticketsAgrupados = Object.keys(grupos)
+        .map(fecha => ({
+          fecha,
+          tickets: grupos[fecha]
+        }))
+        .sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
+
+      this.hasUnspecified = this.hasAnyUnspecifiedTicket();
+
+      if (completed) completed();
     });
+  }
+
+  // Método para filtrar tickets
+  filtrarTickets(tickets: Ticket[], valor: string, tipo: 'dni' | 'ticket'): Ticket[] {
+    const valorBusqueda = valor.toLowerCase().trim();
+    
+    if (tipo === 'dni') {
+      return tickets.filter(ticket => 
+        ticket.dni && ticket.dni.toString().toLowerCase().includes(valorBusqueda)
+      );
+    } else {
+      return tickets.filter(ticket => 
+        ticket.nro_ticket && ticket.nro_ticket.toString().toLowerCase().includes(valorBusqueda)
+      );
+    }
+  }
+  // Cambiar tipo de búsqueda
+  cambiarTipoBusqueda(tipo: 'dni' | 'ticket') {
+    this.searchType = tipo;
+    this.searchValue = ''; // Limpiar búsqueda al cambiar tipo
+    this.cargarTickets(); // Recargar todos los tickets
+  }
+
+  // Método de búsqueda
+  buscar() {
+    this.cargarTickets(); // Recargar tickets con el filtro aplicado
   }
 
   buscarPorDni() {
@@ -135,7 +201,7 @@ export class MainVentaComponent implements OnInit {
   }
 
   irActualizar(nroTicket: number, codToday: string, company: string, type: string, genero: string,
-     size: string | null, price: number, payType: string, amount: number,producto: string) {
+    size: string | null, price: number, payType: string, amount: number, producto: string) {
 
     const queryParams: any = {
       nroTicket: nroTicket,
@@ -189,6 +255,21 @@ export class MainVentaComponent implements OnInit {
       item.especificacion?.trim() === 'NOESPECIFICADO'
     );
   }
+  hasUnspecifiedDetails(ticket: any): boolean {
+    if (!ticket || !ticket.detail) return false;
+
+    return ticket.detail.some((item: any) =>
+      item.especificacion?.trim() === 'NOESPECIFICADO'
+    );
+  }
+  tieneAumentoODescuento(ticket: any): boolean {
+    if (!ticket || !ticket.detail) return false;
+  
+    return ticket.detail.some((item: any) =>
+      item.discount === 'Si' || item.increase === 'Si'
+    );
+  }
+  
 
   hasAnyUnspecifiedTicket(): boolean {
     if (!this.tickets) return false;
@@ -218,6 +299,7 @@ export class MainVentaComponent implements OnInit {
   abrirModelTipoPago(nroTicket: number | undefined, codToday: string | undefined, id: number | undefined) {
     const dialog = this.dialog.open(TipoPagoComponent, {
       height: '450px',
+      width: '450px',
       panelClass: 'custom-modalbox', // Aplicamos clase personalizada
       backdropClass: 'custom-backdrop', // para el fondo oscuro
       data: { nroTicket: nroTicket, codToday: codToday, id: id }
@@ -308,5 +390,76 @@ export class MainVentaComponent implements OnInit {
       console.error(error);
     });
   }
+
+  //Para listar por mes 
+  ticketsAgrupados: { fecha: string; tickets: Ticket[] }[] = [];
+
+  // Suponiendo que tienes todos los tickets del mes en una lista: `ticketsDelMes`
+  resumenProductos: { ropa: number, calzado: number, unico: number, total: number } = {
+    ropa: 0,
+    calzado: 0,
+    unico: 0,
+    total: 0
+  };
+
+  calcularResumenProductos() {
+    let ropa = 0, calzado = 0, unico = 0;
+
+    // Recorremos los grupos y luego los tickets
+    this.ticketsAgrupados.forEach(grupo => {
+      grupo.tickets.forEach(ticket => {
+        if (ticket.detail && Array.isArray(ticket.detail)) {
+          ticket.detail.forEach(item => {
+            const cantidad = item.amount || 0;
+            const prod = item.producto?.trim();
+
+            if (prod === 'ROPA') ropa += cantidad;
+            else if (prod === 'CALZADO') calzado += cantidad;
+            else if (prod === 'UNICO') unico += cantidad;
+          });
+        }
+      });
+    });
+
+    this.resumenProductos = {
+      ropa,
+      calzado,
+      unico,
+      total: ropa + calzado + unico
+    };
+  }
+
+  conteos = {
+    noEspecificado: 0,
+    aumento: 0,
+    descuento: 0
+  };
+  
+  calcularConteosPendientes() {
+    let noEspecificado = 0;
+    let aumento = 0;
+    let descuento = 0;
+  
+    this.ticketsAgrupados.forEach(grupo => {
+      grupo.tickets.forEach(ticket => {
+        if (ticket.detail) {
+          ticket.detail.forEach((item: any) => {
+            if (item.especificacion?.trim() === 'NOESPECIFICADO') {
+              noEspecificado++;
+            }
+            if (item.increase === 'Si') {
+              aumento++;
+            }
+            if (item.discount === 'Si') {
+              descuento++;
+            }
+          });
+        }
+      });
+    });
+  
+    this.conteos = { noEspecificado, aumento, descuento };
+  }
+  
 
 }

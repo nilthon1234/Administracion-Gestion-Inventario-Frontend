@@ -40,6 +40,41 @@
       }
     </tbody>
   </table>
+  <div class="pagination-footer">
+    <div class="pagination-info">
+      Mostrando {{ informePagos.length }} de {{ totalElements }} registros
+    </div>
+
+    <div class="pagination-controls">
+      <button 
+        class="btn btn-sm" 
+        [disabled]="currentPage === 0"
+        (click)="onPageChange(currentPage - 1)">
+        Anterior
+      </button>
+
+      <span class="page-info">
+        Página {{ currentPage + 1 }} de {{ totalPages }}
+      </span>
+
+      <button 
+        class="btn btn-sm" 
+        [disabled]="currentPage === totalPages - 1"
+        (click)="onPageChange(currentPage + 1)">
+        Siguiente
+      </button>
+
+      <div class="page-size-selector">
+        Mostrar
+        <select (change)="onPageSizeChange($event)" [value]="pageSize">
+          <option value="5">5</option>
+          <option value="10">10</option>
+          <option value="20">20</option>
+          <option value="50">50</option>
+        </select>
+      </div>
+    </div>
+  </div>
 </div>
 
 <ng-template #noData>

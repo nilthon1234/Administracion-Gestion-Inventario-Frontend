@@ -46,7 +46,7 @@ export const routerUsuario : Routes = [
             
 
             {path: 'main-venta',title:'Ventas', component: MainVentaComponent, },
-            {path: 'filter-venta',title:'Ventas', component: FilterVentasComponent, },
+            {path: 'filter-venta',title:'Busqueda de Venta', component: FilterVentasComponent, },
             {path: 'productos-ventas',title:'Productos mas vendidos', component: ProductosVendidosComponent, },
             {path: 'main-scanner',title:'Ventas Por Scanner', component: MainVentaScannerComponent, },
             {path: 'update-venta',title:'Actualizar Venta', component: UpdateVentaComponent,},
@@ -65,10 +65,10 @@ export const routerUsuario : Routes = [
             {path: 'personalizar-qr', component: PersonalizacionQrComponent},
 
                 //Pagos
-            {path: 'main-pagos', component: MainInfoSalesComponent},
-            {path: 'informe-pagos-actualizados', component: InformePagosActualizadosComponent},
-            {path: 'main-informe-ventas-pagos', component: InformeVentasPagosComponent},
-            {path: 'devoluciones', component: DevolucionesComponent},
+            {path: 'main-pagos',title:'Informe Ventas Actualizadas', component: MainInfoSalesComponent},
+            {path: 'informe-pagos-actualizados', title:'Informe Precios Actualizados',component: InformePagosActualizadosComponent},
+            {path: 'main-informe-ventas-pagos',title:'Informe Espesificacion Pagos', component: InformeVentasPagosComponent},
+            {path: 'devoluciones',title:'Devoluciones', component: DevolucionesComponent},
 
             //Stock
             {path: 'main-stock',title:'Stock Vacion Almacen', component: MainStockComponent},

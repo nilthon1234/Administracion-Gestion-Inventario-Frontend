@@ -8,16 +8,23 @@ import { PayTypeTranslatePipe } from '../../../../../shared/pipes/pay-type-trans
 import { PayTypeNavbarComponent } from "../../../../../shared/components/navbars/pay-type-navbar/pay-type-navbar.component";
 import { EspecificacionesPipe } from '../../../../../shared/pipes/especificaciones.pipe';
 import { CopiarTextoDirective } from '../../../../../shared/directives/copiar-texto.directive';
+import { PaginatedResponse } from '../../../../../shared/models/PaginatedResponse';
 
 @Component({
   selector: 'app-main-info-sales',
-  imports: [CommonModule,CopiarTextoDirective, FormsModule, EspecificacionesPipe,CustomDateFormatPipe, PayTypeTranslatePipe, PayTypeNavbarComponent],
+  imports: [CommonModule, CopiarTextoDirective, FormsModule, EspecificacionesPipe, CustomDateFormatPipe, PayTypeTranslatePipe, PayTypeNavbarComponent],
   templateUrl: './main-info-sales.component.html',
   styleUrl: './main-info-sales.component.css'
 })
-export class MainInfoSalesComponent implements OnInit{
+export class MainInfoSalesComponent implements OnInit {
 
-   payTypeOptions = [
+  infoSales: InfoSale[] = [];
+  totalElements: number = 0;
+  totalPages: number = 0;
+  currentPage: number = 0;
+  pageSize: number = 20;
+
+  payTypeOptions = [
     { value: '', display: 'Seleccione' },
     { value: 'Cash', display: 'Efectivo' },
     { value: 'Yape', display: 'Yape' },
@@ -25,31 +32,50 @@ export class MainInfoSalesComponent implements OnInit{
     { value: 'Debito', display: 'Débito' },
     { value: 'Card', display: 'Tarjeta' }
   ];
-infoSales: InfoSale[] =[];
-isSaveDisabled: boolean = true;
 
+  isSaveDisabled: boolean = true;
   showModal: boolean = false;
   currentSale: InfoSale | null = null;
   paymentMethods: any[] = [];
   errorMessage: string = '';
   successMessage: string = '';
-  constructor(private pagosService: PagoService,){}
+
+  constructor(private pagosService: PagoService) { }
 
   ngOnInit(): void {
-    this.listaInfosales();
-
-  }
-  listaInfosales(){
-    this.pagosService.allListOrderFilterPago().subscribe({
-      next: (data: InfoSale[]) => {
-        this.infoSales = data;
-      },
-      error:(err) => {
-        console.error('Error al obtener Datos:', err);
-      }
-    });
+    this.cargarInfoSales();
   }
 
+  cargarInfoSales(): void {
+    this.pagosService.getAllInfoSales(this.currentPage, this.pageSize)
+      .subscribe({
+        next: (response: PaginatedResponse<InfoSale>) => {
+          this.infoSales = response.content;
+          this.totalElements = response.totalElements;
+          this.totalPages = response.totalPages;
+          this.currentPage = response.pageNumber;
+        },
+        error: (err) => {
+          console.error('Error al cargar ventas', err);
+        }
+      });
+  }
+
+  onPageChange(page: number): void {
+    if (page >= 0 && page < this.totalPages) {
+      this.currentPage = page;
+      this.cargarInfoSales();
+    }
+  }
+
+  onPageSizeChange(event: Event): void {
+    const select = event.target as HTMLSelectElement;
+    this.pageSize = Number(select.value);
+    this.currentPage = 0; // Reiniciar a la primera página
+    this.cargarInfoSales();
+  }
+
+  // --- Lógica del modal (sin cambios) ---
   openPaymentModal(sale: InfoSale): void {
     this.currentSale = sale;
     this.paymentMethods = [{ ticket: sale.nroTicket, payType: '', monto: '' }];
@@ -72,46 +98,41 @@ isSaveDisabled: boolean = true;
       this.paymentMethods.splice(index, 1);
     }
   }
+
   checkPaymentMethods(): void {
     this.isSaveDisabled = this.paymentMethods.some(method => !method.payType);
   }
 
   submitPaymentMethods(): void {
-  if (!this.currentSale) return;
+    if (!this.currentSale) return;
 
-  this.errorMessage = '';
-  this.successMessage = '';
+    const payload = {
+      infoSalesId: this.currentSale.id,
+      metodosPago: this.paymentMethods.map(method => ({
+        ticket: Number(method.ticket),
+        payType: method.payType,
+        monto: Number(method.monto)
+      }))
+    };
 
-  const payload = {
-    infoSalesId: this.currentSale.id,
-    metodosPago: this.paymentMethods.map(method => ({
-      ticket: Number(method.ticket),
-      payType: method.payType,
-      monto: Number(method.monto)
-    }))
-  };
-
-  this.pagosService.specifyPaymentMethods(payload).subscribe({
-    next: (response: any) => {
-      this.successMessage = response.message || 'Métodos de pago registrados correctamente';
-      setTimeout(() => {
-        this.closeModal();
-        this.listaInfosales();
-      }, 1500);
-    },
-    error: (err: any) => {
-      this.errorMessage = err.message || 'Error al registrar métodos de pago';
-      
-      // Manejo específico de errores conocidos
-      if (err.message.includes('no coincide con el monto base')) {
-        this.errorMessage = err.message;
-      } else if (err.message.includes('no corresponde a esta venta')) {
-        this.errorMessage = err.message;
-      } else if (err.message.includes("La especificación debe ser 'NoEspecificado'")) {
-        this.errorMessage = 'El registro debe estar marcado como "NOESPECIFICADO" para poder modificarlo';
+    this.pagosService.specifyPaymentMethods(payload).subscribe({
+      next: (response: any) => {
+        this.successMessage = response.message || 'Métodos de pago registrados correctamente';
+        setTimeout(() => {
+          this.closeModal();
+          this.cargarInfoSales(); // ✅ Recargar con paginación
+        }, 1500);
+      },
+      error: (err: any) => {
+        this.errorMessage = err.message || 'Error al registrar métodos de pago';
+        if (err.message.includes('no coincide con el monto base')) {
+          this.errorMessage = err.message;
+        } else if (err.message.includes('no corresponde a esta venta')) {
+          this.errorMessage = err.message;
+        } else if (err.message.includes("La especificación debe ser 'NoEspecificado'")) {
+          this.errorMessage = 'El registro debe estar marcado como "NOESPECIFICADO" para poder modificarlo';
+        }
       }
-    }
-  });
-}
-
+    });
+  }
 }

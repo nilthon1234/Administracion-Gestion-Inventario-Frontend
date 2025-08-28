@@ -152,4 +152,25 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 
 
+/*estilos de venta*/
+.parpadeo-rojo {
+  animation: parpadeo 1.5s infinite;
+  background-color: #ffebee !important; /* Fondo rojo claro */
+}
 
+@keyframes parpadeo {
+  0% { background-color: #ffebee; }
+  50% { background-color: #f44336; color: white; }
+  100% { background-color: #ffebee; }
+}
+
+
+/* Nuevo: parpadeo rojo-naranja */
+.parpadeo-naranja {
+  animation: parpadeoNaranja 1.5s ease-in-out infinite;
+}
+
+@keyframes parpadeoNaranja {
+  0%, 100% { background-color: transparent; }
+  50% { background-color: rgba(255, 87, 34, 0.5); } /* Naranja */
+}

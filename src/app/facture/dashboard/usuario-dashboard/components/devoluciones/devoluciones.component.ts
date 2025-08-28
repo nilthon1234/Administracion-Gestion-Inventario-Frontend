@@ -7,6 +7,7 @@ import { PayTypeTranslatePipe } from '../../../../../shared/pipes/pay-type-trans
 import { CustomDateFormatPipe } from '../../../../../shared/pipes/custom-date-format.pipe';
 import { HighlightPipe } from '../../../../../shared/pipes/highlight.pipe';
 import { CopiarTextoDirective } from '../../../../../shared/directives/copiar-texto.directive';
+import { PaginatedResponse } from '../../../../../shared/models/PaginatedResponse';
 
 @Component({
   selector: 'app-devoluciones',
@@ -15,23 +16,45 @@ import { CopiarTextoDirective } from '../../../../../shared/directives/copiar-te
   styleUrl: './devoluciones.component.css'
 })
 export class DevolucionesComponent implements OnInit{
-  devoluciones: Devoluciones[] = []
+  devoluciones: Devoluciones[] = [];
+  totalElements: number = 0;
+  totalPages: number = 0;
+  currentPage: number = 0;
+  pageSize: number = 20;
 
-  constructor(private devolucionesService: DevolucionesService){}
+  constructor(private devolucionesService: DevolucionesService) { }
 
-   ngOnInit(): void {
-    this.listaDevoluciones();
+  ngOnInit(): void {
+    this.cargarDevoluciones();
   }
 
-  listaDevoluciones(){
-    this.devolucionesService.allListaDevoluciones().subscribe({
-      next: (data: Devoluciones[]) => {
-        this.devoluciones = data;
-      },
-      error: (err) =>{
-        console.error('Error al listar Devoluciones', err)
-      },
-    });
-  };
+  cargarDevoluciones(): void {
+    this.devolucionesService.getAllDevoluciones(this.currentPage, this.pageSize)
+      .subscribe({
+        next: (response: PaginatedResponse<Devoluciones>) => {
+          this.devoluciones = response.content;
+          this.totalElements = response.totalElements;
+          this.totalPages = response.totalPages;
+          this.currentPage = response.pageNumber;
+        },
+        error: (err) => {
+          console.error('Error al cargar devoluciones', err);
+        }
+      });
+  }
+
+  onPageChange(page: number): void {
+    if (page >= 0 && page < this.totalPages) {
+      this.currentPage = page;
+      this.cargarDevoluciones();
+    }
+  }
+
+  onPageSizeChange(event: Event): void {
+    const select = event.target as HTMLSelectElement;
+    this.pageSize = Number(select.value);
+    this.currentPage = 0; // Reiniciar a la primera página
+    this.cargarDevoluciones();
+  }
 
 }

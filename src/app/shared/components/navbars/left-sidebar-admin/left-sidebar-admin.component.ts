@@ -47,7 +47,7 @@ export class LeftSidebarAdminComponent {
     },
     {
       routeLink: 'main-gastos',
-      icon: 'fas fa-money-bill-wave',
+      icon: 'fas fa-chart-line',
       label: 'Gastos de Tienda',
       children: ['/main-gastos']
     },

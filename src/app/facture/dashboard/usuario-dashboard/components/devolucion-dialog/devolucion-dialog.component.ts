@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PayTypeTranslatePipe } from '../../../../../shared/pipes/pay-type-translate.pipe';
+import { environment } from '../../../../../../environments/environmen';
 
 
 @Component({
@@ -31,7 +32,7 @@ export class DevolucionDialogComponent {
       monto: this.monto,
       payType: this.selectedPayType
     };
-    this.http.post(`${this.enviarDevolucion.apply}/devoluciones/eliminarDetail`,body,{responseType: 'text'})
+    this.http.post(`${environment.apiUrl}/devoluciones/eliminarDetail`,body,{responseType: 'text'})
     .subscribe({
       next: (resp: string) => {
         this.mensaje = resp;

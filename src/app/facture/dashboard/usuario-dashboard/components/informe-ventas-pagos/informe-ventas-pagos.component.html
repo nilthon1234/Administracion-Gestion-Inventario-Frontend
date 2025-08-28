@@ -11,29 +11,59 @@
         <th>Monto Fijo</th>
         <th>Tipo Ticket</th>
         <th>Registrado</th>
-        
+
       </tr>
     </thead>
     <tbody>
       @for (item of ventasPagos; track item.id) {
-        <tr>
-          <td>{{ item.id}}</td>
-          <td [appCopiarTexto]="item.ticket.toString()">{{ item.ticket }}</td>
-          <td>{{ item.payType | payTypeTranslate }}</td>
-          <td>{{ item.monto}}</td>
-          <td>{{ item.total}}</td>
-          <td>{{ item.ticketType}}</td>
-          <td>{{ item.registrationMetodoPago | customDateFormat}}</td>
-          <!-- <td>
+      <tr>
+        <td>{{ item.id}}</td>
+        <td [appCopiarTexto]="item.ticket.toString()">{{ item.ticket }}</td>
+        <td>{{ item.payType | payTypeTranslate }}</td>
+        <td>{{ item.monto}}</td>
+        <td>{{ item.total}}</td>
+        <td>{{ item.ticketType}}</td>
+        <td>{{ item.registrationMetodoPago | customDateFormat}}</td>
+        <!-- <td>
             <span class="status-badge" [ngClass]="{
               'active': item.state === 'Activo',
               'inactive': item.state !== 'Activo'
             }">{{ item.state ?? '-' }}</span>
           </td> -->
-        </tr>
+      </tr>
       }
     </tbody>
   </table>
+  <!-- Paginación -->
+  <div class="pagination-footer">
+    <div class="pagination-info">
+      Mostrando {{ ventasPagos.length }} de {{ totalElements }} registros
+    </div>
+
+    <div class="pagination-controls">
+      <button class="btn btn-sm" [disabled]="currentPage === 0" (click)="onPageChange(currentPage - 1)">
+        Anterior
+      </button>
+
+      <span class="page-info">
+        Página {{ currentPage + 1 }} de {{ totalPages }}
+      </span>
+
+      <button class="btn btn-sm" [disabled]="currentPage === totalPages - 1" (click)="onPageChange(currentPage + 1)">
+        Siguiente
+      </button>
+
+      <div class="page-size-selector">
+        Mostrar
+        <select (change)="onPageSizeChange($event)" [value]="pageSize">
+          <option value="5">5</option>
+          <option value="10">10</option>
+          <option value="20">20</option>
+          <option value="50">50</option>
+        </select>
+      </div>
+    </div>
+  </div>
 </div>
 
 <ng-template #noData>
