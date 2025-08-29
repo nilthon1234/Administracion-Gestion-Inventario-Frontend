@@ -22,14 +22,14 @@ export class SalesService {
     return this.http.get<any>(`${this.baseUrl}/ticket?fecha=${fecha}`);
   }
 
-  registerSale(sale:Sale):Observable<any>{
+  registerSale(sale: Sale): Observable<any> {
     return this.http.post(`${this.baseUrl}/registerSale`, sale);
   }
 
   //reporte
-  generateTicketPdf(ticketId: number): Observable<Blob>{
-    return this.http.get(`${this.baseUrl}/${ticketId}/report`,{
-      responseType:'blob'
+  generateTicketPdf(ticketId: number): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}/${ticketId}/report`, {
+      responseType: 'blob'
     })
   }
 
@@ -37,10 +37,22 @@ export class SalesService {
     return this.http.put<void>(`${this.baseUrl}/contador/${id}`, { contador });
   }
 
-  downloadSalesReport(month: number, year: number): Observable<Blob> {;
-  return this.http.get(`${this.baseUrl}/reporte/venta`, {
-    params: { mes: month.toString(), anio: year.toString() },
-    responseType: 'blob'
-  });
-}
+  downloadSalesReport(month: number, year: number): Observable<Blob> {
+    ;
+    return this.http.get(`${this.baseUrl}/reporte/venta`, {
+      params: { mes: month.toString(), anio: year.toString() },
+      responseType: 'blob'
+    });
+  }
+
+  generarReporteCierreCaja(fecha: string): Observable<Blob> {
+    // El backend espera dd-MM-yyyy, transformamos la fecha yyyy-MM-dd -> dd-MM-yyyy
+    const partes = fecha.split('-'); // [yyyy, MM, dd]
+    const fechaFormateada = `${partes[2]}-${partes[1]}-${partes[0]}`;
+
+    return this.http.get(`${this.baseUrl}/reporte-cierre-caja`, {
+      params: { fecha: fechaFormateada },
+      responseType: 'blob', // muy importante para PDF
+    });
+  }
 }

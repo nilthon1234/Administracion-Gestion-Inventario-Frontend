@@ -293,6 +293,7 @@ export class MainVentaComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result === 'success') {
         this.cargarResumen();
+        this.cerrarModal();
       }
     });
   }
@@ -307,6 +308,7 @@ export class MainVentaComponent implements OnInit {
     dialog.afterClosed().subscribe(result => {
       if (result === 'success') {
         this.cargarResumen();
+        this.cerrarModal();
       }
     });
 

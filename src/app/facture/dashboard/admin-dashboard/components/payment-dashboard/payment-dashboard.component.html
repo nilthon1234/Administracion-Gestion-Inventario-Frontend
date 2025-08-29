@@ -111,10 +111,25 @@
   <div class="panels-container animate-fade-in">
     <!-- Primer cuadro: contiene todo -->
     <div class="side-panel1-content panel-box">
-      <button style="background-color: #2196F3; border: none; color: black; padding: 10px 20px; font-weight: bold; margin-left: 410px;"
-        (click)="generarReportePDF()">
-  Generar PDF del Mes
-</button>
+      
+      <div style="display: flex; justify-content: flex-start; gap: 12px; margin-left: 25px;">
+        <!-- Botón ya existente -->
+        <button 
+          style="background-color: #2196F3; border: none; color: black; padding: 10px 20px; font-weight: bold;border-radius: 6px;"
+          (click)="generarReportePDF()">
+          Generar PDF de ventas del mes
+        </button>
+      
+        <!-- Nuevo botón elegante -->
+        <button 
+          style="background-color: #6f4caf; border: none; color: white; padding: 10px 20px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.3s;"
+          (click)="descargarReporte()"
+          onmouseover="this.style.backgroundColor='#45a049'"
+          onmouseout="this.style.backgroundColor='#4CAF50'">
+          📄 Resultado General del Dia PDF
+        </button>
+      </div>
+      <br>
 
       <h4 class="section-title">Totales Generales Mes</h4>
       <input type="date" [value]="fecha" (change)="onDateChange($event)" class="date-picker" />

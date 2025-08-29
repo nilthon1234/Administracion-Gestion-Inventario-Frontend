@@ -8,8 +8,8 @@ import { BehaviorSubject, Observable, tap } from 'rxjs';
 })
 export class AuthService {
     
-   private readonly STATIC_USERNAME = 'Admin';
-  private readonly STATIC_PASSWORD = 'Admin';
+   private readonly STATIC_USERNAME = 'Mitienda2025';
+  private readonly STATIC_PASSWORD = 'Mitienda4321';
   private readonly SESSION_DURATION = 60 * 60 * 1000; // 1 hora en milisegundos
 
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);

@@ -287,4 +287,15 @@ export class PaymentDashboardComponent implements OnInit {
       alert('Error al generar el reporte PDF.');
     });
   }
+
+  descargarReporte(): void {
+    this.saleService.generarReporteCierreCaja(this.fecha).subscribe((pdf: Blob) => {
+      const url = window.URL.createObjectURL(pdf);
+      // Abre el PDF en una nueva pestaña del navegador
+      window.open(url, '_blank');
+      // Liberamos memoria
+      window.URL.revokeObjectURL(url);
+    });
+  }
+  
 }
