@@ -106,7 +106,7 @@ export class MainVentaComponent implements OnInit {
     this.saleService.getTickets(this.fechaSeleccionada).subscribe((data: TicketResponse) => {
       const tickets = data.ticket || [];
       this.allTickets = tickets; // Guardar todos los tickets
-      
+
       // Inicializar showDetails
       tickets.forEach(ticket => {
         ticket.showDetails = false;
@@ -121,7 +121,12 @@ export class MainVentaComponent implements OnInit {
       // Agrupar por fecha
       const grupos: { [key: string]: Ticket[] } = {};
       ticketsFiltrados.forEach(ticket => {
-        const fechaStr = ticket.registrationTicket!.split('T')[0];
+        const date = new Date(ticket.registrationTicket!);
+                const fechaStr = date.toLocaleDateString('es-ES', {
+                  year: 'numeric',
+                  month: '2-digit',
+                  day: '2-digit'
+                }).split('/').reverse().join('-');
         if (!grupos[fechaStr]) {
           grupos[fechaStr] = [];
         }
@@ -145,13 +150,13 @@ export class MainVentaComponent implements OnInit {
   // Método para filtrar tickets
   filtrarTickets(tickets: Ticket[], valor: string, tipo: 'dni' | 'ticket'): Ticket[] {
     const valorBusqueda = valor.toLowerCase().trim();
-    
+
     if (tipo === 'dni') {
-      return tickets.filter(ticket => 
+      return tickets.filter(ticket =>
         ticket.dni && ticket.dni.toString().toLowerCase().includes(valorBusqueda)
       );
     } else {
-      return tickets.filter(ticket => 
+      return tickets.filter(ticket =>
         ticket.nro_ticket && ticket.nro_ticket.toString().toLowerCase().includes(valorBusqueda)
       );
     }
@@ -264,12 +269,12 @@ export class MainVentaComponent implements OnInit {
   }
   tieneAumentoODescuento(ticket: any): boolean {
     if (!ticket || !ticket.detail) return false;
-  
+
     return ticket.detail.some((item: any) =>
       item.discount === 'Si' || item.increase === 'Si'
     );
   }
-  
+
 
   hasAnyUnspecifiedTicket(): boolean {
     if (!this.tickets) return false;
@@ -393,7 +398,7 @@ export class MainVentaComponent implements OnInit {
     });
   }
 
-  //Para listar por mes 
+  //Para listar por mes
   ticketsAgrupados: { fecha: string; tickets: Ticket[] }[] = [];
 
   // Suponiendo que tienes todos los tickets del mes en una lista: `ticketsDelMes`
@@ -436,12 +441,12 @@ export class MainVentaComponent implements OnInit {
     aumento: 0,
     descuento: 0
   };
-  
+
   calcularConteosPendientes() {
     let noEspecificado = 0;
     let aumento = 0;
     let descuento = 0;
-  
+
     this.ticketsAgrupados.forEach(grupo => {
       grupo.tickets.forEach(ticket => {
         if (ticket.detail) {
@@ -459,9 +464,9 @@ export class MainVentaComponent implements OnInit {
         }
       });
     });
-  
+
     this.conteos = { noEspecificado, aumento, descuento };
   }
-  
+
 
 }
