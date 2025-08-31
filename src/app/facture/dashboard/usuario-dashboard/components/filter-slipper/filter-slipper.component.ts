@@ -30,6 +30,9 @@ export class FilterSlipperComponent implements OnInit {
   generos: any[] = [];
   marcas: any[] = [];
   tallas: any[] = [];
+  showSeparationModal = false;
+  selectedSeparationDetails: any[] = [];
+  modalPosition = { top: 0, left: 0 };
 
   tallasDisponibles: any[] = [];
   generoSeleccionado: string = '';
@@ -109,6 +112,47 @@ export class FilterSlipperComponent implements OnInit {
       sep.size.split(',').map(s => normalize(s)).includes(normalize(sizeName)) &&
       (sep.idClient.separationType === 'NUEVO' || sep.idClient.separationType === 'AMORTIZANDOCE')
     ).length;
+  }
+
+  getSeparationDetails(codToday: string, sizeName: string): any[] {
+    const normalize = (name: string) => name.trim().toLowerCase().replace(/^usa|^eu/, '');
+    return this.separation.filter(sep =>
+      sep.codToday === codToday &&
+      sep.size.split(',').map(s => normalize(s)).includes(normalize(sizeName)) &&
+      (sep.idClient.separationType === 'NUEVO' || sep.idClient.separationType === 'AMORTIZANDOCE')
+    ).map(sep => ({
+      separationId: sep.idClient.id,
+      clientDni: sep.idClient.dni,
+      clientName: sep.idClient.name,
+      clientLastName: sep.idClient.lastName,
+      amount: sep.amount,
+      price: sep.price,
+      separationType: sep.idClient.separationType
+    }));
+  }
+  // Nuevo método para mostrar el modal con detalles
+  showSeparationDetails(codToday: string, sizeName: string, event: MouseEvent): void {
+    event.stopPropagation(); // Evita que se propague el click
+    
+    const details = this.getSeparationDetails(codToday, sizeName);
+    
+    if (details.length > 0) {
+      this.selectedSeparationDetails = details;
+      this.showSeparationModal = true;
+    }
+  }
+
+  // Método para cerrar el modal
+  closeSeparationModal(): void {
+    this.showSeparationModal = false;
+    this.selectedSeparationDetails = [];
+  }
+
+  // Método para cerrar el modal al hacer click fuera
+  onModalBackdropClick(event: MouseEvent): void {
+    if (event.target === event.currentTarget) {
+      this.closeSeparationModal();
+    }
   }
 
   shouldHighlight(codToday: string, sizeName: string): boolean {
