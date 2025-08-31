@@ -347,5 +347,62 @@ export class MainClientSeparationAmortizationComponent implements OnInit{
       error: (err) => console.error('Error al actualizar la regla:', err)
     });
   }
+  //Eliminaciones personalizadas
+  expandedClientId: string | null = null;
+  showDeleteModal = false;
+  selectedClientId: string | null = null;
+
+  openDeleteModal(clientId: string) {
+    this.selectedClientId = clientId;
+    this.showDeleteModal = true;
+  }
+
+  closeDeleteModal() {
+    this.showDeleteModal = false;
+    this.selectedClientId = null;
+  }
+
+  onEliminacionContable() {
+    if (!this.selectedClientId) return;
+
+    if (confirm('¿Estás seguro de realizar la eliminación contable?')) {
+      this.devolucionService.eliminacion(this.selectedClientId).subscribe({
+        next: () => {
+          alert('Eliminación contable realizada con éxito.');
+          this.closeDeleteModal();
+          this.loadClients(); // Refrescar lista
+        },
+        error: (err) => {
+          console.error('Error en eliminación contable', err);
+          alert('Error al eliminar contablemente.');
+        }
+      });
+    }
+  }
+
+  onEliminacionDefinitiva() {
+    if (!this.selectedClientId) return;
+
+    const confirmacion = prompt(
+      '⚠️ Eliminación definitiva: Todos los datos se borrarán permanentemente.\n' +
+      'Escribe "confirmar" para proceder:'
+    );
+
+    if (confirmacion === 'confirmar') {
+      this.devolucionService.eliminacionDefinitiva(this.selectedClientId).subscribe({
+        next: () => {
+          alert('Cliente eliminado definitivamente.');
+          this.closeDeleteModal();
+          this.loadClients(); // Refrescar lista
+        },
+        error: (err) => {
+          console.error('Error en eliminación definitiva', err);
+          alert('Error al eliminar definitivamente.');
+        }
+      });
+    } else {
+      alert('Eliminación cancelada.');
+    }
+  }
 
 }
