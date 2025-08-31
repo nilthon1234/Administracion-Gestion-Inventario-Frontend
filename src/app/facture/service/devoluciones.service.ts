@@ -27,4 +27,14 @@ export class DevolucionesService {
   deleteSeparation(id: number):Observable<SuccessResponse>{
     return this.http.delete<SuccessResponse>(`${this.urlDev}/${id}`);
   }
+
+
+  eliminacion(clientId: string): Observable<void> {
+    return this.http.delete<void>(`${this.urlDev}/delete/${clientId}`);
+  }
+
+  // Eliminación definitiva: borra físicamente
+  eliminacionDefinitiva(clientId: string): Observable<void> {
+    return this.http.delete<void>(`${this.urlDev}/eliminacion-definitiva/${clientId}`);
+  }
 }

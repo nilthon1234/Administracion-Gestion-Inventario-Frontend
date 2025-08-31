@@ -46,6 +46,12 @@
           (click)="generatePdf(client.id!, client.name, client.lastName); $event.stopPropagation()">
           PDF
         </button>
+      
+        <!-- Nuevo botón de eliminación -->
+        <button class="delete-btn" (click)="openDeleteModal(client.id!); $event.stopPropagation()">
+          🗑️ Eliminar
+        </button>
+      
         <div class="arrow">
           {{ isExpanded(client.id!) ? '▼' : '▶' }}
         </div>
@@ -58,7 +64,7 @@
         <thead>
           <tr>
             <th>Id</th>
-            <th>Código Today</th>
+            <th>Código Tienda</th>
             <th>Repositorio</th>
             <th>Tipo</th>
             <th>Genero</th>
@@ -154,3 +160,32 @@
                   (page)="onPageChange($event)"
                   aria-label="Seleccionar página">
     </mat-paginator>
+
+    <div class="modal" *ngIf="showDeleteModal && selectedClientId">
+      <div class="modal-content">
+        <h3>¿Qué tipo de eliminación deseas realizar?</h3>
+    
+        <!-- Opción 1: Eliminación Contable -->
+        <div class="modal-option">
+          <p><strong>Eliminación Contable</strong></p>
+          <p>Cambia el estado a "ELIMINADO". Los registros se mantienen pero no se muestran.</p>
+          <button class="btn-contable" (click)="onEliminacionContable()">
+            Eliminar Contablemente
+          </button>
+        </div>
+    
+        <!-- Opción 2: Eliminación Definitiva -->
+        <div class="modal-option">
+          <p><strong>Eliminación Definitiva ⚠️</strong></p>
+          <p>Se borrarán permanentemente el cliente, sus separaciones y amortizaciones.</p>
+          <button class="btn-definitiva" (click)="onEliminacionDefinitiva()">
+            Eliminar Definitivamente
+          </button>
+        </div>
+    
+        <!-- Botón para cerrar sin eliminar -->
+        <button class="btn-cancel" (click)="closeDeleteModal()">
+          Cancelar
+        </button>
+      </div>
+    </div>

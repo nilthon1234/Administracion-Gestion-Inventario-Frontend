@@ -193,23 +193,31 @@
                 <div class="sizes-grid">
                   <ng-container *ngFor="let size of getSlipperSizes(slipper) | ordenSizes">
                     <div *ngIf="shouldShowSize(slipper, size.name)" class="size-item"
-                      [ngClass]="{'has-stock': size.amount > 0}" [ngStyle]="{
-         'background-color': shouldHighlight(slipper.codToday, size.name) ? '#f8d7da' : 'transparent'
-       }">
-                      <span class="size-name">{{ formatSizeName(size.name) }}</span>
+                      [ngClass]="{'has-stock': size.amount > 0}" 
+                      [ngStyle]="{
+                        'background-color': shouldHighlight(slipper.codToday, size.name) ? '#f8d7da' : 'transparent'
+                      }">
+                      
+                      <!-- Size name - ahora clickeable si tiene separaciones -->
+                      <span class="size-name" 
+                        [class.clickable]="shouldHighlight(slipper.codToday, size.name)"
+                        (click)="shouldHighlight(slipper.codToday, size.name) ? showSeparationDetails(slipper.codToday, size.name, $event) : null">
+                        {{ formatSizeName(size.name) }}
+                      </span>
+                      
                       <button type="button" (click)="adjustSize(slipper, size.name, 1, $event)">+</button>
+                      
                       <span class="size-amount">
-                        {{ size.amount + ((sizeAdjustments[slipper.id] && sizeAdjustments[slipper.id][size.name]) || 0)
-                        }}
+                        {{ size.amount + ((sizeAdjustments[slipper.id] && sizeAdjustments[slipper.id][size.name]) || 0) }}
                         <span *ngIf="shouldHighlight(slipper.codToday, size.name)" class="separation-count">
                           ({{ getSeparationCount(slipper.codToday, size.name) }})
                         </span>
                       </span>
-                      <button type="button" (click)="adjustSize(slipper, size.name, -1, $event)" [disabled]="(size.amount + ((sizeAdjustments[slipper.id] &&
-              sizeAdjustments[slipper.id][size.name]) || 0)) <= 0">-</button>
+                      
+                      <button type="button" (click)="adjustSize(slipper, size.name, -1, $event)" 
+                        [disabled]="(size.amount + ((sizeAdjustments[slipper.id] && sizeAdjustments[slipper.id][size.name]) || 0)) <= 0">-</button>
                     </div>
                   </ng-container>
-
                 </div>
 
                 <!-- Botones de acción: agregar/descontar -->
@@ -228,6 +236,7 @@
               </div>
             </td>
           </tr>
+          
 
         </ng-container>
       </tbody>
@@ -237,6 +246,7 @@
     <div *ngIf="slippers.length === 0" class="no-results">
       No se encontraron zapatillas con los filtros seleccionados.
     </div>
+    
   </div>
   <!-- Modal de imagen ampliada -->
   <div *ngIf="selectedImagenUrl" class="image-modal">
@@ -294,3 +304,31 @@
 <mat-paginator [length]="totalElements" [pageSize]="pageSize" [pageIndex]="currentPage"
   [pageSizeOptions]="[5, 10, 20, 50, 100]" (page)="onPageChange($event)" aria-label="Seleccionar página">
 </mat-paginator>
+
+<div *ngIf="showSeparationModal" class="separation-modal-backdrop" (click)="onModalBackdropClick($event)">
+  <div class="separation-modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h5>Detalles de Separaciones</h5>
+      <button type="button" class="close-btn" (click)="closeSeparationModal()">&times;</button>
+    </div>
+    
+    <div class="modal-body">
+      <div *ngFor="let detail of selectedSeparationDetails; let i = index" class="separation-detail-item">
+        <div class="detail-row">
+          <strong>Separación #{{ i + 1 }}</strong>
+        </div>
+        <div class="detail-row">
+          <strong><span class="label">ID Separación:</span>
+            <span [appCopiarTexto]="detail.separationId" class="value"> {{ detail.separationId }}</span></strong>
+          
+        </div>
+        <div class="detail-row">
+          <strong><span class="label">DNI Cliente:</span>
+             <span [appCopiarTexto]="detail.clientDni" class="value"> {{ detail.clientDni }}</span></strong>
+          
+        </div>
+        <hr *ngIf="i < selectedSeparationDetails.length - 1">
+      </div>
+    </div>
+  </div>
+</div>
