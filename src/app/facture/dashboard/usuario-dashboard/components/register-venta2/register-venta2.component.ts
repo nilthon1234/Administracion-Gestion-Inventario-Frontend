@@ -102,7 +102,6 @@ export class RegisterVenta2Component implements OnInit {
         this.showResults = this.searchResults.length > 0;
       },
       error: (error) => {
-        console.error('Error en la búsqueda:', error);
         this.searchResults = [];
         this.showResults = false;
       }
@@ -134,17 +133,15 @@ export class RegisterVenta2Component implements OnInit {
         }
       },
       error: (error) => {
-        console.error('Error en la búsqueda:', error);
         this.searchResults = [];
         this.showResults = false;
-        alert('Error al buscar productos: ' + error.message);
+        alert('Error al buscar productos o codigo no existe ');
       }
     });
   }
 
 
   selectProduct(product: Slipper) {
-    console.log('Producto seleccionado:', product); // Debug
     this.selectedProduct = { ...product }; // Hacer una copia
     this.selectedSizes = [];
     this.productQuantity = 1;
@@ -154,11 +151,9 @@ export class RegisterVenta2Component implements OnInit {
 
   getAvailableSizes(product: Slipper): { key: string, value: number }[] {
     if (!product || !product.sizes) {
-      console.log('No hay sizes disponibles para:', product); // Debug
       return [];
     }
 
-    console.log('Sizes del producto:', product.sizes); // Debug
 
     const availableSizes: { key: string, value: number }[] = [];
 
@@ -169,7 +164,6 @@ export class RegisterVenta2Component implements OnInit {
       }
     }
 
-    console.log('Tallas disponibles filtradas:', availableSizes); // Debug
     return availableSizes;
   }
 

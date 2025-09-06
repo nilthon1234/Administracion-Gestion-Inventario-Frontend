@@ -17,6 +17,8 @@ import { FilterSlipperService } from '../../../../service/filter-slipper.service
 import { SizeFormatPipe } from '../../../../../shared/pipes/size-format.pipe';
 import { response } from 'express';
 import { environment } from '../../../../../../environments/environmen';
+import { Slipper } from '../../../../../shared/models/slippert';
+import { ProductoService } from '../../../../service/producto.service';
 export interface TiposResponse {
   conTalla: string[];
   sinTalla: string[];
@@ -33,6 +35,10 @@ export interface TiposResponse {
 })
 export class FilterVitrinaSlipperComponent implements OnInit {
 
+  generos: any[] = [];
+  tallasDisponibles: any[] = [];
+  esCalzado = true;
+
   formFiltro: FormGroup;
   marcas: any[] = [];
   resultados: Vitrina[] = [];
@@ -47,7 +53,6 @@ export class FilterVitrinaSlipperComponent implements OnInit {
 
   // Variables del modal
   showModal = false;
-  generos: GeneroItem[] = [];
   tallasData!: TallasPorGenero;
   tallasFiltradas: TallaItem[] = [];
 
@@ -71,6 +76,7 @@ export class FilterVitrinaSlipperComponent implements OnInit {
     private dataService: DataService,
     private toastr: ToastrService,
     private slipperService: SlipperService,
+    private productoService: ProductoService,
     private filterSlipperService: FilterSlipperService,
     private fb: FormBuilder,
     private http: HttpClient,
@@ -84,10 +90,56 @@ export class FilterVitrinaSlipperComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.formFiltro = this.fb.group({
+      brand: [''],
+      color: [''],   // <--- Debe existir este control
+      codToday: [''],
+      company: [''],
+      producto: [''],
+      genero: [''],
+      size: ['']
+    });
+    
+
+    // 🔹 Cargar marcas
     this.cargarMarcas();
-    this.cargarGeneros();
-    this.cargarTallas();
-    this.cargarTipos();
+
+    // 🔹 Cargar géneros
+    this.productoService.listarGeneros().subscribe(data => {
+      this.generos = data;
+    });
+
+    // 🔹 Escuchar cambios en producto (calzado/ropa)
+    this.formFiltro.get('producto')?.valueChanges.subscribe(prod => {
+      this.esCalzado = prod === 'CALZADO';
+
+      if (!this.esCalzado) {
+        // Si es ropa → tallas fijas
+        this.tallasDisponibles = [
+          { talla: 'XS' },
+          { talla: 'S' },
+          { talla: 'M' },
+          { talla: 'L' },
+          { talla: 'XL' }
+        ];
+      } else {
+        // Si es calzado → esperar selección de género
+        this.tallasDisponibles = [];
+      }
+    });
+
+    // 🔹 Escuchar cambios en género (solo calzado)
+    this.formFiltro.get('genero')?.valueChanges.subscribe(genero => {
+      if (this.esCalzado && genero) {
+        this.cargarTallasPorGenero(genero);
+      }
+    });
+  }
+  cargarTallasPorGenero(genero: string): void {
+    this.dataService.getTallas().subscribe(data => {
+      const key = genero.toLowerCase();
+      this.tallasDisponibles = data[key] || [];
+    });
   }
 
   cargarTipos(): void {
@@ -136,40 +188,60 @@ export class FilterVitrinaSlipperComponent implements OnInit {
   }
 
   buscar(): void {
-    this.busquedaRealizada = true; // Activamos el flag
-
-    const { brand, codToday, company } = this.formFiltro.value;
+    const { brand,color, codToday, company, size: talla } = this.formFiltro.value;
+  
     this.vitrinaService.buscarPorFiltros(
       brand,
+      color,
       codToday,
       company,
       this.currentPage,
-      this.pageSize
+      this.pageSize,
+      talla  // 👈 ahora se llama 'talla'
     ).subscribe({
       next: (data) => {
         this.resultados = data.content || [];
         this.totalElements = data.totalElements;
         this.totalPages = data.totalPages;
-
-        // Después de 2 segundos, volvemos a false
-        setTimeout(() => {
-          this.busquedaRealizada = false;
-          this.cdRef.detectChanges(); // Detectamos cambios para actualizar la vista
-        }, 2000);
+        this.busquedaRealizada = true;
+        this.cdRef.detectChanges();
       },
       error: (err) => {
         this.resultados = [];
-
-        // También desactivamos después de 2 segundos en caso de error
-        setTimeout(() => {
-          this.busquedaRealizada = false;
-          this.cdRef.detectChanges();
-        }, 2000);
-
         console.error('Error al buscar:', err);
       }
     });
   }
+  
+  limpiarFiltros(): void {
+  // 1. Resetear el formulario
+  this.formFiltro.reset({
+    brand: '',
+    color: '',
+    codToday: '',
+    company: '',
+    producto: '',
+    genero: '',
+    size: ''
+  });
+
+  // 2. Resetear variables de estado
+  this.esCalzado = true; // o el valor por defecto
+  this.tallasDisponibles = [];
+  this.resultados = [];
+  this.busquedaRealizada = false;
+
+  // 3. Resetear paginación
+  this.currentPage = 0;
+  this.totalElements = 0;
+  this.totalPages = 0;
+
+  // 4. Opcional: Volver a cargar datos iniciales si es necesario
+  // Por ejemplo, recargar tallas o marcas si se modificaron
+
+  // 5. Cargar todos los productos (sin filtros)
+  this.buscar(); // 👈 Esto hará una búsqueda con todos los filtros vacíos
+}
   //Para los botones de paginacion
 
   // Métodos para manejar cambios de página
@@ -192,7 +264,9 @@ export class FilterVitrinaSlipperComponent implements OnInit {
   tipoBusqueda = '';
   valorBusqueda = '';
   buscandoProducto = false;
-  productoEncontrado: any = null;
+  productoEncontrado: Slipper[] = []; // Array de productos
+  productoSeleccionado: Slipper | null = null; // Producto seleccionado para operaciones
+
   errorBusqueda = false;
   mensajeError = '';
 
@@ -203,7 +277,7 @@ export class FilterVitrinaSlipperComponent implements OnInit {
     this.tipoBusqueda = '';
     this.valorBusqueda = '';
     this.buscandoProducto = false;
-    this.productoEncontrado = null;
+    this.productoEncontrado = [];
     this.errorBusqueda = false;
     this.mensajeError = '';
     this.cantidadUnico = 1;
@@ -398,7 +472,6 @@ export class FilterVitrinaSlipperComponent implements OnInit {
   }
   //para mostarr el componente Size
   mostrarModalSize = false;
-  productoSeleccionado: any = null;
   abrirModalSize(item: any) {
     this.productoSeleccionado = { ...item }; // Copiar datos para edición
     this.mostrarModalSize = true;
@@ -555,71 +628,60 @@ export class FilterVitrinaSlipperComponent implements OnInit {
   nuevaBusqueda() {
     this.resetearModal();
   }
-
+  seleccionarProducto(producto: Slipper) {
+    this.productoSeleccionado = producto;
+  }
+  
   buscarProducto() {
     if (!this.tipoBusqueda || !this.valorBusqueda.trim()) {
       alert('Por favor completa los campos de búsqueda');
       return;
     }
-
+  
     this.buscandoProducto = true;
     this.errorBusqueda = false;
-    this.productoEncontrado = null;
-
+  
     const codToday = this.tipoBusqueda === 'codToday' ? this.valorBusqueda.trim() : undefined;
     const company = this.tipoBusqueda === 'company' ? this.valorBusqueda.trim() : undefined;
-
+  
     this.filterSlipperService.buscarPorCodTodayOCompany(codToday, company)
       .subscribe({
         next: (resultados) => {
           this.buscandoProducto = false;
-
-          // Manejar tanto array como objeto único
-          let producto = null;
-
-          // Usar 'any' para evitar errores de TypeScript
-          const respuesta = resultados as any;
-
-          if (Array.isArray(respuesta)) {
-            // Si es un array, tomar el primer elemento
-            if (respuesta.length > 0) {
-              producto = respuesta[0];
-            }
-          } else if (respuesta && typeof respuesta === 'object' && respuesta.id) {
-            // Si es un objeto único con id, es un producto válido
-            producto = respuesta;
-          }
-
-          if (producto) {
-            this.productoEncontrado = producto;
+          if (Array.isArray(resultados) && resultados.length > 0) {
+            this.productoEncontrado = resultados;
+            // No selecciones automáticamente el primero
+            this.productoSeleccionado = null; 
             this.errorBusqueda = false;
           } else {
+            this.productoEncontrado = [];
+            this.productoSeleccionado = null;
             this.errorBusqueda = true;
-            this.mensajeError = 'No se encontró ningún producto con ese código.';
+            this.mensajeError = 'No se encontraron productos con ese criterio.';
           }
         },
         error: (error) => {
           this.buscandoProducto = false;
           this.errorBusqueda = true;
-          this.mensajeError = 'Error al buscar el producto. Inténtalo de nuevo.';
+          this.mensajeError = 'Error al buscar los productos. Inténtalo de nuevo.';
         }
       });
   }
+  
+
   // Validar si puede realizar búsqueda
   puedeRealizarBusqueda(): boolean {
     return !!(this.tipoBusqueda && this.valorBusqueda && this.valorBusqueda.trim());
   }
   // Verificar si se puede registrar
   puedeRegistrar(): boolean {
-    if (!this.productoEncontrado) {
+    if (!this.productoSeleccionado) {
       return false;
     }
-
     // Para productos únicos, necesita cantidad válida
-    if (this.productoEncontrado.producto === 'UNICO') {
+    if (this.productoSeleccionado.producto === 'UNICO') {
       return this.cantidadUnico > 0;
     }
-
     // Para productos con tallas, necesita al menos una talla seleccionada
     return this.tallasSeleccionadas.length > 0;
   }
@@ -645,19 +707,16 @@ export class FilterVitrinaSlipperComponent implements OnInit {
       this.mostrarMensaje('Por favor completa los campos requeridos', 'error');
       return;
     }
-
     let tallasFinal: string[] = [];
-
     if (this.esProductoUnico()) {
       tallasFinal = [this.cantidadUnico.toString()];
     } else {
       tallasFinal = [...this.tallasSeleccionadas];
     }
-
     const payload: VitrinaRequest = {
-      codToday: this.productoEncontrado.codToday,
-      company: this.productoEncontrado.company,
-      type: this.productoEncontrado.type,
+      codToday: this.productoSeleccionado!.codToday,
+      company: this.productoSeleccionado!.company,
+      type: this.productoSeleccionado!.type,
       tallas: tallasFinal
     };
 
@@ -697,6 +756,7 @@ export class FilterVitrinaSlipperComponent implements OnInit {
       }
     });
   }
+  
   mostrarMensaje(mensaje: string, tipo: 'success' | 'error' | 'info') {
     // Implementa tu propio sistema de notificaciones
     // Ejemplo simple con alertas:
@@ -713,22 +773,20 @@ export class FilterVitrinaSlipperComponent implements OnInit {
 
   // Verificar si tiene sizes disponibles
   tieneSizesDisponibles(): boolean {
-    if (!this.productoEncontrado || !this.productoEncontrado.sizes) {
+    if (!this.productoSeleccionado || !this.productoSeleccionado.sizes) {
       return false;
     }
-
     return this.getSizesDisponibles().length > 0;
   }
+  
 
   // Obtener sizes disponibles (con stock > 0)
   getSizesDisponibles(): Array<{ name: string, cantidad: number }> {
-    if (!this.productoEncontrado || !this.productoEncontrado.sizes) {
+    if (!this.productoSeleccionado || !this.productoSeleccionado.sizes) {
       return [];
     }
-
     const sizes = [];
-    const sizesObj = this.productoEncontrado.sizes;
-
+    const sizesObj = this.productoSeleccionado.sizes;
     for (const [sizeName, cantidad] of Object.entries(sizesObj)) {
       if (typeof cantidad === 'number' && cantidad > 0) {
         sizes.push({
@@ -737,7 +795,6 @@ export class FilterVitrinaSlipperComponent implements OnInit {
         });
       }
     }
-
     return sizes.sort((a, b) => a.name.localeCompare(b.name));
   }
 
@@ -751,19 +808,16 @@ export class FilterVitrinaSlipperComponent implements OnInit {
       .toUpperCase();
   }
   getTipoProducto(): string {
-    if (!this.productoEncontrado) return 'N/A';
-    return this.productoEncontrado.producto === null ? 'null' :
-      this.productoEncontrado.producto === undefined ? 'undefined' :
-        this.productoEncontrado.producto;
+    if (!this.productoSeleccionado) return 'N/A';
+    return this.productoSeleccionado.producto === null ? 'null' :
+      this.productoSeleccionado.producto === undefined ? 'undefined' :
+        this.productoSeleccionado.producto;
   }
+  
   // Verificar si es un producto único
   esProductoUnico(): boolean {
-    if (!this.productoEncontrado) return false;
-
-    // Puede ser exactamente 'UNICO' o null/undefined (algunos productos únicos vienen como null)
-    return this.productoEncontrado.producto === 'UNICO' ||
-      this.productoEncontrado.producto === null ||
-      this.productoEncontrado.producto === undefined;
+    if (!this.productoSeleccionado) return false;
+    return this.productoSeleccionado.producto?.toUpperCase() === 'UNICO';
   }
 
   //eliminar Size
@@ -823,14 +877,14 @@ export class FilterVitrinaSlipperComponent implements OnInit {
     this.idSeleccionado = id;
     this.mostrarModal = true;
   }
-  
+
   cerrarModal3(): void {
     this.mostrarModal = false;
   }
 
-  
+
   aumentarCantidad(id: number): void {
-    if(this.cantidad <= 0){
+    if (this.cantidad <= 0) {
       this.toastr.warning('Por Favor ingresa una cantidad valida.')
       return;
     }
@@ -850,7 +904,7 @@ export class FilterVitrinaSlipperComponent implements OnInit {
 
   // Método para descontar la cantidad
   descontarCantidad(id: number): void {
-    if(this.cantidad <= 0){
+    if (this.cantidad <= 0) {
       this.toastr.warning('Por Favor ingresa una cantidad valida.')
       return;
     }

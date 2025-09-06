@@ -4,6 +4,7 @@ export interface Slipper {
     codToday: string;
     amount:   number;
     image:    string;
+    color:    string;
     company:  string;
     type: string;
     registrationDate: string;

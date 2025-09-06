@@ -76,6 +76,7 @@ export class FilterSandalComponent implements OnInit {
       this.filtros.brand || undefined,
       'null',
       this.filtros.size || undefined,
+      this.filtros.size || undefined,
       this.currentPage,
       this.pageSize
     ).subscribe((response: any) => {

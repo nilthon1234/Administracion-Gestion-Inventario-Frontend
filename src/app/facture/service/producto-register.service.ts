@@ -33,15 +33,17 @@ export class ProductoRegisterService {
     tableName: string,
     brand: string,
     company: string,
+    precioFabrica: number,
     precio: number,
     type: string,
+    color: string,
     file: File
   ): Observable<string> {
     const formData = new FormData();
     formData.append('file', file);
 
     return this.http.post(
-      `${this.baseUrl}/cod-today/${tableName}/${brand}/${company}/${precio}/${type}`,
+      `${this.baseUrl}/cod-today/${tableName}/${brand}/${company}/${precioFabrica}/${precio}/${type}/${color}`,
       formData,
       { responseType: 'text' }  // Esto es clave para recibir texto plano
     );

@@ -26,7 +26,7 @@ export class ObservacionesVitrinaComponent {
     totalPages: 0
   });
   currentPage = 0;
-  pageSize = 10;
+  pageSize = 50;
   pageSizeOptions = [5, 10, 20, 50];
   totalElements = 0;
 
