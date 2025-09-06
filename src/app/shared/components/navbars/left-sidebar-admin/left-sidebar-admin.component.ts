@@ -79,7 +79,7 @@ export class LeftSidebarAdminComponent {
       routeLink: 'diagrama',
       icon: 'fal fa-chart-bar',
       label: 'Graficas Rendimiento',
-      children: ['/diagrama', ]
+      children: ['/diagrama', '/ganancia']
     },
     
   ];

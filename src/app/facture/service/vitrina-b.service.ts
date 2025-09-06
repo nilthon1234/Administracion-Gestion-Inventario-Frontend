@@ -16,20 +16,24 @@ export class VitrinaBService {
     private toastr: ToastrService,
   ) { }
 
-  buscarPorFiltros(brand?: string,
+  buscarPorFiltros(
+    brand?: string,
     codToday?: string,
     company?: string,
     page: number = 0,
-    size: number = 50
+    size: number = 50,
+    talla?: string
   ): Observable<any> {
     let params = new HttpParams()
       .set('page', page.toString())
-      .set('size', size.toString());
+      .set('size', size.toString()); // 👈 este 'size' es el tamaño de página
+  
     if (brand) params = params.set('brand', brand);
     if (codToday) params = params.set('codToday', codToday);
     if (company) params = params.set('company', company);
-    return this.http.get<any>(`${this.urlVitrinaB}/list`, { params })
-
+    if (talla) params = params.set('talla', talla); // 👈 ahora usa 'talla', no 'size'
+  
+    return this.http.get<any>(`${this.urlVitrinaB}/list`, { params });
   }
   // Llamada al backend
   registrarProducto(request: VitrinaRequest): Observable<string> {

@@ -13,10 +13,11 @@ import { TicketConfigService } from '../../../../service/ticket-config.service';
 import { SalesService } from '../../../../service/sales.service';
 import { blob } from 'stream/consumers';
 import { error } from 'console';
+import { NavbarRendimientoComponent } from "../../../../../shared/components/navbars/navbar-rendimiento/navbar-rendimiento.component";
 
 @Component({
   selector: 'app-payment-dashboard',
-  imports: [BotonSesionTiempoComponent, CommonModule, FormsModule, PayTypeTranslatePipe],
+  imports: [BotonSesionTiempoComponent, CommonModule, FormsModule, PayTypeTranslatePipe, NavbarRendimientoComponent],
   standalone: true,
   templateUrl: './payment-dashboard.component.html',
   styleUrl: './payment-dashboard.component.css'

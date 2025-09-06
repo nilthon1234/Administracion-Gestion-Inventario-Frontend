@@ -34,7 +34,8 @@ export class DevolucionesService {
   }
 
   // Eliminación definitiva: borra físicamente
-  eliminacionDefinitiva(clientId: string): Observable<void> {
-    return this.http.delete<void>(`${this.urlDev}/eliminacion-definitiva/${clientId}`);
+  eliminacionDefinitiva(clientId: string): Observable<string> {
+    return this.http.delete(`${this.urlDev}/eliminacion-definitiva/${clientId}`, { responseType: 'text' });
   }
+  
 }

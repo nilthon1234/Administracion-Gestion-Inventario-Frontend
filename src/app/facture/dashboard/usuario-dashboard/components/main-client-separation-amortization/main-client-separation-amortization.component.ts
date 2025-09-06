@@ -393,13 +393,14 @@ export class MainClientSeparationAmortizationComponent implements OnInit{
         next: () => {
           alert('Cliente eliminado definitivamente.');
           this.closeDeleteModal();
-          this.loadClients(); // Refrescar lista
+          this.loadClients();
         },
         error: (err) => {
           console.error('Error en eliminación definitiva', err);
-          alert('Error al eliminar definitivamente.');
+          alert('Error al eliminar definitivamente: ' + err.error);
         }
       });
+      
     } else {
       alert('Eliminación cancelada.');
     }

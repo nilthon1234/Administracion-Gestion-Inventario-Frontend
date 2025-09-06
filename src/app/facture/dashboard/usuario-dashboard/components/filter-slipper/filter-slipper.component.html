@@ -11,6 +11,11 @@
           <option *ngFor="let genero of generos" [value]="genero.nombre">{{ genero.nombre }}</option>
         </select>
       </div>
+      <!-- Campo para ingresar el color -->
+      <div class="filter-item">
+        <input type="text" class="filter-input" placeholder="Color" [(ngModel)]="filtrosGenero.color" />
+      </div>
+
 
       <!-- Tipo (NUEVO) -->
       <div class="filter-item">
@@ -150,6 +155,7 @@
           <th>Genero</th>
           <th>Marca</th>
           <th>Código</th>
+          <th>color</th>
           <th>Cantidad</th>
           <th>Empresa</th>
           <th>Tipo</th>
@@ -167,6 +173,7 @@
             <td>{{ slipper.genero }}</td>
             <td>{{ slipper.brand }}</td>
             <td [appCopiarTexto]="slipper.codToday">{{ slipper.codToday }}</td>
+            <td>{{ slipper.color}}</td>
             <td>{{ slipper.amount }}</td>
             <td [appCopiarTexto]="slipper.company">{{ slipper.company }}</td>
             <td>{{ slipper.type }}</td>
@@ -179,11 +186,16 @@
             </td>
             <td>{{ slipper.registrationDate | customDateFormat }}</td>
 
-            <td>
-              <button *ngIf="slipper.producto === 'CALZADO'" class="detail-btn" (click)="toggleDetails(slipper)">
+            <td class="button-cell">
+              <button *ngIf="slipper.producto === 'CALZADO'" class="detail-btn btn-blue" (click)="toggleDetails(slipper)" style="font-size: smaller;">
                 {{ isDetailOpen(slipper) ? 'Ocultar tallas' : 'Ver tallas' }}
               </button>
+              <button class="btn-green" (click)="seleccionarImagenParaActualizar(slipper)" style="font-size: 0.9rem;">
+                Actu Imagen
+              </button>              
+              <button class="btn-red" (click)="deleteSlipper(slipper.codToday)">Eliminar</button>
             </td>
+            
           </tr>
           <!-- Fila de detalles expandible -->
           <tr *ngIf="isDetailOpen(slipper)" class="details-row">
@@ -193,28 +205,27 @@
                 <div class="sizes-grid">
                   <ng-container *ngFor="let size of getSlipperSizes(slipper) | ordenSizes">
                     <div *ngIf="shouldShowSize(slipper, size.name)" class="size-item"
-                      [ngClass]="{'has-stock': size.amount > 0}" 
-                      [ngStyle]="{
+                      [ngClass]="{'has-stock': size.amount > 0}" [ngStyle]="{
                         'background-color': shouldHighlight(slipper.codToday, size.name) ? '#f8d7da' : 'transparent'
                       }">
-                      
+
                       <!-- Size name - ahora clickeable si tiene separaciones -->
-                      <span class="size-name" 
-                        [class.clickable]="shouldHighlight(slipper.codToday, size.name)"
+                      <span class="size-name" [class.clickable]="shouldHighlight(slipper.codToday, size.name)"
                         (click)="shouldHighlight(slipper.codToday, size.name) ? showSeparationDetails(slipper.codToday, size.name, $event) : null">
                         {{ formatSizeName(size.name) }}
                       </span>
-                      
+
                       <button type="button" (click)="adjustSize(slipper, size.name, 1, $event)">+</button>
-                      
+
                       <span class="size-amount">
-                        {{ size.amount + ((sizeAdjustments[slipper.id] && sizeAdjustments[slipper.id][size.name]) || 0) }}
+                        {{ size.amount + ((sizeAdjustments[slipper.id] && sizeAdjustments[slipper.id][size.name]) || 0)
+                        }}
                         <span *ngIf="shouldHighlight(slipper.codToday, size.name)" class="separation-count">
                           ({{ getSeparationCount(slipper.codToday, size.name) }})
                         </span>
                       </span>
-                      
-                      <button type="button" (click)="adjustSize(slipper, size.name, -1, $event)" 
+
+                      <button type="button" (click)="adjustSize(slipper, size.name, -1, $event)"
                         [disabled]="(size.amount + ((sizeAdjustments[slipper.id] && sizeAdjustments[slipper.id][size.name]) || 0)) <= 0">-</button>
                     </div>
                   </ng-container>
@@ -236,17 +247,23 @@
               </div>
             </td>
           </tr>
-          
+
 
         </ng-container>
+        <tr *ngIf="slippers.length === 0">
+          <td colspan="12" class="no-results-message" style="text-align: center; font-style: italic;">
+            Ningún resultado visualizado
+          </td>
+        </tr>
       </tbody>
     </table>
+    <input type="file" #fileInput style="display: none;" (change)="ActualizarImagen($event)" accept="image/*">
 
     <!-- Mensaje cuando no hay resultados -->
     <div *ngIf="slippers.length === 0" class="no-results">
       No se encontraron zapatillas con los filtros seleccionados.
     </div>
-    
+
   </div>
   <!-- Modal de imagen ampliada -->
   <div *ngIf="selectedImagenUrl" class="image-modal">
@@ -311,7 +328,7 @@
       <h5>Detalles de Separaciones</h5>
       <button type="button" class="close-btn" (click)="closeSeparationModal()">&times;</button>
     </div>
-    
+
     <div class="modal-body">
       <div *ngFor="let detail of selectedSeparationDetails; let i = index" class="separation-detail-item">
         <div class="detail-row">
@@ -320,12 +337,12 @@
         <div class="detail-row">
           <strong><span class="label">ID Separación:</span>
             <span [appCopiarTexto]="detail.separationId" class="value"> {{ detail.separationId }}</span></strong>
-          
+
         </div>
         <div class="detail-row">
           <strong><span class="label">DNI Cliente:</span>
-             <span [appCopiarTexto]="detail.clientDni" class="value"> {{ detail.clientDni }}</span></strong>
-          
+            <span [appCopiarTexto]="detail.clientDni" class="value"> {{ detail.clientDni }}</span></strong>
+
         </div>
         <hr *ngIf="i < selectedSeparationDetails.length - 1">
       </div>

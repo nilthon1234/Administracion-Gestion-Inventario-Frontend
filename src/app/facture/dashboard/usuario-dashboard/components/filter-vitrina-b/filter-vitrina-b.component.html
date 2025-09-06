@@ -3,16 +3,50 @@
 
   <form [formGroup]="formFiltro" (ngSubmit)="buscar()" class="form-busqueda">
     <div class="grupo-busqueda">
+      <!-- Marca -->
       <select formControlName="brand">
         <option value="">🏷️ Todas las marcas</option>
-        <option *ngFor="let marca of marcas" [value]="marca.nombre">{{ marca.nombre }}</option>
+        <option *ngFor="let marca of marcas" [value]="marca.nombre">
+          {{ marca.nombre }}
+        </option>
       </select>
+  
+      <!-- Código Tienda -->
       <input type="text" formControlName="codToday" placeholder="🔍 Código Tienda" />
+  
+      <!-- Código Empresa -->
       <input type="text" formControlName="company" placeholder="🏢 Código Empresa" />
+  
+      <!-- Tipo de producto -->
+      <select formControlName="producto">
+        <option value="">🛒 Tipo de producto</option>
+        <option value="CALZADO">Calzado</option>
+        <option value="ROPA">Ropa</option>
+      </select>
+  
+      <!-- Género (solo si es calzado) -->
+      <select formControlName="genero" *ngIf="esCalzado">
+        <option value="">👤 Seleccionar género</option>
+        <option *ngFor="let genero of generos" [value]="genero.nombre">
+          {{ genero.nombre }}
+        </option>
+      </select>
+  
+      <!-- Tallas -->
+      <select formControlName="size">
+        <option value="">📏 Todas las tallas</option>
+        <option *ngFor="let talla of tallasDisponibles" [value]="talla.talla">
+          {{ talla.talla }}
+        </option>
+      </select>
+  
+      <!-- Botones -->
       <button type="submit" class="btn-buscar">🔍 Buscar</button>
+      <button type="button" (click)="limpiarFiltros()" class="btn-limpiar">🗑️ Limpiar Filtros</button>
       <button type="button" (click)="abrirModal2()" class="btn-nuevo">➕ Nuevo Producto</button>
     </div>
   </form>
+  
   <mat-paginator [length]="totalElements" [pageSize]="pageSize" [pageIndex]="currentPage"
     [pageSizeOptions]="[5, 10, 20, 50, 100]" (page)="onPageChange($event)" aria-label="Seleccionar página">
   </mat-paginator>
@@ -108,6 +142,7 @@
 
 
   <!-- Modal Principal Mejorado -->
+  <!-- Modal Principal Mejorado -->
   <div *ngIf="showModal" class="modal-backdrop" (click)="cerrarModal()">
     <div class="modal-content" (click)="$event.stopPropagation()">
       <div class="modal-header">
@@ -116,7 +151,7 @@
       </div>
 
       <!-- Fase 1: Búsqueda -->
-      <div *ngIf="!productoEncontrado" class="search-section">
+      <div *ngIf="productoEncontrado.length === 0 && !buscandoProducto && !errorBusqueda" class="search-section">
         <form (ngSubmit)="buscarProducto()" #searchForm="ngForm" class="search-form">
           <div class="form-group">
             <label for="searchType">Buscar por:</label>
@@ -151,84 +186,100 @@
         </div>
       </div>
 
-      <!-- Fase 2: Resultado de búsqueda y registro -->
-      <div *ngIf="productoEncontrado && !buscandoProducto" class="result-section">
-        <!-- Información del producto encontrado -->
-        <div class="product-info">
-          <div class="product-header">
-            <h4>📦 Producto Encontrado</h4>
-            <button type="button" (click)="nuevaBusqueda()" class="btn-new-search">Nueva Búsqueda</button>
-          </div>
+      <!-- Fase 2: Resultados de búsqueda -->
+      <div *ngIf="productoEncontrado.length > 0 && !buscandoProducto && !errorBusqueda" class="result-section">
+        <div class="product-header">
+          <h4>📦 Resultados de la búsqueda ({{ productoEncontrado.length }})</h4>
+          <button type="button" (click)="nuevaBusqueda()" class="btn-new-search">Nueva Búsqueda</button>
+        </div>
 
-          <div class="product-details">
-            <div class="product-image" *ngIf="productoEncontrado.urlImg">
-              <img [src]="productoEncontrado.urlImg" [alt]="productoEncontrado.brand" />
+        <!-- Listado con scroll -->
+        <div class="productos-list">
+          <div *ngFor="let producto of productoEncontrado" class="producto-item"
+            [class.seleccionado]="productoSeleccionado?.id === producto.id" (click)="seleccionarProducto(producto)">
+            <div class="product-image" *ngIf="producto?.urlImg">
+              <img [src]="producto?.urlImg" [alt]="producto?.brand" />
             </div>
             <div class="product-data">
-              <p><strong>Marca:</strong> {{ productoEncontrado.brand }}</p>
-              <p><strong>Tipo:</strong> {{ productoEncontrado.type }}</p>
-              <p><strong>Código Tienda:</strong> {{ productoEncontrado.codToday }}</p>
-              <p><strong>Código Empresa:</strong> {{ productoEncontrado.company }}</p>
-              <p><strong>Género:</strong> {{ productoEncontrado.genero }}</p>
-              <p><strong>Precio:</strong> S/ {{ productoEncontrado.price }}</p>
+              <p> Marca: <strong>{{ producto?.brand }}</strong> - {{ producto?.type }}</p>
+              <p>Cód Tienda: {{ producto?.codToday }}</p>
+              <p>Precio: S/ {{ producto?.price }}</p>
+              <p>Cantidad: {{ producto?.amount }}</p>
             </div>
           </div>
         </div>
 
-        <!-- Formulario de registro -->
-        <form (ngSubmit)="registrarProducto()" #registerForm="ngForm" class="register-form">
-
-
-          <!-- Registro por CANTIDAD (producto UNICO o sin sizes) -->
-          <div *ngIf="esProductoUnico() || !tieneSizesDisponibles()" class="cantidad-section">
-            <div class="form-group">
-              <label for="cantidadUnico">Cantidad a registrar: *</label>
-              <input type="number" id="cantidadUnico" [(ngModel)]="cantidadUnico" name="cantidadUnico" min="1" required
-                placeholder="Ingrese la cantidad" class="form-control" />
+        <!-- Detalle del producto seleccionado -->
+        <div *ngIf="productoSeleccionado" class="detalle-producto">
+          <div class="detalle-header">
+            <h4>📝 Detalle del Producto Seleccionado</h4>
+            <!-- Miniatura con código y foto -->
+            <div class="producto-mini">
+              <p><strong>Cód Tienda:</strong> {{ productoSeleccionado.codToday }}</p>
+              <img *ngIf="productoSeleccionado?.urlImg" [src]="productoSeleccionado.urlImg"
+                [alt]="productoSeleccionado.brand" class="mini-img" />
             </div>
-            <p class="info-text">
-              <i>{{ esProductoUnico() ? 'Producto único - se registra por cantidad' : 'Sin tallas disponibles - se
-                registra por cantidad' }}</i>
-            </p>
           </div>
 
-          <!-- Registro por TALLAS (productos con sizes disponibles) -->
-          <div *ngIf="!esProductoUnico() && tieneSizesDisponibles()" class="tallas-section">
-            <div class="form-group">
-              <label>Tallas Disponibles:</label>
-              <div class="sizes-grid">
-                <div *ngFor="let size of getSizesDisponibles()" class="size-item" [class.disabled]="size.cantidad <= 0"
-                  (click)="seleccionarSize(size)" [title]="'Disponible: ' + size.cantidad">
-                  <span class="size-name">{{ formatSizeName(size.name) }}</span>
-                  <span class="size-stock">{{ size.cantidad }}</span>
+          <form (ngSubmit)="registrarProducto()" #registerForm="ngForm" class="register-form">
+
+            <!-- Registro por CANTIDAD -->
+            <div *ngIf="esProductoUnico()" class="cantidad-section">
+              <div class="form-group">
+                <label for="cantidadUnico">Cantidad a registrar: *</label>
+                <input type="number" id="cantidadUnico" [(ngModel)]="cantidadUnico" name="cantidadUnico" min="1"
+                  required placeholder="Ingrese la cantidad" class="form-control" />
+              </div>
+              <p class="info-text">
+                <i>Producto único - se registra por cantidad</i>
+              </p>
+            </div>
+
+            <!-- Registro por TALLAS -->
+            <div *ngIf="!esProductoUnico() && tieneSizesDisponibles()" class="tallas-section">
+              <div class="tallas-layout">
+                <!-- Lado izquierdo: tallas -->
+                <div class="form-group tallas-col">
+                  <label>Tallas Disponibles:</label>
+                  <div class="sizes-grid">
+                    <div *ngFor="let size of getSizesDisponibles()" class="size-item"
+                      [class.disabled]="size.cantidad <= 0" (click)="seleccionarSize(size)"
+                      [title]="'Disponible: ' + size.cantidad">
+                      <span class="size-name">{{ formatSizeName(size.name) }} ({{ size.cantidad }})</span>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <!-- Historial de tallas seleccionadas -->
-            <div class="selected-sizes" *ngIf="tallasSeleccionadas.length > 0">
-              <label>Tallas Seleccionadas para Registro:</label>
-              <div class="selected-sizes-list">
-                <span *ngFor="let talla of tallasSeleccionadas; let i = index" class="size-tag">
-                  {{ formatSizeName(talla) }}
-                  <button type="button" (click)="eliminarTallaSeleccionada(i)" class="remove-size"
-                    title="Eliminar talla">
-                    ×
-                  </button>
-                </span>
+              <!-- Historial de tallas seleccionadas -->
+              <div class="selected-sizes" *ngIf="tallasSeleccionadas.length > 0">
+                <label>Tallas Seleccionadas para Registro:</label>
+                <div class="selected-sizes-list">
+                  <span *ngFor="let talla of tallasSeleccionadas; let i = index" class="size-tag">
+                    {{ formatSizeName(talla) }}
+                    <button type="button" (click)="eliminarTallaSeleccionada(i)" class="remove-size"
+                      title="Eliminar talla">×</button>
+                  </span>
+                </div>
+                <p class="total-selected">Total de productos: {{ tallasSeleccionadas.length }}</p>
               </div>
-              <p class="total-selected">Total de productos: {{ tallasSeleccionadas.length }}</p>
             </div>
-          </div>
 
-          <!-- Botones de acción -->
-          <div class="form-actions">
-            <button type="button" (click)="cerrarModal()" class="btn-cancel">Cancelar</button>
-            <button type="submit" [disabled]="!puedeRegistrar()" class="btn-save">
-              💾 Registrar en Vitrina
-            </button>
-          </div>
-        </form>
+            <!-- ⚠️ Mensaje cuando no hay tallas disponibles -->
+            <div *ngIf="!esProductoUnico() && !tieneSizesDisponibles()" class="no-sizes-message">
+              <p>⚠️ Este producto no contiene tallas disponibles.</p>
+            </div>
+
+
+            <!-- Botones de acción -->
+            <div class="form-actions">
+              <button type="button" (click)="cerrarModal()" class="btn-cancel">Cancelar</button>
+              <button type="submit" [disabled]="!puedeRegistrar()" class="btn-save">
+                💾 Registrar en Vitrina
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
 
       <!-- Error de búsqueda -->
@@ -240,6 +291,7 @@
       </div>
     </div>
   </div>
+
 
   <!-- Modal para edición de tallas -->
   <div class="modal-overlay" *ngIf="showSizeModal">

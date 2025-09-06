@@ -5,6 +5,7 @@ export interface Vitrina {
     codToday:         string;
     amount:           number;
     image:            string;
+    color:            string;
     url: string; 
     company:          string;
     genero?: string;

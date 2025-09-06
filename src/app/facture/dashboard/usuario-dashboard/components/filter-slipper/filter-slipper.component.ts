@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, ElementRef, OnInit, signal, ViewChild } from '@angular/core';
 import { DataService } from '../../../../service/data.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -39,6 +39,7 @@ export class FilterSlipperComponent implements OnInit {
 
   filtrosGenero = {
     genero: '',
+    color: '',
     marca: '',
     tipo: '',
     talla: ''
@@ -133,9 +134,9 @@ export class FilterSlipperComponent implements OnInit {
   // Nuevo método para mostrar el modal con detalles
   showSeparationDetails(codToday: string, sizeName: string, event: MouseEvent): void {
     event.stopPropagation(); // Evita que se propague el click
-    
+
     const details = this.getSeparationDetails(codToday, sizeName);
-    
+
     if (details.length > 0) {
       this.selectedSeparationDetails = details;
       this.showSeparationModal = true;
@@ -203,6 +204,7 @@ export class FilterSlipperComponent implements OnInit {
     this.fechaSelecionada = '';
     this.codTodaySeleccionado = '';
     this.companySelecionado = '';
+    this.marcaSeleccionado = '';
 
     const generoMap: any = {
       hombre: 'MAN',
@@ -214,6 +216,7 @@ export class FilterSlipperComponent implements OnInit {
 
     const genero = generoMap[this.generoSeleccionado?.toLowerCase()];
     // CAMBIO: Usar filtrosGenero.marca en lugar de marcaSeleccionado
+    const color = this.filtrosGenero.color || undefined;
     const marca = this.filtrosGenero.marca || undefined;
     const tipo = this.tipoSeleccionado || undefined;
     const talla = this.tallaSeleccionado || undefined;
@@ -225,9 +228,11 @@ export class FilterSlipperComponent implements OnInit {
     }
 
     this.openDetailId = null;
+    this.slippers = [];
 
     this.filterSlipperService.buscarZapatillasPage(
       genero,
+      color,
       marca,
       tipo,
       talla,
@@ -238,7 +243,6 @@ export class FilterSlipperComponent implements OnInit {
         this.slippers = data.content;
         this.totalElements = data.totalElements;
         this.totalPages = data.totalPages;
-        console.log("resultados:", data);
         if (data.content.length === 0) {
           this.toastrService.warning('No se encontraron resultados con los filtros seleccionados.', 'Aviso');
         }
@@ -266,6 +270,7 @@ export class FilterSlipperComponent implements OnInit {
   buscarPorFecha() {
     this.ultimaBusqueda = 'fecha';
     this.generoSeleccionado = '';
+    this.filtrosGenero.color = '';
     this.filtrosGenero.marca = ''; // Limpiar correctamente
     this.tipoSeleccionado = '';
     this.tallaSeleccionado = '';
@@ -290,6 +295,7 @@ export class FilterSlipperComponent implements OnInit {
     }
 
     this.openDetailId = null;
+    this.slippers = [];
 
     this.filterSlipperService.buscarZapatillasPorFecha(
       genero,
@@ -302,7 +308,6 @@ export class FilterSlipperComponent implements OnInit {
           this.slippers = data.content;
           this.totalElements = data.totalElements;
           this.totalPages = data.totalPages;
-          console.log("resultados por fecha:", data);
           if (data.content.length === 0) { // Usar data.content.length
             this.toastrService.warning('No se encontraron resultados para la fecha seleccionada.', 'Aviso');
           }
@@ -375,6 +380,8 @@ export class FilterSlipperComponent implements OnInit {
   buscarPorCodToday0Company() {
     this.ultimaBusqueda = 'codToday';
     this.generoSeleccionado = '';
+    this.filtrosGenero.color = '';
+    this.filtrosGenero.marca = '';
     this.marcaSeleccionado = '';
     this.tipoSeleccionado = '';
     this.tallaSeleccionado = '';
@@ -383,6 +390,7 @@ export class FilterSlipperComponent implements OnInit {
       this.toastrService.info('Por favor ingrese CodToday o Company.', 'Información');
       return;
     }
+    this.slippers = [];
 
     this.filterSlipperService.buscarPorCodTodayOCompany(
       this.codTodaySeleccionado || undefined,
@@ -405,7 +413,6 @@ export class FilterSlipperComponent implements OnInit {
           this.toastrService.warning('No se encontraron resultados');
         }
       }
-      console.log('resultado por codToday o company:', this.slippers);
     });
   }
 
@@ -613,5 +620,74 @@ export class FilterSlipperComponent implements OnInit {
       }
     });
   }
+
+  //eliminar Producto
+  deleteSlipper(codToday: string) {
+    if (confirm(`¿Seguro que quiere eliminar el codigo ${codToday}`)) {
+      this.slipperService.eliminarSlipper(codToday).subscribe({
+        next: res => {
+          this.toastrService.success('Zapatilla eliminada correctamente', 'Eliminado');
+          // Refrescar según el último filtro aplicado
+          switch (this.ultimaBusqueda) {
+            case 'codToday':
+              this.buscarPorCodToday0Company();
+              break;
+            case 'fecha':
+              this.buscarPorFecha();
+              break;
+            case 'genero':
+            default:
+              this.buscar();
+              break;
+          }
+        },
+        error: err => {
+          const mensajeError = err?.error || 'Ocurrio un error eliminado';
+          this.toastrService.error(mensajeError, 'Error');
+        }
+      });
+    }
+  }
+  selectdSlipper: Slipper | null = null;
+  @ViewChild('fileInput') fileInpunt!: ElementRef<HTMLInputElement>;
+  seleccionarImagenParaActualizar(slipper: Slipper) {
+    this.selectdSlipper = slipper;
+    this.fileInpunt.nativeElement.click();
+  }
+  ActualizarImagen(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files?.length && this.selectdSlipper) {
+      const file = input.files[0];
+      const generoKey = this.slipperService.getGeneroKey(this.selectdSlipper.genero);
+      this.slipperService.updateImagen(
+        generoKey,
+        this.selectdSlipper.brand,
+        this.selectdSlipper.codToday,
+        file
+      ).subscribe({
+        next: (res) => {
+          this.toastrService.success('Imagen Actualizado');
+          // Refrescar según el último filtro aplicado
+          switch (this.ultimaBusqueda) {
+            case 'codToday':
+              this.buscarPorCodToday0Company();
+              break;
+            case 'fecha':
+              this.buscarPorFecha();
+              break;
+            case 'genero':
+            default:
+              this.buscar();
+              break;
+          }
+        },
+        error: (err) => {
+          this.toastrService.error('Error al actualizar la imagen');
+          console.error(err);
+        }
+      });
+    }
+  }
+
 
 }

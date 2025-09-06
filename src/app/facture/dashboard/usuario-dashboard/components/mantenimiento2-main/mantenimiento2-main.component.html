@@ -16,24 +16,58 @@
     </select>
 
     <!-- Input de Empresa -->
-    <input type="text" placeholder="Cod_Empresa" [ngModel]="selecteEmpresa()" name="empresa"
+    <input type="text" placeholder="Cod-Empresa" [ngModel]="selecteEmpresa()" name="empresa"
       (ngModelChange)="selecteEmpresa.set($event)" />
 
-    <!-- Input de Precio -->
-    <div style="display: flex; align-items: center;">
-      <h5 style="margin-right: 5px;">S/</h5>
-      <input type="number" placeholder="Precio" [ngModel]="selectePrecio()" name="precio"
-        (ngModelChange)="selectePrecio.set($event)" min="0" step="0.01" />
-    </div>
+      <div style="display: flex; gap: 9px; align-items: center; flex-wrap: wrap; margin-bottom: 7px;">
+        <!-- Precio fábrica -->
+        <div style="display: flex; align-items: center;">
+          <h6>Fabrica</h6>
+          <label style="margin-right: 5px;">S/</label>
+          <input type="number" placeholder="Fábrica" 
+                 [ngModel]="selectePrecioFabrica()" 
+                 (ngModelChange)="selectePrecioFabrica.set($event)" 
+                 min="0" step="0.01"
+                 style="width: 80px;" />
+        </div>
+      
+        <!-- Precio venta -->
+        <div style="display: flex; align-items: center;">
+          <h6>Tienda</h6>
+          <label style="margin-right: 5px;">S/</label>
+          <input type="number" placeholder="Venta" 
+                 [ngModel]="selectePrecio()" 
+                 (ngModelChange)="selectePrecio.set($event)" 
+                 min="0" step="0.01"
+                 style="width: 80px;" />
+        </div>
+      
+        <!-- Cantidad simulada -->
+         <h6>Cantidad</h6>
+        <input type="number" placeholder="Cantidad" 
+               [(ngModel)]="cantidadSimulada" 
+               min="1"
+               style="width: 80px;" />
+      </div>
+      
 
     <!-- Select de Tipo -->
     <select [ngModel]="selecteTipo()" name="tipo" (ngModelChange)="selecteTipo.set($event)">
       <option value="">Tipo</option>
       <option *ngFor="let t of tiposFiltrados()" [value]="t">{{ t }}</option>
     </select>
+    <input type="text" placeholder="color" [ngModel]="selecteColor()" name="color"
+      (ngModelChange)="selecteColor.set($event)" />
 
     <!-- Input de Archivo -->
     <input type="file" (change)="onFileSelected($event)" accept="image/*" />
+
+    <!-- Botón para ver rentabilidad -->
+    <button class="btn-info" [disabled]="!selectePrecio() || !selectePrecioFabrica() || !cantidadSimulada"
+      (click)="mostrarResumenRentabilidad()">
+      Ver Rentabilidad
+    </button>
+
 
     <!-- Botón Generar -->
     <button class="btn-success" (click)="generateCodToday()" [disabled]="!isFormValid() || isLoading()">
@@ -199,9 +233,10 @@
     <div *ngIf="slipperSeleccionado()?.producto === 'ROPA'">
       <div class="sizes-grid-ropa">
         <div class="size-card" *ngFor="let key of obtenerKeysRopa(slipperSeleccionado()?.sizes || {})">
-          <span class="size-label">{{ key | sizeFormat }}<span *ngIf="slipperSeleccionado()!.sizes[key] > 0" class="cantidad-stock">
-            ({{ slipperSeleccionado()!.sizes[key] }})
-          </span></span>
+          <span class="size-label">{{ key | sizeFormat }}<span *ngIf="slipperSeleccionado()!.sizes[key] > 0"
+              class="cantidad-stock">
+              ({{ slipperSeleccionado()!.sizes[key] }})
+            </span></span>
           <div class="size-controls">
             <button class="btn-minus" (click)="decrementSize(key)">-</button>
             <input type="number" [(ngModel)]="sizeAdjustments[key]" />
@@ -219,11 +254,25 @@
         class="boton aumentar" (click)="guardarAumentos()">
         Aumentar tallas
       </button>
-      <button *ngIf="slipperSeleccionado()?.producto === 'UNICO'" class="boton aumentar" (click)="guardarAumentoUnico()">
+      <button *ngIf="slipperSeleccionado()?.producto === 'UNICO'" class="boton aumentar"
+        (click)="guardarAumentoUnico()">
         Aumentar cantidad
       </button>
+      <div class="modal-content-cancelar">
 
-      <button class="boton cerrar" (click)="cerrarModal()">Cerrar</button>
+        <button class="cerrar" (click)="cerrarModal()">Cerrar</button>
+      </div>
     </div>
+  </div>
+</div>
+<div *ngIf="mostrarResumen" class="modal">
+  <div class="modal-content">
+    <h4>Resumen de Rentabilidad</h4>
+    <p>Precio fábrica: S/ {{ selectePrecioFabrica() }}</p>
+    <p>Precio venta: S/ {{ selectePrecio() }}</p>
+    <p>Ganancia por unidad: S/ {{ gananciaUnidad }}</p>
+    <p>Margen: {{ margen }}%</p>
+    <p>Rentabilidad total ({{ cantidadSimulada }} unidades): S/ {{ rentabilidadTotal }}</p>
+    <button (click)="cerrarResumen()">Cerrar</button>
   </div>
 </div>

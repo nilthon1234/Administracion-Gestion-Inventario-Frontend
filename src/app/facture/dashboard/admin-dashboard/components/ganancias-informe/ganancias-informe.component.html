@@ -1,0 +1,218 @@
+<app-navbar-rendimiento></app-navbar-rendimiento><br>
+<header class="dashboard-header">
+    <app-boton-sesion-tiempo></app-boton-sesion-tiempo>
+</header>
+
+<div class="profitability-container">
+    <!-- Header -->
+    <div class="header">
+        <h1 class="title">
+            <i class="icon">📊</i>
+            Panel de Rentabilidad
+        </h1>
+        <div class="date-selector">
+            <input 
+                type="date" 
+                [(ngModel)]="selectedDate" 
+                (change)="loadTickets()"
+                class="date-input">
+        </div>
+        <div class="pdf-button-container">
+            <button 
+                class="pdf-button" 
+                (click)="generatePdfReport()"
+                [disabled]="loading || tickets.length === 0">
+                <i class="pdf-icon">📄</i>
+                <span>Generar PDF</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="loading">
+        <div class="spinner"></div>
+        <p>Cargando datos de rentabilidad...</p>
+    </div>
+
+    <!-- Stats Cards -->
+    <div *ngIf="!loading" class="stats-grid">
+        <!-- Daily Stats -->
+        <div class="stat-card daily">
+            <div class="stat-header">
+                <h3>Rentabilidad Diaria</h3>
+                <i class="stat-icon">📅</i>
+            </div>
+            <div class="stat-content">
+                <div class="main-metric">
+                    <span class="value profit">S/ {{ dailyStats.totalProfit.toFixed(2) }}</span>
+                    <span class="label">Ganancia</span>
+                </div>
+                <div class="secondary-metrics">
+                    <div class="metric">
+                        <span class="metric-label">Ingresos:</span>
+                        <span class="metric-value">S/ {{ dailyStats.totalRevenue.toFixed(2) }}</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Costos:</span>
+                        <span class="metric-value cost">S/ {{ dailyStats.totalCost.toFixed(2) }}</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Margen:</span>
+                        <span class="metric-value" 
+                              [class.positive]="dailyStats.profitMargin > 0"
+                              [class.negative]="dailyStats.profitMargin < 0">
+                            {{ dailyStats.profitMargin.toFixed(1) }}%
+                        </span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Tickets:</span>
+                        <span class="metric-value">{{ dailyStats.ticketCount }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Weekly Stats -->
+        <div class="stat-card weekly">
+            <div class="stat-header">
+                <h3>Rentabilidad Semanal</h3>
+                <i class="stat-icon">📈</i>
+            </div>
+            <div class="stat-content">
+                <div class="main-metric">
+                    <span class="value profit">S/ {{ weeklyStats.totalProfit.toFixed(2) }}</span>
+                    <span class="label">Ganancia</span>
+                </div>
+                <div class="secondary-metrics">
+                    <div class="metric">
+                        <span class="metric-label">Ingresos:</span>
+                        <span class="metric-value">S/ {{ weeklyStats.totalRevenue.toFixed(2) }}</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Costos:</span>
+                        <span class="metric-value cost">S/ {{ weeklyStats.totalCost.toFixed(2) }}</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Margen:</span>
+                        <span class="metric-value"
+                              [class.positive]="weeklyStats.profitMargin > 0"
+                              [class.negative]="weeklyStats.profitMargin < 0">
+                            {{ weeklyStats.profitMargin.toFixed(1) }}%
+                        </span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Tickets:</span>
+                        <span class="metric-value">{{ weeklyStats.ticketCount }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Monthly Stats -->
+        <div class="stat-card monthly">
+            <div class="stat-header">
+                <h3>Rentabilidad Mensual</h3>
+                <i class="stat-icon">📊</i>
+            </div>
+            <div class="stat-content">
+                <div class="main-metric">
+                    <span class="value profit">S/ {{ monthlyStats.totalProfit.toFixed(2) }}</span>
+                    <span class="label">Ganancia</span>
+                </div>
+                <div class="secondary-metrics">
+                    <div class="metric">
+                        <span class="metric-label">Ingresos:</span>
+                        <span class="metric-value">S/ {{ monthlyStats.totalRevenue.toFixed(2) }}</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Costos:</span>
+                        <span class="metric-value cost">S/ {{ monthlyStats.totalCost.toFixed(2) }}</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Margen:</span>
+                        <span class="metric-value"
+                              [class.positive]="monthlyStats.profitMargin > 0"
+                              [class.negative]="monthlyStats.profitMargin < 0">
+                            {{ monthlyStats.profitMargin.toFixed(1) }}%
+                        </span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Tickets:</span>
+                        <span class="metric-value">{{ monthlyStats.ticketCount }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tickets List -->
+    <div *ngIf="!loading && tickets.length > 0" class="tickets-section">
+        <h2 class="section-title">Detalle de Tickets</h2>
+        
+        <div class="tickets-grid">
+            <div *ngFor="let ticket of tickets" class="ticket-card">
+                <div class="ticket-header" (click)="toggleDetails(ticket)">
+                    <div class="ticket-info">
+                        <span [appCopiarTexto]="ticket.nro_ticket" class="ticket-number">#{{ ticket.nro_ticket }}</span>
+                        <span class="ticket-date">{{ ticket.registrationTicket! | customDateFormat}}</span>
+                        <span class="ticket-dni">DNI: {{ ticket.dni }}</span>
+                    </div>
+                    <div class="ticket-metrics">
+                        <div class="metric-item">
+                            <span class="metric-label">Total:</span>
+                            <span class="metric-value">S/ {{ ticket.calculatedTotal?.toFixed(2) }}</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">Ganancia:</span>
+                            <span class="metric-value profit">S/ {{ ticket.profitability?.toFixed(2) }}</span>
+                        </div>
+                        <div class="expand-icon" [class.expanded]="ticket.showDetails">
+                            <i>{{ ticket.showDetails ? '▲' : '▼' }}</i>
+                        </div>
+                    </div>
+                </div>
+
+                <div *ngIf="ticket.showDetails" class="ticket-details">
+                    <div class="details-header">
+                        <h4>Productos</h4>
+                        <div class="detail-stats">
+                            <span>{{ ticket.detail.length }} productos</span>
+                        </div>
+                    </div>
+                    
+                    <div class="products-list">
+                        <div *ngFor="let detail of ticket.detail" class="product-item">
+                            <div class="product-info">
+                                <div class="product-name">
+                                    <span class="type">{{ detail.type }}</span>
+                                    <span [appCopiarTexto]="detail.codToday" class="code">{{ detail.codToday }}</span>
+                                </div>
+                                <div class="product-specs">
+                                    <span class="size">Talla: {{ detail.size | sizeFormat}}</span> -
+                                    <span class="gender">{{ detail.genero }}</span> - 
+                                    <span class="quantity">Cant: {{ detail.amount }}</span>
+                                </div>
+                            </div>
+                            <div class="product-financial">
+                                <div class="price-info">
+                                    <span class="sale-price">Venta: S/ {{ detail.price.toFixed(2) }}</span> -
+                                    <span class="cost-price">Costo: S/ {{ detail.precioFabrica.toFixed(2) }}</span>
+                                </div>
+                                <div class="profit-info">
+                                    <span class="unit-profit">Ganancia/und: S/ {{ (detail.price - detail.precioFabrica).toFixed(2) }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- No Data State -->
+    <div *ngIf="!loading && tickets.length === 0" class="no-data">
+        <i class="no-data-icon">📋</i>
+        <h3>No hay datos disponibles</h3>
+        <p>No se encontraron tickets para la fecha seleccionada</p>
+    </div>
+</div>

@@ -5,11 +5,11 @@
         <div class="search-type-selector">
             <label>
                 <input type="radio" [(ngModel)]="searchType" value="codToday" (change)="onSearchTypeChange()">
-                Buscar por Código
+                Buscar por Código Tienda
             </label>
             <label>
                 <input type="radio" [(ngModel)]="searchType" value="company" (change)="onSearchTypeChange()">
-                Buscar por Empresa
+                Buscar por Codigo Empresa
             </label>
         </div>
 
@@ -35,6 +35,7 @@
                     <p>Código: {{product.codToday}}</p>
                     <p>Tipo: {{product.type}}</p>
                     <p>Género: {{product.genero}}</p>
+                    <p>Cantidad: {{product.amount}}</p>
                     <p class="price">S/ {{getPrice(product.price) | number:'1.2-2'}}</p>
                 </div>
                 <button class="add-btn">Seleccionar</button>

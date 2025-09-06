@@ -55,10 +55,9 @@ export class FilterGorraCanguroMediasComponent implements OnInit {
 
     const productoEditado = this.productoEditando;
 
-    this.filterSlipperService.listAllProduct(this.currentPage, this.pageSize)
+    this.filterSlipperService.listAllProduct(this.currentPage, this.pageSize, this.filtros as any)
       .subscribe({
         next: (response) => {
-          // Manejo de la respuesta paginada
           if (response.content) {
             this.productosOriginal = response.content.map((p: any) => ({
               ...p,
@@ -68,7 +67,6 @@ export class FilterGorraCanguroMediasComponent implements OnInit {
             this.totalElements = response.totalElements;
             this.totalPages = response.totalPages;
           } else {
-            // Fallback si la respuesta no tiene estructura paginada
             this.productosOriginal = response.map((p: any) => ({
               ...p,
               nuevaCantidad: p.amount,
@@ -78,9 +76,9 @@ export class FilterGorraCanguroMediasComponent implements OnInit {
             this.totalPages = Math.ceil(this.totalElements / this.pageSize);
           }
 
-          this.aplicarFiltros();
+          // Como ahora filtramos en backend, ya no hace falta aplicarFiltros en frontend
+          this.productosFiltrados = [...this.productosOriginal];
 
-          // Restaurar posición del scroll (solo si estamos en el navegador)
           if (this.isBrowser && productoEditado) {
             setTimeout(() => {
               const elemento = document.querySelector(`[data-codigo="${productoEditado}"]`);
@@ -102,9 +100,12 @@ export class FilterGorraCanguroMediasComponent implements OnInit {
   }
 
 
+
   filtrarProductos(): void {
-    this.aplicarFiltros();
+    this.currentPage = 0; // reiniciar a la primera página
+    this.cargarProductos();
   }
+  
 
   aplicarFiltros(): void {
     this.productosFiltrados = this.productosOriginal.filter(producto => {
@@ -117,12 +118,9 @@ export class FilterGorraCanguroMediasComponent implements OnInit {
   }
 
   limpiarFiltros(): void {
-    this.filtros = {
-      brand: null,
-      codToday: '',
-      company: ''
-    };
-    this.productosFiltrados = [...this.productosOriginal];
+    this.filtros = { brand: null, codToday: '', company: '' };
+    this.currentPage = 0;
+    this.cargarProductos();
   }
 
   // Métodos para manejar cambios de página

@@ -30,6 +30,8 @@ export class Mantenimiento2MainComponent implements OnInit {
   selecteMarca = signal('');
   selecteEmpresa = signal('');
   selectePrecio = signal(100);
+  selectePrecioFabrica = signal(100);
+  selecteColor = signal('');
   selecteTipo = signal('');
   selectedFile = signal<File | null>(null);
   isLoading = signal(false);
@@ -96,13 +98,13 @@ export class Mantenimiento2MainComponent implements OnInit {
   }
   tiposFiltrados(): string[] {
     const genero = this.selecteGenero();
-  
+
     if (['Niño', 'Niña', 'Bebe'].includes(genero)) {
       return this.tipos().filter(t => !this.tiposRopa().includes(t));
     }
     return this.tipos();
   }
-  
+
 
   private loadInitialData() {
     // Cargar marcas
@@ -115,7 +117,7 @@ export class Mantenimiento2MainComponent implements OnInit {
       next: (ropa) => this.tiposRopa.set(ropa),
       error: (err) => console.error('Error cargando ropa:', err)
     });
-  
+
     // Cargar tipos (de todos los productos)
     this.productoService.list('calzados').subscribe({
       next: (calzados) => {
@@ -123,7 +125,7 @@ export class Mantenimiento2MainComponent implements OnInit {
         this.tipos.update(prev => [...prev, ...listaCalzados]);
       }
     });
-  
+
     this.productoService.list('ropa').subscribe({
       next: (ropa) => {
         const listaRopa = ropa.map(r => r.type);
@@ -131,7 +133,7 @@ export class Mantenimiento2MainComponent implements OnInit {
         this.tiposRopa.set(listaRopa); // guardamos tipos de ropa dinámicamente
       }
     });
-  
+
     this.productoService.list('unico').subscribe({
       next: (unicos) => {
         const listaUnicos = unicos.map(u => u.type);
@@ -169,8 +171,10 @@ export class Mantenimiento2MainComponent implements OnInit {
       tableName,
       this.selecteMarca(),
       this.selecteEmpresa(),
+      this.selectePrecioFabrica(),
       this.selectePrecio(),
       this.selecteTipo(),
+      this.selecteColor(),
       file
     ).subscribe({
       next: (response) => {
@@ -199,8 +203,10 @@ export class Mantenimiento2MainComponent implements OnInit {
       this.selecteGenero() &&
       this.selecteMarca() &&
       this.selecteEmpresa() &&
+      this.selectePrecioFabrica() > 0 &&
       this.selectePrecio() > 0 &&
       this.selecteTipo() &&
+      this.selecteColor() &&
       this.selectedFile()
     );
   }
@@ -353,6 +359,7 @@ export class Mantenimiento2MainComponent implements OnInit {
     return !!this.selecteGenero()
       && !!this.selecteMarca()
       && !!this.selecteEmpresa()
+      && this.selectePrecioFabrica() !== null
       && this.selectePrecio() !== null
       && !!this.selecteTipo() && !!this.selectedFile();
   }
@@ -457,4 +464,28 @@ export class Mantenimiento2MainComponent implements OnInit {
   //Tipos personalizados y  dinamicos
 
   tiposRopa = signal<string[]>([]);
+
+  //resumen de ganancias de producto
+  cantidadSimulada = 1;
+  mostrarResumen = false;
+  gananciaUnidad = 0;
+  margen = 0;
+  rentabilidadTotal = 0;
+
+  mostrarResumenRentabilidad() {
+    const precioFabrica = this.selectePrecioFabrica();
+    const precioVenta = this.selectePrecio();
+    const cantidad = this.cantidadSimulada;
+
+    this.gananciaUnidad = +(precioVenta - precioFabrica).toFixed(2);
+    this.margen = precioVenta > 0
+  ? +((this.gananciaUnidad / precioVenta) * 100).toFixed(2)
+  : 0;
+    this.rentabilidadTotal = +(this.gananciaUnidad * cantidad).toFixed(2);
+    this.mostrarResumen = true;
+  }
+
+  cerrarResumen() {
+    this.mostrarResumen = false;
+  }
 }

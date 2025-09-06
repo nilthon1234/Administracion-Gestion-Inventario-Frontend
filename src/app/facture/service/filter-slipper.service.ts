@@ -38,11 +38,12 @@ export class FilterSlipperService {
   constructor(private http: HttpClient) { };
 
 
-  buscarZapatillasPage(genero: string, brand?: string, type?: string, size?: string, page: number = 0, sizePag: number = 100): Observable<any> {
+  buscarZapatillasPage(genero: string, color?: string,brand?: string, type?: string, size?: string, page: number = 0, sizePag: number = 100): Observable<any> {
     let params = new HttpParams()
       .set('page', page.toString())
       .set('tamaño', sizePag.toString());
 
+    if (color) params = params.set('color', color);
     if (brand) params = params.set('brand', brand);
     if (type) params = params.set('type', type);
     if (size) params = params.set('size', size);
@@ -95,13 +96,28 @@ buscarPorCodTodayOCompany3(codToday?: string, company?: string): Observable<Prod
     return this.http.get<any>(`${this.urlCod}/date-slipper?fecha=${fecha}&page=${page}&size=${size}`, { params });
   }
 
-  listAllProduct(page: number = 0, sizePag: number = 100): Observable<any> {
+  listAllProduct(
+    page: number = 0,
+    sizePag: number = 100,
+    filtros: { codToday?: string; company?: string; brand?: string } = {}
+  ): Observable<any> {
     let params = new HttpParams()
       .set('page', page.toString())
       .set('tamaño', sizePag.toString());
-
-    return this.http.get<any>(`${this.urlCod}/gorra-cangu-me`, { params })
+  
+    if (filtros.codToday) {
+      params = params.set('codToday', filtros.codToday);
+    }
+    if (filtros.company) {
+      params = params.set('company', filtros.company);
+    }
+    if (filtros.brand && filtros.brand !== 'null') {
+      params = params.set('brand', filtros.brand);
+    }
+  
+    return this.http.get<any>(`${this.urlCod}/gorra-cangu-me`, { params });
   }
+  
 
   //stock  de inventario
 
