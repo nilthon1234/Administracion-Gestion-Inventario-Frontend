@@ -44,7 +44,7 @@
     position: fixed; 
     top: 0; 
     left: 0;
-    width: 100%;
+    width: 103%;
     height: 100%;
     background-color: rgba(0,0,0,0.5); 
     display: flex; justify-content: center; 
@@ -55,7 +55,7 @@
     padding: 20px; 
     border-radius: 5px; 
     width: 80%; 
-    max-width: 1150px;
+    max-width: 1200px;
     max-height: 90vh; 
     overflow-y: auto;
 }
@@ -288,5 +288,34 @@ tbody tr:hover {
   60% { transform: translate(2px, 2px); }
   80% { transform: translate(2px, -2px); }
   100% { transform: translate(0); }
+}
+
+/*RepositoryType*/
+td {
+  padding: 8px;
+  vertical-align: middle; /* Centra verticalmente el contenido */
+}
+
+.repository-badge {
+  padding: 2px 8px; /* Menos padding vertical para que sea más compacto */
+  border-radius: 20px; /* Bordes redondeados como en la imagen */
+  font-weight: 300;
+  text-align: center;
+  color: white;
+  font-size: 0.3rem; /* Texto pequeño */
+  display: inline-block;
+  min-width: 60px; /* Ancho mínimo para que no se vea apretado */
+  box-sizing: border-box;
+  margin: 0;
+  border: 1px solid rgba(255, 255, 255, 0.3); /* Borde sutil */
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); /* Sombra ligera */
+}
+
+.almacen {
+  background-color: #FF5733; /* Azul como en la imagen */
+}
+
+.vitrina {
+  background-color: #33FF57; /* Verde para VITRINA */
 }
 

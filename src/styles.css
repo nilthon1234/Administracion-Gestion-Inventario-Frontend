@@ -44,6 +44,8 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   white-space: nowrap;      /* Evita saltos de línea */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra sutil */
   transition: all 0.3s ease; /* Efecto hover suave */
+  margin-top: 12px;
+  margin-left: 8px;
 }
 
 /* Colores específicos para cada tipo */

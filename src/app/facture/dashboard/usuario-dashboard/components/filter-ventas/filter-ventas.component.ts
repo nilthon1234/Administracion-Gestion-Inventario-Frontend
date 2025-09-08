@@ -8,10 +8,11 @@ import { SizeFormatPipe } from '../../../../../shared/pipes/size-format.pipe';
 import { CopiarTextoDirective } from '../../../../../shared/directives/copiar-texto.directive';
 import { CustomDateFormatPipe } from '../../../../../shared/pipes/custom-date-format.pipe';
 import { Route, Router } from '@angular/router';
+import { RepositoryTypeColorPipe } from '../../../../../shared/pipes/repositoryTypeColor.pipe';
 
 @Component({
   selector: 'app-filter-ventas',
-  imports: [NavBarsVentasComponent,CopiarTextoDirective, CustomDateFormatPipe,CommonModule, FormsModule, PayTypeTranslatePipe, SizeFormatPipe],
+  imports: [NavBarsVentasComponent,CopiarTextoDirective, CustomDateFormatPipe,CommonModule, FormsModule, PayTypeTranslatePipe, SizeFormatPipe,RepositoryTypeColorPipe],
   templateUrl: './filter-ventas.component.html',
   styleUrl: './filter-ventas.component.css'
 })

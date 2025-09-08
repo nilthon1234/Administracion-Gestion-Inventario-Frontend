@@ -55,6 +55,7 @@
             <tr>
               <th>Código</th>
               <th>Empresa</th>
+              <th>Repositorio</th>
               <th>Cantidad</th>
               <th>Tipo</th>
               <th>Talla</th>
@@ -71,6 +72,7 @@
             <tr *ngFor="let detail of ticket.detail">
               <td [appCopiarTexto]="detail.codToday">{{ detail.codToday }}</td>
               <td [appCopiarTexto]="detail.company">{{ detail.company }}</td>
+              <td [ngClass]="detail.repositoryType | repositoryTypeColor">{{ detail.repositoryType }}</td>
               <td>{{ detail.amount }}</td>
               <td>{{ detail.type }}</td>
               <td>{{ detail.size | sizeFormat}}</td>

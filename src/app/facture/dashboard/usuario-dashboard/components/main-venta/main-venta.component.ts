@@ -14,6 +14,7 @@ import { CustomDateFormatPipe } from '../../../../../shared/pipes/custom-date-fo
 import { NavBarsVentasComponent } from "../../../../../shared/components/navbars/nav-bars-ventas/nav-bars-ventas.component";
 import { SizeFormatPipe } from '../../../../../shared/pipes/size-format.pipe';
 import { FechaLarga } from '../../../../../shared/pipes/FechaLarga.pipe';
+import { RepositoryTypeColorPipe } from '../../../../../shared/pipes/repositoryTypeColor.pipe';
 
 @Component({
   selector: 'app-main-venta',
@@ -467,6 +468,15 @@ export class MainVentaComponent implements OnInit {
 
     this.conteos = { noEspecificado, aumento, descuento };
   }
+ // repository Type
+ items = [
+  { repositoryType: 'VITRINA' },
+  { repositoryType: 'ALMACEN' },
+  // ... más items
+];
 
+getRepositoryClass(repositoryType: string): string {
+  return `repository-button ${repositoryType.toLowerCase()}`;
+}
 
 }

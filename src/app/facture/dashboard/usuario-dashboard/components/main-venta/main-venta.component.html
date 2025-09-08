@@ -267,6 +267,7 @@
           <th style="padding: 8px; text-align: center; border-bottom: 1px solid #ddd;">Id</th>
           <th style="padding: 8px; text-align: center; border-bottom: 1px solid #ddd;">Código</th>
           <th style="padding: 8px; text-align: center; border-bottom: 1px solid #ddd;">Empresa</th>
+          <th style="padding: 8px; text-align: center; border-bottom: 1px solid #ddd;">Repositorio</th>
           <th style="padding: 8px; text-align: center; border-bottom: 1px solid #ddd;">Tipo</th>
           <th style="padding: 8px; text-align: center; border-bottom: 1px solid #ddd;">Talla</th>
           <th style="padding: 8px; text-align: center; border-bottom: 1px solid #ddd;">Genero</th>
@@ -284,6 +285,9 @@
             {{ item.codToday }}</td>
           <td [appCopiarTexto]="item.company" style="padding: 8px; text-align: center; border-bottom: 1px solid #ddd;">
             {{ item.company }}</td>
+            <td [class]="getRepositoryClass(item.repositoryType)">
+              {{ item.repositoryType }}
+            </td>
           <td style="padding: 8px; text-align: center; border-bottom: 1px solid #ddd;">{{ item.type}}</td>
           <td style="padding: 8px; text-align: center; border-bottom: 1px solid #ddd;">{{ item.size | sizeFormat}}</td>
           <td style="padding: 8px; text-align: center; border-bottom: 1px solid #ddd;">{{item.genero}}</td>

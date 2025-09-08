@@ -122,15 +122,26 @@ export class EventosNotificacionesComponent implements OnInit {
       'LITTLEGIRL': 'Niña',
       'BABY': 'Bebé'
     };
-
+  
     let transformedDescription = description;
+  
+    // Reemplazo palabras definidas en wordMap
     (Object.keys(wordMap) as Array<keyof typeof wordMap>).forEach(key => {
       const regex = new RegExp(key, 'gi');
       transformedDescription = transformedDescription.replace(regex, wordMap[key]);
     });
-
+    
+  
+    // Aquí transformas palabras que tengan el patrón que mencionas
+    // Ejemplo para identificar palabras que contienen "usa41_5" o similares:
+    transformedDescription = transformedDescription.replace(/\b(usa|eu)([^ ]*)/gi, (match) => {
+      // Reemplaza 'usa' o 'eu' por cadena vacía y '_' por '.'
+      return match.replace(/^(usa|eu)/i, '').replace(/_/g, '.');
+    });
+  
     return transformedDescription;
   }
+  
 
 
 

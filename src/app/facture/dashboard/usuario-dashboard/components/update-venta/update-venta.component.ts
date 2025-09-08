@@ -11,7 +11,7 @@ import { TallaDisplayPipe } from '../../../../../shared/pipes/tallasDisplay.pipe
 
 @Component({
   selector: 'app-update-venta',
-  imports: [CommonModule, FormsModule, PayTypeTranslatePipe,TallaDisplayPipe],
+  imports: [CommonModule, FormsModule, PayTypeTranslatePipe,TallaDisplayPipe,SizeFormatPipe],
   templateUrl: './update-venta.component.html',
   styleUrl: './update-venta.component.css'
 })

@@ -17,6 +17,7 @@ export interface TicketDetail {
     amount: number;
     codToday: string;
     company: string;
+    repositoryType: string;
     type: string;
     size: string;
     price: number;

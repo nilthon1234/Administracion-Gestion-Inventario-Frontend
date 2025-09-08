@@ -60,7 +60,7 @@ export interface ProfitabilityStats {
 export class SaleRendimientoService {
     private baseUrl = `${environment.apiUrl}/sale`;
 
-    constructor(private http: HttpClient) {}
+    constructor(private http: HttpClient) { }
 
     getTickets(fecha: string): Observable<TicketResponse> {
         // Asumimos que el backend devuelve tickets de todo el mes
@@ -97,28 +97,51 @@ export class SaleRendimientoService {
             const ticketDate = new Date(ticket.registrationTicket);
             const ticketDateOnly = new Date(ticketDate.getFullYear(), ticketDate.getMonth(), ticketDate.getDate());
             const selectedDateOnly = new Date(selectedDate + 'T00:00:00');
-    
+
             return ticketDateOnly.getTime() === selectedDateOnly.getTime();
         });
-    
+
         return this.calculateStats(dailyTickets);
     }
 
     calculateWeeklyStats(tickets: Ticket[], selectedDate: string): ProfitabilityStats {
-        // Determinar el inicio y fin de la semana que contiene selectedDate
-        const selected = new Date(selectedDate);
+        const selected = new Date(selectedDate + 'T00:00:00'); // Asegurar zona horaria local
+        
+        // Obtener el día de la semana (0=domingo, 1=lunes, ..., 6=sábado)
+        const dayOfWeek = selected.getDay();
+        
+        // Calcular el lunes de la semana actual
+        // Si es domingo (0), retroceder 6 días para llegar al lunes
+        // Si es lunes (1), no retroceder
+        // Si es martes (2), retroceder 1 día, etc.
+        const daysToSubtract = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+        
         const startOfWeek = new Date(selected);
-        startOfWeek.setDate(selected.getDate() - selected.getDay()); // Lunes
+        startOfWeek.setDate(selected.getDate() - daysToSubtract);
+        startOfWeek.setHours(0, 0, 0, 0);
+        
+        // El domingo será 6 días después del lunes
         const endOfWeek = new Date(startOfWeek);
-        endOfWeek.setDate(startOfWeek.getDate() + 6); // Domingo
-
+        endOfWeek.setDate(startOfWeek.getDate() + 6);
+        endOfWeek.setHours(23, 59, 59, 999);
+        
+        
+        // Filtrar tickets de la semana actual (lunes a domingo)
         const weeklyTickets = tickets.filter(ticket => {
             const ticketDate = new Date(ticket.registrationTicket);
-            return ticketDate >= startOfWeek && ticketDate <= endOfWeek;
+            const isInWeek = ticketDate >= startOfWeek && ticketDate <= endOfWeek;
+            
+            
+            
+            return isInWeek;
         });
-
+        
+        
         return this.calculateStats(weeklyTickets);
     }
+    
+    
+
 
     calculateMonthlyStats(tickets: Ticket[], selectedDate: string): ProfitabilityStats {
         // Determinar el inicio y fin del mes que contiene selectedDate
